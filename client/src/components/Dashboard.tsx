@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import DashboardHeader from './DashboardHeader';
 import SiteCard from './SiteCard';
+import MalaysiaMap from './MalaysiaMap';
 import type { SiteData } from '@/types/dashboard';
 
 // todo: remove mock functionality  
@@ -139,6 +140,7 @@ export default function Dashboard() {
   const [sites, setSites] = useState(mockSites);
   const [filteredSites, setFilteredSites] = useState(mockSites);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSiteId, setSelectedSiteId] = useState<string | undefined>();
 
   const onlineSites = sites.filter(site => site.overallStatus === 'operational').length;
   const totalAlerts = sites.reduce((sum, site) => sum + site.alerts, 0);
@@ -163,6 +165,7 @@ export default function Dashboard() {
 
   const handleSiteClick = (siteId: string) => {
     console.log(`Opening detailed view for site: ${siteId}`);
+    setSelectedSiteId(siteId);
     // todo: implement detailed site view
   };
 
@@ -223,7 +226,21 @@ export default function Dashboard() {
         onSettingsClick={handleSettings}
       />
       
-      <div className="p-6">
+      <div className="p-6 space-y-6">
+        {/* Malaysia Map Section */}
+        <div className="w-full">
+          <MalaysiaMap 
+            sites={filteredSites}
+            onSiteSelect={handleSiteClick}
+            selectedSiteId={selectedSiteId}
+          />
+        </div>
+        
+        {/* Site Cards Grid */}
+        <div>
+          <h2 className="text-xl font-semibold mb-4" data-testid="sites-section-title">
+            Transmission Sites
+          </h2>
         <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6">
           {filteredSites.map(site => (
             <SiteCard 
@@ -239,6 +256,7 @@ export default function Dashboard() {
             <p className="text-muted-foreground">No sites found matching "{searchQuery}"</p>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
