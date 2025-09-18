@@ -203,7 +203,7 @@ export default function Dashboard() {
           return updatedSite;
         })
       );
-    }, 2000);
+    }, 50); // Sub-100ms polling for real-time updates
 
     return () => clearInterval(interval);
   }, []);
