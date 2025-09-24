@@ -3,39 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import TransmitterCard from './TransmitterCard';
 import StatusIndicator from './StatusIndicator';
 import { MapPin, AlertTriangle } from 'lucide-react';
-
-interface SiteData {
-  id: string;
-  name: string;
-  location: string;
-  overallStatus: 'operational' | 'warning' | 'error' | 'offline';
-  activeTransmitter: 'main' | 'reserve';
-  transmitters: {
-    main: {
-      id: string;
-      type: 'main';
-      status: 'operational' | 'warning' | 'error' | 'offline';
-      transmitPower: number;
-      reflectPower: number;
-      mainAudio: boolean;
-      backupAudio: boolean;
-      connectivity: boolean;
-      lastSeen: string;
-    };
-    reserve: {
-      id: string;
-      type: 'reserve';
-      status: 'operational' | 'warning' | 'error' | 'offline';
-      transmitPower: number;
-      reflectPower: number;
-      mainAudio: boolean;
-      backupAudio: boolean;
-      connectivity: boolean;
-      lastSeen: string;
-    };
-  };
-  alerts: number;
-}
+import type { SiteData } from '@/types/dashboard';
 
 interface SiteCardProps {
   site: SiteData;
@@ -67,6 +35,12 @@ export default function SiteCard({ site, onSiteClick }: SiteCardProps) {
               <MapPin className="w-3 h-3" />
               <span data-testid="site-location">{site.location}</span>
             </div>
+            <p className="text-xs text-muted-foreground" data-testid="site-broadcaster">
+              {site.broadcaster}
+            </p>
+            <p className="text-xs font-mono text-primary" data-testid="site-frequency">
+              {site.frequency}
+            </p>
           </div>
           
           {site.alerts > 0 && (

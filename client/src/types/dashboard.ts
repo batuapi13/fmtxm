@@ -17,6 +17,8 @@ export interface SiteData {
   id: string;
   name: string;
   location: string;
+  broadcaster: string;
+  frequency: string;
   overallStatus: TransmitterStatus;
   activeTransmitter: TransmitterType;
   transmitters: {
