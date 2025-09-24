@@ -7,16 +7,17 @@ interface PowerMeterProps {
   max: number;
   threshold?: { warning: number; error: number };
   showGraph?: boolean;
+  status?: 'operational' | 'warning' | 'error' | 'offline';
 }
 
-export default function PowerMeter({ label, value, unit, max, threshold, showGraph = false }: PowerMeterProps) {
+export default function PowerMeter({ label, value, unit, max, threshold, showGraph = false, status = 'operational' }: PowerMeterProps) {
   const percentage = Math.min((value / max) * 100, 100);
   
-  const getStatusColor = () => {
-    if (!threshold) return 'bg-primary';
-    if (value >= threshold.error) return 'bg-status-error';
-    if (value >= threshold.warning) return 'bg-status-warning';
-    return 'bg-status-operational';
+  const getTextColor = () => {
+    if (status === 'error') return 'text-red-400';
+    if (status === 'warning') return 'text-yellow-400';
+    if (status === 'offline') return 'text-red-400';
+    return 'text-white';
   };
 
   // Mock graph data for visual appeal
@@ -32,17 +33,9 @@ export default function PowerMeter({ label, value, unit, max, threshold, showGra
             <span className="text-sm text-muted-foreground" data-testid="power-label">
               {label}
             </span>
-            <span className="text-lg font-mono font-medium" data-testid={`power-value-${label.toLowerCase().replace(/\s+/g, '-')}`}>
+            <span className={`text-lg font-mono font-medium transition-colors ${getTextColor()}`} data-testid={`power-value-${label.toLowerCase().replace(/\s+/g, '-')}`}>
               {value.toFixed(1)} {unit}
             </span>
-          </div>
-          
-          <div className="relative h-2 bg-muted rounded-full overflow-hidden">
-            <div 
-              className={`absolute left-0 top-0 h-full transition-all duration-300 ${getStatusColor()}`}
-              style={{ width: `${percentage}%` }}
-              data-testid="power-bar"
-            />
           </div>
           
           {showGraph && (

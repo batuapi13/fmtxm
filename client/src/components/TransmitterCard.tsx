@@ -47,18 +47,20 @@ export default function TransmitterCard({ transmitter, isActive = false }: Trans
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <PowerMeter
-            label="TX Power"
+            label="Fwd Power"
             value={transmitter.transmitPower}
             unit="W"
             max={1000}
             threshold={{ warning: 800, error: 980 }}
+            status={transmitter.status}
           />
           <PowerMeter
-            label="Reflect"
+            label="Reflect Power"
             value={transmitter.reflectPower}
             unit="W"
             max={100}
             threshold={{ warning: 50, error: 80 }}
+            status={transmitter.status}
           />
         </div>
         

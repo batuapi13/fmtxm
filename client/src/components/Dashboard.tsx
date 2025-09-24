@@ -10,6 +10,8 @@ const mockSites: SiteData[] = [
     id: 'site001',
     name: 'RTM Kuala Lumpur',
     location: 'Kuala Lumpur, Malaysia',
+    broadcaster: 'RTM - Radio Televisyen Malaysia',
+    frequency: '101.9 MHz',
     overallStatus: 'operational' as const,
     activeTransmitter: 'main' as const,
     transmitters: {
@@ -42,6 +44,8 @@ const mockSites: SiteData[] = [
     id: 'site002',
     name: 'Gunung Jerai',
     location: 'Kedah, Malaysia',
+    broadcaster: 'RTM - Kedah FM',
+    frequency: '105.7 MHz',
     overallStatus: 'warning' as const,
     activeTransmitter: 'main' as const,
     transmitters: {
@@ -74,6 +78,8 @@ const mockSites: SiteData[] = [
     id: 'site003',
     name: 'Bukit Penara',
     location: 'Pulau Pinang, Malaysia',
+    broadcaster: 'RTM - Penang FM',
+    frequency: '89.9 MHz',
     overallStatus: 'operational' as const,
     activeTransmitter: 'main' as const,
     transmitters: {
@@ -106,6 +112,8 @@ const mockSites: SiteData[] = [
     id: 'site004',
     name: 'Gunung Ledang',
     location: 'Johor, Malaysia',
+    broadcaster: 'RTM - Johor FM',
+    frequency: '103.3 MHz',
     overallStatus: 'operational' as const,
     activeTransmitter: 'main' as const,
     transmitters: {
@@ -138,6 +146,8 @@ const mockSites: SiteData[] = [
     id: 'site005',
     name: 'Bukit Pelindung',
     location: 'Kuantan, Pahang, Malaysia',
+    broadcaster: 'RTM - Pahang FM',
+    frequency: '87.6 MHz',
     overallStatus: 'operational' as const,
     activeTransmitter: 'main' as const,
     transmitters: {
@@ -170,6 +180,8 @@ const mockSites: SiteData[] = [
     id: 'site006',
     name: 'Bukit Lambir',
     location: 'Miri, Sarawak, Malaysia',
+    broadcaster: 'RTM - Sarawak FM',
+    frequency: '96.7 MHz',
     overallStatus: 'warning' as const,
     activeTransmitter: 'reserve' as const,
     transmitters: {
@@ -202,6 +214,8 @@ const mockSites: SiteData[] = [
     id: 'site007',
     name: 'Bukit Karatong',
     location: 'Kota Kinabalu, Sabah, Malaysia',
+    broadcaster: 'RTM - Sabah V FM',
+    frequency: '105.5 MHz',
     overallStatus: 'operational' as const,
     activeTransmitter: 'main' as const,
     transmitters: {
@@ -234,6 +248,8 @@ const mockSites: SiteData[] = [
     id: 'site008',
     name: 'Media Prima Petaling Jaya',
     location: 'Selangor, Malaysia',
+    broadcaster: 'Media Prima - Hot FM',
+    frequency: '97.6 MHz',
     overallStatus: 'operational' as const,
     activeTransmitter: 'main' as const,
     transmitters: {
