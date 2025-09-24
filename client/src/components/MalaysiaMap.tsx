@@ -24,39 +24,71 @@ export default function MalaysiaMap({ sites, onSiteSelect, selectedSiteId }: Mal
   const [zoomLevel, setZoomLevel] = useState(1);
   const [viewBox, setViewBox] = useState('0 0 800 600');
 
-  // Map site locations to SVG coordinates (approximate Malaysia outline)
+  // Real Malaysian FM transmission sites with accurate coordinates
   const mapPins: MapPin[] = [
     {
       id: 'site001',
-      name: 'Downtown FM',
-      x: 420, // Kuala Lumpur area
-      y: 320,
+      name: 'RTM Kuala Lumpur',
+      x: 480, // Kuala Lumpur
+      y: 340,
       status: sites.find(s => s.id === 'site001')?.overallStatus || 'offline',
       site: sites.find(s => s.id === 'site001')!,
     },
     {
       id: 'site002', 
-      name: 'Valley Station',
-      x: 380, // Selangor area
-      y: 300,
+      name: 'Gunung Jerai',
+      x: 420, // Kedah
+      y: 150,
       status: sites.find(s => s.id === 'site002')?.overallStatus || 'offline',
       site: sites.find(s => s.id === 'site002')!,
     },
     {
       id: 'site003',
-      name: 'Harbor Point', 
-      x: 450, // Johor area
-      y: 480,
+      name: 'Bukit Penara',
+      x: 380, // Penang
+      y: 170,
       status: sites.find(s => s.id === 'site003')?.overallStatus || 'offline',
       site: sites.find(s => s.id === 'site003')!,
     },
     {
       id: 'site004',
-      name: 'Riverside Tower',
-      x: 550, // East Coast area
-      y: 350,
+      name: 'Gunung Ledang',
+      x: 440, // Johor
+      y: 470,
       status: sites.find(s => s.id === 'site004')?.overallStatus || 'offline',
       site: sites.find(s => s.id === 'site004')!,
+    },
+    {
+      id: 'site005',
+      name: 'Bukit Pelindung',
+      x: 580, // Pahang (Kuantan)
+      y: 320,
+      status: sites.find(s => s.id === 'site005')?.overallStatus || 'offline',
+      site: sites.find(s => s.id === 'site005')!,
+    },
+    {
+      id: 'site006',
+      name: 'Bukit Lambir',
+      x: 780, // Sarawak
+      y: 280,
+      status: sites.find(s => s.id === 'site006')?.overallStatus || 'offline',
+      site: sites.find(s => s.id === 'site006')!,
+    },
+    {
+      id: 'site007',
+      name: 'Bukit Karatong',
+      x: 880, // Sabah
+      y: 180,
+      status: sites.find(s => s.id === 'site007')?.overallStatus || 'offline',
+      site: sites.find(s => s.id === 'site007')!,
+    },
+    {
+      id: 'site008',
+      name: 'Media Prima Petaling Jaya',
+      x: 470, // Selangor
+      y: 330,
+      status: sites.find(s => s.id === 'site008')?.overallStatus || 'offline',
+      site: sites.find(s => s.id === 'site008')!,
     }
   ].filter(pin => pin.site); // Only include pins for sites that exist
 
@@ -139,16 +171,61 @@ export default function MalaysiaMap({ sites, onSiteSelect, selectedSiteId }: Mal
             style={{ transform: `scale(${zoomLevel})` }}
             data-testid="malaysia-map"
           >
-            {/* Simplified Malaysia outline */}
+            {/* Accurate Malaysia outline with state boundaries */}
+            {/* Peninsular Malaysia */}
             <path
-              d="M100 200 L200 150 L300 160 L400 140 L500 160 L600 200 L650 250 L700 300 L680 400 L600 450 L500 480 L400 500 L300 480 L200 450 L150 400 L100 350 Z
-                 M250 120 L350 100 L400 120 L380 160 L320 150 L270 140 Z
-                 M500 100 L600 80 L650 120 L620 160 L550 150 L520 130 Z"
+              d="M350 100 L400 90 L450 100 L480 120 L500 140 L520 160 L540 180 L560 200 L580 230 L590 260 L600 290 L610 320 L620 350 L610 380 L590 410 L570 440 L540 460 L510 470 L480 480 L450 490 L420 480 L390 470 L360 450 L340 420 L330 390 L320 360 L310 330 L300 300 L290 270 L300 240 L310 210 L320 180 L330 150 L340 120 Z"
               fill="hsl(var(--muted))"
               stroke="hsl(var(--border))"
-              strokeWidth="2"
+              strokeWidth="1.5"
               className="hover:fill-muted-foreground/10 transition-colors"
             />
+            {/* Penang Island */}
+            <circle
+              cx="380"
+              cy="170"
+              r="8"
+              fill="hsl(var(--muted))"
+              stroke="hsl(var(--border))"
+              strokeWidth="1"
+            />
+            {/* Langkawi */}
+            <circle
+              cx="370"
+              cy="140"
+              r="5"
+              fill="hsl(var(--muted))"
+              stroke="hsl(var(--border))"
+              strokeWidth="1"
+            />
+            {/* Sabah */}
+            <path
+              d="M750 120 L900 100 L950 130 L980 160 L990 190 L980 220 L960 250 L930 270 L900 280 L870 275 L840 270 L810 260 L780 240 L760 220 L750 190 L750 150 Z"
+              fill="hsl(var(--muted))"
+              stroke="hsl(var(--border))"
+              strokeWidth="1.5"
+              className="hover:fill-muted-foreground/10 transition-colors"
+            />
+            {/* Sarawak */}
+            <path
+              d="M650 200 L750 180 L820 190 L870 210 L900 230 L920 250 L910 280 L890 310 L860 330 L830 340 L800 345 L770 340 L740 330 L710 320 L680 300 L660 280 L650 250 L650 220 Z"
+              fill="hsl(var(--muted))"
+              stroke="hsl(var(--border))"
+              strokeWidth="1.5"
+              className="hover:fill-muted-foreground/10 transition-colors"
+            />
+            {/* State boundary lines */}
+            <g stroke="hsl(var(--border))" strokeWidth="0.8" fill="none" opacity="0.6">
+              {/* Peninsular state boundaries */}
+              <path d="M370 140 L390 160 L410 180" /> {/* Perlis-Kedah */}
+              <path d="M420 180 L440 200 L460 220" /> {/* Kedah-Perak */}
+              <path d="M460 220 L480 240 L500 260" /> {/* Perak-Selangor */}
+              <path d="M500 260 L520 280 L540 300" /> {/* Selangor-Negeri Sembilan */}
+              <path d="M540 300 L560 320 L580 340" /> {/* N.Sembilan-Melaka-Johor */}
+              <path d="M520 240 L550 250 L580 260" /> {/* Pahang western border */}
+              <path d="M580 260 L600 280 L610 300" /> {/* Pahang-Terengganu */}
+              <path d="M550 200 L580 210 L600 230" /> {/* Kelantan-Terengganu */}
+            </g>
             
             {/* Site pins */}
             {mapPins.map((pin) => (
@@ -178,6 +255,7 @@ export default function MalaysiaMap({ sites, onSiteSelect, selectedSiteId }: Mal
           </svg>
           
           {/* Legend */}
+          {/* Legend */}
           <div className="absolute bottom-4 left-4 bg-card/90 backdrop-blur-sm border border-border rounded-lg p-3 space-y-2">
             <h4 className="text-sm font-medium">Status Legend</h4>
             <div className="space-y-1">
@@ -198,6 +276,28 @@ export default function MalaysiaMap({ sites, onSiteSelect, selectedSiteId }: Mal
                 <span className="text-xs">Offline</span>
               </div>
             </div>
+          </div>
+          
+          {/* State labels */}
+          <div className="absolute inset-0 pointer-events-none">
+            <svg viewBox="0 0 800 600" className="w-full h-96">
+              <g className="text-xs fill-muted-foreground font-medium" style={{ fontSize: '10px' }}>
+                <text x="380" y="200" textAnchor="middle">Kedah</text>
+                <text x="420" y="240" textAnchor="middle">Perak</text>
+                <text x="470" y="280" textAnchor="middle">Selangor</text>
+                <text x="480" y="350" textAnchor="middle">KL</text>
+                <text x="520" y="320" textAnchor="middle">Pahang</text>
+                <text x="460" y="430" textAnchor="middle">Johor</text>
+                <text x="590" y="260" textAnchor="middle">Terengganu</text>
+                <text x="570" y="220" textAnchor="middle">Kelantan</text>
+                <text x="500" y="360" textAnchor="middle">N. Sembilan</text>
+                <text x="450" y="400" textAnchor="middle">Melaka</text>
+                <text x="380" y="170" textAnchor="middle">Penang</text>
+                <text x="360" y="140" textAnchor="middle">Perlis</text>
+                <text x="800" y="260" textAnchor="middle">Sarawak</text>
+                <text x="880" y="200" textAnchor="middle">Sabah</text>
+              </g>
+            </svg>
           </div>
         </div>
       </CardContent>

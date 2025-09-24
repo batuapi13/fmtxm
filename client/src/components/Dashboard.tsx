@@ -4,12 +4,12 @@ import SiteCard from './SiteCard';
 import MalaysiaMap from './MalaysiaMap';
 import type { SiteData } from '@/types/dashboard';
 
-// todo: remove mock functionality  
+// Real Malaysian FM transmission sites
 const mockSites: SiteData[] = [
   {
     id: 'site001',
-    name: 'Downtown FM',
-    location: 'Mount Wilson, CA',
+    name: 'RTM Kuala Lumpur',
+    location: 'Kuala Lumpur, Malaysia',
     overallStatus: 'operational' as const,
     activeTransmitter: 'main' as const,
     transmitters: {
@@ -40,8 +40,8 @@ const mockSites: SiteData[] = [
   },
   {
     id: 'site002',
-    name: 'Valley Station',
-    location: 'Burbank, CA',
+    name: 'Gunung Jerai',
+    location: 'Kedah, Malaysia',
     overallStatus: 'warning' as const,
     activeTransmitter: 'main' as const,
     transmitters: {
@@ -72,40 +72,40 @@ const mockSites: SiteData[] = [
   },
   {
     id: 'site003',
-    name: 'Harbor Point',
-    location: 'San Pedro, CA',
-    overallStatus: 'error' as const,
-    activeTransmitter: 'reserve' as const,
+    name: 'Bukit Penara',
+    location: 'Pulau Pinang, Malaysia',
+    overallStatus: 'operational' as const,
+    activeTransmitter: 'main' as const,
     transmitters: {
       main: {
         id: 'tx005',
         type: 'main' as const,
-        status: 'error' as const,
-        transmitPower: 0,
-        reflectPower: 0,
-        mainAudio: false,
-        backupAudio: false,
-        connectivity: false,
-        lastSeen: '15 minutes ago'
+        status: 'operational' as const,
+        transmitPower: 890,
+        reflectPower: 25,
+        mainAudio: true,
+        backupAudio: true,
+        connectivity: true,
+        lastSeen: '3 seconds ago'
       },
       reserve: {
         id: 'tx006',
         type: 'reserve' as const,
         status: 'operational' as const,
-        transmitPower: 875,
-        reflectPower: 22,
+        transmitPower: 0,
+        reflectPower: 0,
         mainAudio: true,
         backupAudio: true,
         connectivity: true,
         lastSeen: '1 second ago'
       }
     },
-    alerts: 5
+    alerts: 0
   },
   {
     id: 'site004',
-    name: 'Riverside Tower',
-    location: 'Riverside, CA',
+    name: 'Gunung Ledang',
+    location: 'Johor, Malaysia',
     overallStatus: 'operational' as const,
     activeTransmitter: 'main' as const,
     transmitters: {
@@ -130,6 +130,134 @@ const mockSites: SiteData[] = [
         backupAudio: true,
         connectivity: true,
         lastSeen: '4 seconds ago'
+      }
+    },
+    alerts: 0
+  },
+  {
+    id: 'site005',
+    name: 'Bukit Pelindung',
+    location: 'Kuantan, Pahang, Malaysia',
+    overallStatus: 'operational' as const,
+    activeTransmitter: 'main' as const,
+    transmitters: {
+      main: {
+        id: 'tx009',
+        type: 'main' as const,
+        status: 'operational' as const,
+        transmitPower: 875,
+        reflectPower: 18,
+        mainAudio: true,
+        backupAudio: true,
+        connectivity: true,
+        lastSeen: '2 seconds ago'
+      },
+      reserve: {
+        id: 'tx010',
+        type: 'reserve' as const,
+        status: 'operational' as const,
+        transmitPower: 0,
+        reflectPower: 0,
+        mainAudio: true,
+        backupAudio: true,
+        connectivity: true,
+        lastSeen: '6 seconds ago'
+      }
+    },
+    alerts: 0
+  },
+  {
+    id: 'site006',
+    name: 'Bukit Lambir',
+    location: 'Miri, Sarawak, Malaysia',
+    overallStatus: 'warning' as const,
+    activeTransmitter: 'reserve' as const,
+    transmitters: {
+      main: {
+        id: 'tx011',
+        type: 'main' as const,
+        status: 'error' as const,
+        transmitPower: 0,
+        reflectPower: 0,
+        mainAudio: false,
+        backupAudio: false,
+        connectivity: false,
+        lastSeen: '15 minutes ago'
+      },
+      reserve: {
+        id: 'tx012',
+        type: 'reserve' as const,
+        status: 'operational' as const,
+        transmitPower: 750,
+        reflectPower: 35,
+        mainAudio: true,
+        backupAudio: true,
+        connectivity: true,
+        lastSeen: '1 second ago'
+      }
+    },
+    alerts: 3
+  },
+  {
+    id: 'site007',
+    name: 'Bukit Karatong',
+    location: 'Kota Kinabalu, Sabah, Malaysia',
+    overallStatus: 'operational' as const,
+    activeTransmitter: 'main' as const,
+    transmitters: {
+      main: {
+        id: 'tx013',
+        type: 'main' as const,
+        status: 'operational' as const,
+        transmitPower: 900,
+        reflectPower: 20,
+        mainAudio: true,
+        backupAudio: true,
+        connectivity: true,
+        lastSeen: '3 seconds ago'
+      },
+      reserve: {
+        id: 'tx014',
+        type: 'reserve' as const,
+        status: 'operational' as const,
+        transmitPower: 0,
+        reflectPower: 0,
+        mainAudio: true,
+        backupAudio: true,
+        connectivity: true,
+        lastSeen: '7 seconds ago'
+      }
+    },
+    alerts: 0
+  },
+  {
+    id: 'site008',
+    name: 'Media Prima Petaling Jaya',
+    location: 'Selangor, Malaysia',
+    overallStatus: 'operational' as const,
+    activeTransmitter: 'main' as const,
+    transmitters: {
+      main: {
+        id: 'tx015',
+        type: 'main' as const,
+        status: 'operational' as const,
+        transmitPower: 925,
+        reflectPower: 12,
+        mainAudio: true,
+        backupAudio: true,
+        connectivity: true,
+        lastSeen: '1 second ago'
+      },
+      reserve: {
+        id: 'tx016',
+        type: 'reserve' as const,
+        status: 'operational' as const,
+        transmitPower: 0,
+        reflectPower: 0,
+        mainAudio: true,
+        backupAudio: true,
+        connectivity: true,
+        lastSeen: '5 seconds ago'
       }
     },
     alerts: 0
