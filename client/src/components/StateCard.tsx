@@ -46,10 +46,10 @@ export default function StateCard({ state, sites, onSiteClick }: StateCardProps)
                 <MapPin className="w-4 h-4" />
                 <span>TX: {totalRunningTransmitters}/{totalTransmitters}</span>
               </div>
-              {totalAlerts > 0 && (
+              {totalAlarms > 0 && (
                 <div className="flex items-center gap-1 text-destructive">
                   <AlertTriangle className="w-4 h-4" />
-                  <span>{totalAlerts} {totalAlerts === 1 ? 'Alert' : 'Alerts'}</span>
+                  <span>{totalAlarms} {totalAlarms === 1 ? 'Alarm' : 'Alarms'}</span>
                 </div>
               )}
             </div>
