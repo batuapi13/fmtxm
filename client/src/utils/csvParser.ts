@@ -1,4 +1,4 @@
-import type { SiteData, TransmitterData } from '@/types/dashboard';
+import type { SiteData, TransmitterData, TransmitterType } from '@/types/dashboard';
 
 // Site coordinates mapping for major Malaysian transmission sites
 const siteCoordinates: Record<string, { lat: number; lng: number; state: string }> = {
@@ -159,7 +159,7 @@ export function parseCSVData(csvContent: string): SiteData[] {
       
       transmitters.push({
         id: `tx${siteIndex.toString().padStart(3, '0')}_${txIndex}`,
-        type: txIndex.toString() as `${number}`,
+        type: txIndex.toString() as TransmitterType,
         role: role,
         label: txIndex.toString(),
         channelName: station.Station,
@@ -186,7 +186,7 @@ export function parseCSVData(csvContent: string): SiteData[] {
       
       transmitters.push({
         id: `tx${siteIndex.toString().padStart(3, '0')}_reserve${reserveId}`,
-        type: `reserve${reserveId}` as `reserve${number}`,
+        type: `reserve${reserveId}` as TransmitterType,
         role: 'reserve',
         label: `Reserve ${reserveId}`,
         channelName: takenOverTx ? takenOverTx.channelName : `Emergency Service ${reserveId}`,
