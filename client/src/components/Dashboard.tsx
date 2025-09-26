@@ -2,10 +2,23 @@ import { useState, useEffect } from 'react';
 import DashboardHeader from './DashboardHeader';
 import SiteCard from './SiteCard';
 import MalaysiaMap from './MalaysiaMap';
+import { parseCSVData } from '@/utils/csvParser';
 import type { SiteData } from '@/types/dashboard';
 
-// Comprehensive Malaysian FM transmission sites with 12+ transmitters
-const mockSites: SiteData[] = [
+// Load CSV data
+const loadCSVData = async (): Promise<SiteData[]> => {
+  try {
+    const response = await fetch('/attached_assets/malaysia_radio_frequencies_normalized_1758859695370.csv');
+    const csvText = await response.text();
+    return parseCSVData(csvText);
+  } catch (error) {
+    console.error('Error loading CSV data:', error);
+    return [];
+  }
+};
+
+// Fallback sites data in case CSV loading fails
+const fallbackSites: SiteData[] = [
   {
     id: 'site001',
     name: 'Gunung Ulu Kali',
@@ -16,6 +29,9 @@ const mockSites: SiteData[] = [
     activeTransmitterCount: 8,
     backupTransmitterCount: 4,
     reserveTransmitterCount: 2,
+    runningActiveCount: 8,
+    runningBackupCount: 4,
+    activeReserveCount: 0,
     transmitters: [
       { id: 'tx001', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Eight FM', frequency: '88.1', status: 'operational' as const, transmitPower: 950, reflectPower: 15, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
       { id: 'tx002', type: '2' as const, role: 'active' as const, label: '2', channelName: 'GoXuan FM', frequency: '90.5', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
@@ -44,6 +60,9 @@ const mockSites: SiteData[] = [
     activeTransmitterCount: 8,
     backupTransmitterCount: 4,
     reserveTransmitterCount: 2,
+    runningActiveCount: 8,
+    runningBackupCount: 3,
+    activeReserveCount: 0,
     transmitters: [
       { id: 'tx015', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Hot FM', frequency: '97.6', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx016', type: '2' as const, role: 'active' as const, label: '2', channelName: 'Fly FM', frequency: '95.8', status: 'operational' as const, transmitPower: 900, reflectPower: 22, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
@@ -72,6 +91,9 @@ const mockSites: SiteData[] = [
     activeTransmitterCount: 8,
     backupTransmitterCount: 4,
     reserveTransmitterCount: 2,
+    runningActiveCount: 8,
+    runningBackupCount: 4,
+    activeReserveCount: 0,
     transmitters: [
       { id: 'tx029', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Red FM', frequency: '104.9', status: 'operational' as const, transmitPower: 930, reflectPower: 17, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx030', type: '2' as const, role: 'active' as const, label: '2', channelName: 'My FM', frequency: '101.8', status: 'operational' as const, transmitPower: 910, reflectPower: 21, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
@@ -100,6 +122,9 @@ const mockSites: SiteData[] = [
     activeTransmitterCount: 8,
     backupTransmitterCount: 4,
     reserveTransmitterCount: 2,
+    runningActiveCount: 8,
+    runningBackupCount: 3,
+    activeReserveCount: 0,
     transmitters: [
       { id: 'tx043', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Perak FM', frequency: '106.1', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx044', type: '2' as const, role: 'active' as const, label: '2', channelName: 'THR Raaga', frequency: '99.3', status: 'operational' as const, transmitPower: 900, reflectPower: 22, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
@@ -128,6 +153,9 @@ const mockSites: SiteData[] = [
     activeTransmitterCount: 8,
     backupTransmitterCount: 4,
     reserveTransmitterCount: 2,
+    runningActiveCount: 8,
+    runningBackupCount: 4,
+    activeReserveCount: 0,
     transmitters: [
       { id: 'tx057', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Johor FM', frequency: '101.9', status: 'operational' as const, transmitPower: 940, reflectPower: 15, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx058', type: '2' as const, role: 'active' as const, label: '2', channelName: 'Best FM', frequency: '104.1', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
@@ -156,6 +184,9 @@ const mockSites: SiteData[] = [
     activeTransmitterCount: 8,
     backupTransmitterCount: 4,
     reserveTransmitterCount: 2,
+    runningActiveCount: 8,
+    runningBackupCount: 4,
+    activeReserveCount: 0,
     transmitters: [
       { id: 'tx071', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Nasional FM', frequency: '92.3', status: 'operational' as const, transmitPower: 950, reflectPower: 14, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx072', type: '2' as const, role: 'active' as const, label: '2', channelName: 'TraXX FM', frequency: '90.7', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
@@ -184,6 +215,9 @@ const mockSites: SiteData[] = [
     activeTransmitterCount: 8,
     backupTransmitterCount: 4,
     reserveTransmitterCount: 2,
+    runningActiveCount: 8,
+    runningBackupCount: 4,
+    activeReserveCount: 0,
     transmitters: [
       { id: 'tx085', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Sabah FM', frequency: '88.1', status: 'operational' as const, transmitPower: 940, reflectPower: 15, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx086', type: '2' as const, role: 'active' as const, label: '2', channelName: 'Sabah VFM', frequency: '106.1', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
@@ -205,10 +239,25 @@ const mockSites: SiteData[] = [
 ];
 
 export default function Dashboard() {
-  const [sites, setSites] = useState(mockSites);
-  const [filteredSites, setFilteredSites] = useState(mockSites);
+  const [sites, setSites] = useState<SiteData[]>([]);
+  const [filteredSites, setFilteredSites] = useState<SiteData[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSiteId, setSelectedSiteId] = useState<string | undefined>();
+  const [selectedSiteId, setSelectedSiteId] = useState<string | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load CSV data on component mount
+  useEffect(() => {
+    const initializeData = async () => {
+      setIsLoading(true);
+      const csvData = await loadCSVData();
+      const sitesData = csvData.length > 0 ? csvData : fallbackSites;
+      setSites(sitesData);
+      setFilteredSites(sitesData);
+      setIsLoading(false);
+    };
+    
+    initializeData();
+  }, []);
 
   const onlineSites = sites.filter(site => site.overallStatus === 'operational').length;
   const totalAlerts = sites.reduce((sum, site) => sum + site.alerts, 0);
@@ -220,8 +269,20 @@ export default function Dashboard() {
     } else {
       const filtered = sites.filter(site => 
         site.name.toLowerCase().includes(query.toLowerCase()) ||
-        site.location.toLowerCase().includes(query.toLowerCase())
+        site.location.toLowerCase().includes(query.toLowerCase()) ||
+        site.transmitters.some(tx => 
+          tx.channelName.toLowerCase().includes(query.toLowerCase())
+        )
       );
+      setFilteredSites(filtered);
+    }
+  };
+
+  const handleStatusFilter = (status: string) => {
+    if (status === 'all') {
+      setFilteredSites(sites);
+    } else {
+      const filtered = sites.filter(site => site.overallStatus === status);
       setFilteredSites(filtered);
     }
   };
@@ -344,6 +405,7 @@ export default function Dashboard() {
           <MalaysiaMap 
             sites={filteredSites}
             onSiteSelect={handleSiteClick}
+            onStatusFilter={handleStatusFilter}
             selectedSiteId={selectedSiteId}
           />
         </div>

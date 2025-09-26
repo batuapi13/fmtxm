@@ -17,80 +17,48 @@ interface MapPin {
 interface MalaysiaMapProps {
   sites: SiteData[];
   onSiteSelect?: (siteId: string) => void;
+  onStatusFilter?: (status: 'operational' | 'warning' | 'error' | 'offline' | 'all') => void;
   selectedSiteId?: string;
 }
 
-export default function MalaysiaMap({ sites, onSiteSelect, selectedSiteId }: MalaysiaMapProps) {
+export default function MalaysiaMap({ sites, onSiteSelect, onStatusFilter, selectedSiteId }: MalaysiaMapProps) {
   const [zoomLevel, setZoomLevel] = useState(1);
   const [viewBox, setViewBox] = useState('0 0 800 600');
 
-  // Real Malaysian FM transmission sites with accurate coordinates
-  const mapPins: MapPin[] = [
-    {
-      id: 'site001',
-      name: 'RTM Kuala Lumpur',
-      x: 480, // Kuala Lumpur
-      y: 340,
-      status: sites.find(s => s.id === 'site001')?.overallStatus || 'offline',
-      site: sites.find(s => s.id === 'site001')!,
-    },
-    {
-      id: 'site002', 
-      name: 'Gunung Jerai',
-      x: 420, // Kedah
-      y: 150,
-      status: sites.find(s => s.id === 'site002')?.overallStatus || 'offline',
-      site: sites.find(s => s.id === 'site002')!,
-    },
-    {
-      id: 'site003',
-      name: 'Bukit Penara',
-      x: 380, // Penang
-      y: 170,
-      status: sites.find(s => s.id === 'site003')?.overallStatus || 'offline',
-      site: sites.find(s => s.id === 'site003')!,
-    },
-    {
-      id: 'site004',
-      name: 'Gunung Ledang',
-      x: 440, // Johor
-      y: 470,
-      status: sites.find(s => s.id === 'site004')?.overallStatus || 'offline',
-      site: sites.find(s => s.id === 'site004')!,
-    },
-    {
-      id: 'site005',
-      name: 'Bukit Pelindung',
-      x: 580, // Pahang (Kuantan)
-      y: 320,
-      status: sites.find(s => s.id === 'site005')?.overallStatus || 'offline',
-      site: sites.find(s => s.id === 'site005')!,
-    },
-    {
-      id: 'site006',
-      name: 'Bukit Lambir',
-      x: 780, // Sarawak
-      y: 280,
-      status: sites.find(s => s.id === 'site006')?.overallStatus || 'offline',
-      site: sites.find(s => s.id === 'site006')!,
-    },
-    {
-      id: 'site007',
-      name: 'Bukit Karatong',
-      x: 880, // Sabah
-      y: 180,
-      status: sites.find(s => s.id === 'site007')?.overallStatus || 'offline',
-      site: sites.find(s => s.id === 'site007')!,
-    },
-    {
-      id: 'site008',
-      name: 'Media Prima Petaling Jaya',
-      x: 470, // Selangor
-      y: 330,
-      status: sites.find(s => s.id === 'site008')?.overallStatus || 'offline',
-      site: sites.find(s => s.id === 'site008')!,
-    }
-  ].filter(pin => pin.site); // Only include pins for sites that exist
+  // Create map pins dynamically from sites data with appropriate coordinates
+  const mapPins: MapPin[] = sites.map(site => {
+    // Map coordinates based on states for major transmission sites
+    const coordinates = getMapCoordinates(site.name, site.location);
+    
+    return {
+      id: site.id,
+      name: site.name.length > 20 ? site.name.substring(0, 20) + '...' : site.name,
+      x: coordinates.x,
+      y: coordinates.y,
+      status: site.overallStatus,
+      site
+    };
+  });
+
+  function getMapCoordinates(siteName: string, location: string): { x: number, y: number } {
+    // Map major Malaysian transmission sites to SVG coordinates
+    if (location.includes('KUALA LUMPUR') || siteName.includes('Kuala Lumpur')) return { x: 480, y: 340 };
+    if (location.includes('KEDAH') || siteName.includes('Jerai')) return { x: 420, y: 150 };
+    if (location.includes('PULAU PINANG') || siteName.includes('Penara')) return { x: 380, y: 170 };
+    if (location.includes('JOHOR') || siteName.includes('Pulai')) return { x: 440, y: 470 };
+    if (location.includes('PAHANG') || siteName.includes('Pelindung')) return { x: 580, y: 320 };
+    if (location.includes('SARAWAK') || siteName.includes('Lambir')) return { x: 780, y: 280 };
+    if (location.includes('SABAH') || siteName.includes('Kinabalu')) return { x: 880, y: 180 };
+    if (location.includes('SELANGOR') || siteName.includes('Ulu Kali')) return { x: 470, y: 330 };
+    if (location.includes('PERAK') || siteName.includes('Kledang')) return { x: 450, y: 240 };
+    if (location.includes('MELAKA') || siteName.includes('Ledang')) return { x: 460, y: 410 };
+    if (location.includes('TERENGGANU')) return { x: 580, y: 260 };
+    if (location.includes('KELANTAN')) return { x: 570, y: 220 };
+    if (location.includes('N.SEMBILAN')) return { x: 500, y: 360 };
+    if (location.includes('PERLIS')) return { x: 380, y: 140 };
+    // Default fallback coordinates
+    return { x: 500, y: 300 };
+  }
 
   const handleZoomIn = () => {
     setZoomLevel(prev => Math.min(prev * 1.5, 3));
@@ -254,26 +222,48 @@ export default function MalaysiaMap({ sites, onSiteSelect, selectedSiteId }: Mal
             ))}
           </svg>
           
-          {/* Legend */}
-          {/* Legend */}
+          {/* Legend and Status Filters */}
           <div className="absolute bottom-4 left-4 bg-card/90 backdrop-blur-sm border border-border rounded-lg p-3 space-y-2">
             <h4 className="text-sm font-medium">Status Legend</h4>
             <div className="space-y-1">
-              <div className="flex items-center gap-2">
+              <div 
+                className="flex items-center gap-2 cursor-pointer hover-elevate rounded px-2 py-1"
+                onClick={() => onStatusFilter?.('operational')}
+                data-testid="filter-operational"
+              >
                 <StatusIndicator status="operational" size="sm" />
-                <span className="text-xs">Operational</span>
+                <span className="text-xs">Operational ({sites.filter(s => s.overallStatus === 'operational').length})</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div 
+                className="flex items-center gap-2 cursor-pointer hover-elevate rounded px-2 py-1"
+                onClick={() => onStatusFilter?.('warning')}
+                data-testid="filter-warning"
+              >
                 <StatusIndicator status="warning" size="sm" />
-                <span className="text-xs">Warning</span>
+                <span className="text-xs">Warning ({sites.filter(s => s.overallStatus === 'warning').length})</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div 
+                className="flex items-center gap-2 cursor-pointer hover-elevate rounded px-2 py-1"
+                onClick={() => onStatusFilter?.('error')}
+                data-testid="filter-error"
+              >
                 <StatusIndicator status="error" size="sm" />
-                <span className="text-xs">Error</span>
+                <span className="text-xs">Error ({sites.filter(s => s.overallStatus === 'error').length})</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div 
+                className="flex items-center gap-2 cursor-pointer hover-elevate rounded px-2 py-1"
+                onClick={() => onStatusFilter?.('offline')}
+                data-testid="filter-offline"
+              >
                 <StatusIndicator status="offline" size="sm" />
-                <span className="text-xs">Offline</span>
+                <span className="text-xs">Offline ({sites.filter(s => s.overallStatus === 'offline').length})</span>
+              </div>
+              <div 
+                className="flex items-center gap-2 cursor-pointer hover-elevate rounded px-2 py-1 border-t border-border mt-2 pt-2"
+                onClick={() => onStatusFilter?.('all')}
+                data-testid="filter-all"
+              >
+                <span className="text-xs font-medium">Show All ({sites.length})</span>
               </div>
             </div>
           </div>

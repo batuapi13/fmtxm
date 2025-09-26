@@ -48,9 +48,13 @@ export default function SiteCard({ site, onSiteClick }: SiteCardProps) {
         </div>
         
         <div className="flex items-center gap-2 text-sm">
-          <span className="text-muted-foreground">Active Transmitters:</span>
+          <span className="text-muted-foreground">Running TX:</span>
           <Badge variant="default" data-testid="active-transmitter-count">
-            {site.transmitters.filter(tx => tx.role === 'active' && tx.isTransmitting).length} of {site.activeTransmitterCount}, {site.transmitters.filter(tx => tx.role === 'backup' && tx.isTransmitting).length} of {site.backupTransmitterCount}
+            {site.runningActiveCount + site.runningBackupCount} of {site.activeTransmitterCount + site.backupTransmitterCount}
+          </Badge>
+          <span className="text-muted-foreground">Active Reserves:</span>
+          <Badge variant="secondary" data-testid="reserve-transmitter-count">
+            {site.activeReserveCount} of {site.reserveTransmitterCount}
           </Badge>
         </div>
       </CardHeader>
@@ -58,15 +62,15 @@ export default function SiteCard({ site, onSiteClick }: SiteCardProps) {
       <CardContent className="space-y-4">
         <div className="grid grid-cols-4 gap-2">
           {site.transmitters.map(transmitter => {
-            // Numbered transmitters (1-12) are active, reserves are standby unless main tx are offline
-            const isActive = !transmitter.type.includes('reserve') || 
-                           site.transmitters.filter(tx => !tx.type.includes('reserve')).every(tx => tx.status === 'offline');
+            // Correct Active/Standby logic - only transmitting units show as Active
+            const isReserve = transmitter.type.includes('reserve');
+            const isActive = transmitter.isTransmitting && (!isReserve || (isReserve && transmitter.takenOverFrom));
             
             return (
               <TransmitterCard 
                 key={transmitter.id}
                 transmitter={transmitter}
-                isActive={isActive && transmitter.status !== 'offline'}
+                isActive={isActive}
               />
             );
           })}
