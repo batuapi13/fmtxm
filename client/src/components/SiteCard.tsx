@@ -33,14 +33,10 @@ export default function SiteCard({ site, onSiteClick }: SiteCardProps) {
             </div>
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
               <MapPin className="w-3 h-3" />
-              <span data-testid="site-location">{site.location}</span>
+              <span data-testid="site-location">
+                {site.location} ({site.coordinates.lat}, {site.coordinates.lng})
+              </span>
             </div>
-            <p className="text-xs text-muted-foreground" data-testid="site-broadcaster">
-              {site.broadcaster}
-            </p>
-            <p className="text-xs font-mono text-primary" data-testid="site-frequency">
-              {site.frequency}
-            </p>
           </div>
           
           {site.alerts > 0 && (
@@ -53,22 +49,21 @@ export default function SiteCard({ site, onSiteClick }: SiteCardProps) {
         
         <div className="flex items-center gap-2 text-sm">
           <span className="text-muted-foreground">Active:</span>
-          <Badge variant={site.activeTransmitter === 'main' ? 'default' : 'secondary'}>
-            {site.activeTransmitter === 'main' ? 'Main' : 'Reserve'}
+          <Badge variant={site.activeTransmitter === 'reserve' ? 'secondary' : 'default'}>
+            {site.activeTransmitter === 'reserve' ? 'Reserve' : `Transmitter ${site.activeTransmitter}`}
           </Badge>
         </div>
       </CardHeader>
       
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <TransmitterCard 
-            transmitter={site.transmitters.main}
-            isActive={site.activeTransmitter === 'main'}
-          />
-          <TransmitterCard 
-            transmitter={site.transmitters.reserve}
-            isActive={site.activeTransmitter === 'reserve'}
-          />
+        <div className="grid grid-cols-5 gap-2">
+          {site.transmitters.map(transmitter => (
+            <TransmitterCard 
+              key={transmitter.id}
+              transmitter={transmitter}
+              isActive={site.activeTransmitter === transmitter.type}
+            />
+          ))}
         </div>
       </CardContent>
     </Card>
