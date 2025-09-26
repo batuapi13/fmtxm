@@ -131,12 +131,14 @@ export interface AlarmData {
   coordinates: { lat: number; lng: number };
 }
 
-// Centralized alarm extraction function to ensure consistency
+// Centralized alarm extraction function - includes both transmitter issues and site-level alerts
 export const extractAlarmsFromSites = (sites: SiteData[]): AlarmData[] => {
   const alarms: AlarmData[] = [];
   
   sites.forEach(site => {
     const state = site.location.split(',')[0].trim();
+    
+    // Add transmitter-specific alarms
     site.transmitters.forEach(transmitter => {
       if (transmitter.status === 'error' || transmitter.status === 'warning') {
         let issue = '';
@@ -159,6 +161,23 @@ export const extractAlarmsFromSites = (sites: SiteData[]): AlarmData[] => {
         });
       }
     });
+    
+    // Add site-level alerts as alarms (if any additional alerts beyond transmitter issues)
+    const transmitterAlarmCount = site.transmitters.filter(tx => tx.status === 'error' || tx.status === 'warning').length;
+    const additionalAlerts = site.alerts - transmitterAlarmCount;
+    
+    for (let i = 0; i < additionalAlerts; i++) {
+      alarms.push({
+        state,
+        site: site.name,
+        channel: 'Site Infrastructure',
+        frequency: 'N/A',
+        issue: 'Site-level operational alert',
+        severity: 'warning',
+        siteId: site.id,
+        coordinates: site.coordinates
+      });
+    }
   });
   
   return alarms;

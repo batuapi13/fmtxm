@@ -4,13 +4,17 @@ import TransmitterCard from './TransmitterCard';
 import StatusIndicator from './StatusIndicator';
 import { MapPin, AlertTriangle } from 'lucide-react';
 import type { SiteData } from '@/types/dashboard';
+import { extractAlarmsFromSites } from '@/utils/siteDataLoader';
 
 interface SiteCardProps {
   site: SiteData;
   onSiteClick?: (siteId: string) => void;
+  alarms?: number; // Number of alarms for this specific site
 }
 
-export default function SiteCard({ site, onSiteClick }: SiteCardProps) {
+export default function SiteCard({ site, onSiteClick, alarms }: SiteCardProps) {
+  // Calculate alarms for this site if not provided
+  const siteAlarms = alarms ?? extractAlarmsFromSites([site]).length;
   const handleClick = () => {
     console.log(`Site clicked: ${site.name}`);
     onSiteClick?.(site.id);
@@ -39,10 +43,10 @@ export default function SiteCard({ site, onSiteClick }: SiteCardProps) {
             </div>
           </div>
           
-          {site.alerts > 0 && (
+          {siteAlarms > 0 && (
             <Badge variant="destructive" className="flex items-center gap-1">
               <AlertTriangle className="w-3 h-3" />
-              {site.alerts}
+              {siteAlarms}
             </Badge>
           )}
         </div>
