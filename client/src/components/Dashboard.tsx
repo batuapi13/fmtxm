@@ -8,16 +8,19 @@ import type { SiteData } from '@/types/dashboard';
 const mockSites: SiteData[] = [
   {
     id: 'site001',
-    name: 'RTM Kuala Lumpur',
-    location: 'Kuala Lumpur, Malaysia',
-    broadcaster: 'RTM - Radio Televisyen Malaysia',
-    frequency: '101.9 MHz',
+    name: 'Gunung Ulu Kali',
+    location: 'Genting Highlands, Selangor, Malaysia',
+    coordinates: { lat: 3.4205, lng: 101.7646 },
+    broadcaster: 'Multiple Commercial Broadcasters',
+    frequency: 'Multiple FM Frequencies',
     overallStatus: 'operational' as const,
-    activeTransmitter: 'main' as const,
-    transmitters: {
-      main: {
+    activeTransmitter: '1' as const,
+    transmitters: [
+      {
         id: 'tx001',
-        type: 'main' as const,
+        type: '1' as const,
+        label: '1',
+        channelName: 'Eight FM',
         status: 'operational' as const,
         transmitPower: 950,
         reflectPower: 15,
@@ -26,168 +29,154 @@ const mockSites: SiteData[] = [
         connectivity: true,
         lastSeen: '2 seconds ago'
       },
-      reserve: {
+      {
         id: 'tx002',
-        type: 'reserve' as const,
+        type: '2' as const,
+        label: '2',
+        channelName: 'GoXuan',
         status: 'operational' as const,
-        transmitPower: 0,
-        reflectPower: 0,
+        transmitPower: 920,
+        reflectPower: 18,
         mainAudio: true,
         backupAudio: true,
         connectivity: true,
-        lastSeen: '5 seconds ago'
-      }
-    },
-    alerts: 0
-  },
-  {
-    id: 'site002',
-    name: 'Gunung Jerai',
-    location: 'Kedah, Malaysia',
-    broadcaster: 'RTM - Kedah FM',
-    frequency: '105.7 MHz',
-    overallStatus: 'warning' as const,
-    activeTransmitter: 'main' as const,
-    transmitters: {
-      main: {
+        lastSeen: '1 second ago'
+      },
+      {
         id: 'tx003',
-        type: 'main' as const,
+        type: '3' as const,
+        label: '3',
+        channelName: 'BFM89.9',
         status: 'warning' as const,
-        transmitPower: 820,
-        reflectPower: 65,
+        transmitPower: 880,
+        reflectPower: 45,
         mainAudio: true,
         backupAudio: false,
         connectivity: true,
-        lastSeen: '1 minute ago'
+        lastSeen: '3 seconds ago'
       },
-      reserve: {
+      {
         id: 'tx004',
+        type: '4' as const,
+        label: '4',
+        channelName: 'IKIMfm',
+        status: 'operational' as const,
+        transmitPower: 940,
+        reflectPower: 12,
+        mainAudio: true,
+        backupAudio: true,
+        connectivity: true,
+        lastSeen: '1 second ago'
+      },
+      {
+        id: 'tx005',
         type: 'reserve' as const,
+        label: 'Reserve',
+        channelName: 'Standby',
         status: 'operational' as const,
         transmitPower: 0,
         reflectPower: 0,
         mainAudio: true,
         backupAudio: true,
         connectivity: true,
-        lastSeen: '3 seconds ago'
+        lastSeen: '2 seconds ago'
       }
-    },
-    alerts: 2
+    ],
+    alerts: 1
   },
   {
-    id: 'site003',
-    name: 'Bukit Penara',
-    location: 'Pulau Pinang, Malaysia',
-    broadcaster: 'RTM - Penang FM',
-    frequency: '89.9 MHz',
+    id: 'site002',
+    name: 'Media Prima Petaling Jaya',
+    location: 'Petaling Jaya, Selangor, Malaysia',
+    coordinates: { lat: 3.1319, lng: 101.6841 },
+    broadcaster: 'Media Prima Audio',
+    frequency: 'Multiple Commercial FM',
     overallStatus: 'operational' as const,
-    activeTransmitter: 'main' as const,
-    transmitters: {
-      main: {
-        id: 'tx005',
-        type: 'main' as const,
+    activeTransmitter: '2' as const,
+    transmitters: [
+      {
+        id: 'tx006',
+        type: '1' as const,
+        label: '1',
+        channelName: 'Hitz',
         status: 'operational' as const,
         transmitPower: 890,
-        reflectPower: 25,
-        mainAudio: true,
-        backupAudio: true,
-        connectivity: true,
-        lastSeen: '3 seconds ago'
-      },
-      reserve: {
-        id: 'tx006',
-        type: 'reserve' as const,
-        status: 'operational' as const,
-        transmitPower: 0,
-        reflectPower: 0,
+        reflectPower: 22,
         mainAudio: true,
         backupAudio: true,
         connectivity: true,
         lastSeen: '1 second ago'
-      }
-    },
-    alerts: 0
-  },
-  {
-    id: 'site004',
-    name: 'Gunung Ledang',
-    location: 'Johor, Malaysia',
-    broadcaster: 'RTM - Johor FM',
-    frequency: '103.3 MHz',
-    overallStatus: 'operational' as const,
-    activeTransmitter: 'main' as const,
-    transmitters: {
-      main: {
+      },
+      {
         id: 'tx007',
-        type: 'main' as const,
+        type: '2' as const,
+        label: '2',
+        channelName: 'Mix',
         status: 'operational' as const,
-        transmitPower: 995,
-        reflectPower: 8,
-        mainAudio: true,
-        backupAudio: true,
-        connectivity: true,
-        lastSeen: '1 second ago'
-      },
-      reserve: {
-        id: 'tx008',
-        type: 'reserve' as const,
-        status: 'operational' as const,
-        transmitPower: 0,
-        reflectPower: 0,
-        mainAudio: true,
-        backupAudio: true,
-        connectivity: true,
-        lastSeen: '4 seconds ago'
-      }
-    },
-    alerts: 0
-  },
-  {
-    id: 'site005',
-    name: 'Bukit Pelindung',
-    location: 'Kuantan, Pahang, Malaysia',
-    broadcaster: 'RTM - Pahang FM',
-    frequency: '87.6 MHz',
-    overallStatus: 'operational' as const,
-    activeTransmitter: 'main' as const,
-    transmitters: {
-      main: {
-        id: 'tx009',
-        type: 'main' as const,
-        status: 'operational' as const,
-        transmitPower: 875,
+        transmitPower: 920,
         reflectPower: 18,
         mainAudio: true,
         backupAudio: true,
         connectivity: true,
         lastSeen: '2 seconds ago'
       },
-      reserve: {
+      {
+        id: 'tx008',
+        type: '3' as const,
+        label: '3',
+        channelName: 'Fly FM',
+        status: 'operational' as const,
+        transmitPower: 885,
+        reflectPower: 28,
+        mainAudio: true,
+        backupAudio: true,
+        connectivity: true,
+        lastSeen: '1 second ago'
+      },
+      {
+        id: 'tx009',
+        type: '4' as const,
+        label: '4',
+        channelName: 'Hot FM',
+        status: 'warning' as const,
+        transmitPower: 750,
+        reflectPower: 85,
+        mainAudio: true,
+        backupAudio: false,
+        connectivity: true,
+        lastSeen: '5 seconds ago'
+      },
+      {
         id: 'tx010',
         type: 'reserve' as const,
+        label: 'Reserve',
+        channelName: 'Standby',
         status: 'operational' as const,
         transmitPower: 0,
         reflectPower: 0,
         mainAudio: true,
         backupAudio: true,
         connectivity: true,
-        lastSeen: '6 seconds ago'
+        lastSeen: '3 seconds ago'
       }
-    },
-    alerts: 0
+    ],
+    alerts: 1
   },
   {
-    id: 'site006',
-    name: 'Bukit Lambir',
-    location: 'Miri, Sarawak, Malaysia',
-    broadcaster: 'RTM - Sarawak FM',
-    frequency: '96.7 MHz',
+    id: 'site003',
+    name: 'RTM Shah Alam',
+    location: 'Shah Alam, Selangor, Malaysia',
+    coordinates: { lat: 3.0733, lng: 101.5185 },
+    broadcaster: 'RTM National',
+    frequency: 'Multiple Government FM',
     overallStatus: 'warning' as const,
     activeTransmitter: 'reserve' as const,
-    transmitters: {
-      main: {
+    transmitters: [
+      {
         id: 'tx011',
-        type: 'main' as const,
+        type: '1' as const,
+        label: '1',
+        channelName: 'Nasional FM',
         status: 'error' as const,
         transmitPower: 0,
         reflectPower: 0,
@@ -196,87 +185,60 @@ const mockSites: SiteData[] = [
         connectivity: false,
         lastSeen: '15 minutes ago'
       },
-      reserve: {
+      {
         id: 'tx012',
-        type: 'reserve' as const,
+        type: '2' as const,
+        label: '2',
+        channelName: 'Minnal FM',
         status: 'operational' as const,
-        transmitPower: 750,
-        reflectPower: 35,
+        transmitPower: 845,
+        reflectPower: 32,
+        mainAudio: true,
+        backupAudio: true,
+        connectivity: true,
+        lastSeen: '2 seconds ago'
+      },
+      {
+        id: 'tx013',
+        type: '3' as const,
+        label: '3',
+        channelName: 'Sinar FM',
+        status: 'operational' as const,
+        transmitPower: 890,
+        reflectPower: 25,
         mainAudio: true,
         backupAudio: true,
         connectivity: true,
         lastSeen: '1 second ago'
-      }
-    },
-    alerts: 3
-  },
-  {
-    id: 'site007',
-    name: 'Bukit Karatong',
-    location: 'Kota Kinabalu, Sabah, Malaysia',
-    broadcaster: 'RTM - Sabah V FM',
-    frequency: '105.5 MHz',
-    overallStatus: 'operational' as const,
-    activeTransmitter: 'main' as const,
-    transmitters: {
-      main: {
-        id: 'tx013',
-        type: 'main' as const,
+      },
+      {
+        id: 'tx014',
+        type: '4' as const,
+        label: '4',
+        channelName: 'Radio Klasik',
         status: 'operational' as const,
-        transmitPower: 900,
-        reflectPower: 20,
+        transmitPower: 870,
+        reflectPower: 28,
         mainAudio: true,
         backupAudio: true,
         connectivity: true,
         lastSeen: '3 seconds ago'
       },
-      reserve: {
-        id: 'tx014',
-        type: 'reserve' as const,
-        status: 'operational' as const,
-        transmitPower: 0,
-        reflectPower: 0,
-        mainAudio: true,
-        backupAudio: true,
-        connectivity: true,
-        lastSeen: '7 seconds ago'
-      }
-    },
-    alerts: 0
-  },
-  {
-    id: 'site008',
-    name: 'Media Prima Petaling Jaya',
-    location: 'Selangor, Malaysia',
-    broadcaster: 'Media Prima - Hot FM',
-    frequency: '97.6 MHz',
-    overallStatus: 'operational' as const,
-    activeTransmitter: 'main' as const,
-    transmitters: {
-      main: {
+      {
         id: 'tx015',
-        type: 'main' as const,
+        type: 'reserve' as const,
+        label: 'Reserve',
+        channelName: 'Emergency Broadcast',
         status: 'operational' as const,
-        transmitPower: 925,
-        reflectPower: 12,
+        transmitPower: 750,
+        reflectPower: 45,
         mainAudio: true,
         backupAudio: true,
         connectivity: true,
         lastSeen: '1 second ago'
-      },
-      reserve: {
-        id: 'tx016',
-        type: 'reserve' as const,
-        status: 'operational' as const,
-        transmitPower: 0,
-        reflectPower: 0,
-        mainAudio: true,
-        backupAudio: true,
-        connectivity: true,
-        lastSeen: '5 seconds ago'
       }
-    },
-    alerts: 0
+    ],
+    alerts: 2
   }
 ];
 
@@ -325,27 +287,24 @@ export default function Dashboard() {
         currentSites.map(site => {
           const updatedSite = { ...site };
           
-          // Update main transmitter
-          const mainPowerVariation = site.transmitters.main.status === 'operational' ? 
-            (Math.random() - 0.5) * 10 : 0;
-          updatedSite.transmitters = {
-            main: {
-              ...site.transmitters.main,
-              transmitPower: Math.max(0, site.transmitters.main.transmitPower + mainPowerVariation),
-              lastSeen: site.transmitters.main.connectivity ? 
+          // Update all transmitters
+          updatedSite.transmitters = site.transmitters.map((transmitter, index) => {
+            const powerVariation = transmitter.status === 'operational' ? 
+              (Math.random() - 0.5) * 10 : 0;
+            
+            const isActive = site.activeTransmitter === transmitter.type;
+            const baseTransmitPower = isActive && transmitter.status === 'operational' ? 
+              Math.max(0, transmitter.transmitPower + powerVariation) :
+              transmitter.transmitPower;
+              
+            return {
+              ...transmitter,
+              transmitPower: transmitter.type === 'reserve' && !isActive ? 0 : baseTransmitPower,
+              lastSeen: transmitter.connectivity ? 
                 `${Math.floor(Math.random() * 10) + 1} seconds ago` : 
-                site.transmitters.main.lastSeen
-            },
-            reserve: {
-              ...site.transmitters.reserve,
-              transmitPower: site.transmitters.reserve.status === 'operational' && site.activeTransmitter === 'reserve' ? 
-                Math.max(0, site.transmitters.reserve.transmitPower + (Math.random() - 0.5) * 10) :
-                site.transmitters.reserve.transmitPower,
-              lastSeen: site.transmitters.reserve.connectivity ? 
-                `${Math.floor(Math.random() * 10) + 1} seconds ago` : 
-                site.transmitters.reserve.lastSeen
-            }
-          };
+                transmitter.lastSeen
+            };
+          });
           
           return updatedSite;
         })
