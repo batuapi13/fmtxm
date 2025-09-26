@@ -137,12 +137,26 @@ export default function MapPage() {
               
               <MapController focusTarget={focusTarget} />
               
-              {sites.map(site => (
-                <Marker
-                  key={site.id}
-                  position={[site.coordinates.lat, site.coordinates.lng]}
-                  icon={createCustomIcon(site.overallStatus, selectedSiteId === site.id)}
-                >
+              {sites.map(site => {
+                // Check if this site has any alarms in the unified system
+                const siteAlarms = alarms.filter(alarm => alarm.siteId === site.id);
+                const hasAlarms = siteAlarms.length > 0;
+                
+                // Determine visual status - if site has alarms, show warning/error regardless of overallStatus
+                let visualStatus = site.overallStatus;
+                if (hasAlarms) {
+                  // If there are error-level alarms, show error; otherwise show warning
+                  const hasErrorAlarms = siteAlarms.some(alarm => alarm.severity === 'error');
+                  visualStatus = hasErrorAlarms ? 'error' : 'warning';
+                }
+                
+                
+                return (
+                  <Marker
+                    key={`${site.id}-${visualStatus}-${selectedSiteId === site.id}`}
+                    position={[site.coordinates.lat, site.coordinates.lng]}
+                    icon={createCustomIcon(visualStatus, selectedSiteId === site.id)}
+                  >
                   <Popup>
                     <div className="space-y-2 min-w-[200px]">
                       <div className="font-semibold">{site.name}</div>
@@ -166,7 +180,8 @@ export default function MapPage() {
                     </div>
                   </Popup>
                 </Marker>
-              ))}
+                );
+              })}
             </MapContainer>
           </CardContent>
         </Card>
