@@ -50,7 +50,7 @@ export default function SiteCard({ site, onSiteClick }: SiteCardProps) {
         <div className="flex items-center gap-2 text-sm">
           <span className="text-muted-foreground">Active Transmitters:</span>
           <Badge variant="default" data-testid="active-transmitter-count">
-            {site.activeTransmitterCount} of {site.transmitters.length}
+            {site.transmitters.filter(tx => tx.role === 'active' && tx.isTransmitting).length} of {site.activeTransmitterCount}, {site.transmitters.filter(tx => tx.role === 'backup' && tx.isTransmitting).length} of {site.backupTransmitterCount}
           </Badge>
         </div>
       </CardHeader>
