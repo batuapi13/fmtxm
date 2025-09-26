@@ -42,6 +42,11 @@ export default function TransmitterCard({ transmitter, isActive = false }: Trans
           <div className="text-xs text-muted-foreground font-mono" data-testid={`channel-name-${transmitter.type}`}>
             {transmitter.channelName}
           </div>
+          {transmitter.takenOverFrom && (
+            <div className="text-xs text-amber-600 flex items-center gap-1">
+              <span>↳ Covering TX {transmitter.takenOverFrom.split('_').pop()}</span>
+            </div>
+          )}
           <div className="text-xs font-bold text-primary" data-testid={`frequency-${transmitter.type}`}>
             {transmitter.frequency} MHz
           </div>

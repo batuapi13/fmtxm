@@ -36,5 +36,8 @@ export interface SiteData {
   activeTransmitterCount: number; // Count of currently active transmitters
   backupTransmitterCount: number; // Count of backup transmitters
   reserveTransmitterCount: number; // Count of reserve transmitters
+  runningActiveCount: number; // Count of running active transmitters
+  runningBackupCount: number; // Count of running backup transmitters
+  activeReserveCount: number; // Count of active (transmitting) reserve transmitters
   alerts: number;
 }
