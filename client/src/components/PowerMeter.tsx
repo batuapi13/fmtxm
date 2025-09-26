@@ -29,12 +29,12 @@ export default function PowerMeter({ label, value, unit, max, threshold, showGra
     <Card className="border-card-border">
       <CardContent className="p-4">
         <div className="space-y-2">
-          <div className="text-center space-y-1">
-            <span className="text-xs sm:text-sm text-muted-foreground block" data-testid="power-label">
+          <div className="text-left space-y-1">
+            <span className="text-[11px] text-muted-foreground block leading-tight" data-testid="power-label">
               {label}
             </span>
-            <span className={`text-lg sm:text-xl lg:text-2xl font-mono font-medium transition-colors block ${getTextColor()}`} data-testid={`power-value-${label.toLowerCase().replace(/\s+/g, '-')}`}>
-              {value.toFixed(1)} {unit}
+            <span className={`text-xs sm:text-sm font-mono font-medium transition-colors block leading-tight tabular-nums ${getTextColor()}`} data-testid={`power-value-${label.toLowerCase().replace(/\s+/g, '-')}`}>
+              {value.toFixed(0)} <span className="text-[10px] text-muted-foreground">W</span>
             </span>
           </div>
           
