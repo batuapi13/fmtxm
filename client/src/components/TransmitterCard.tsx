@@ -38,8 +38,13 @@ export default function TransmitterCard({ transmitter, isActive = false }: Trans
             {isActive ? 'Active' : 'Standby'}
           </Badge>
         </div>
-        <div className="text-xs text-muted-foreground font-mono" data-testid={`channel-name-${transmitter.type}`}>
-          {transmitter.channelName}
+        <div className="space-y-1">
+          <div className="text-xs text-muted-foreground font-mono" data-testid={`channel-name-${transmitter.type}`}>
+            {transmitter.channelName}
+          </div>
+          <div className="text-xs font-bold text-primary" data-testid={`frequency-${transmitter.type}`}>
+            {transmitter.frequency} MHz
+          </div>
         </div>
       </CardHeader>
       

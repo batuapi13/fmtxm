@@ -48,22 +48,28 @@ export default function SiteCard({ site, onSiteClick }: SiteCardProps) {
         </div>
         
         <div className="flex items-center gap-2 text-sm">
-          <span className="text-muted-foreground">Active:</span>
-          <Badge variant={site.activeTransmitter === 'reserve' ? 'secondary' : 'default'}>
-            {site.activeTransmitter === 'reserve' ? 'Reserve' : `Transmitter ${site.activeTransmitter}`}
+          <span className="text-muted-foreground">Active Transmitters:</span>
+          <Badge variant="default" data-testid="active-transmitter-count">
+            {site.activeTransmitterCount} of {site.transmitters.length}
           </Badge>
         </div>
       </CardHeader>
       
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-5 gap-2">
-          {site.transmitters.map(transmitter => (
-            <TransmitterCard 
-              key={transmitter.id}
-              transmitter={transmitter}
-              isActive={site.activeTransmitter === transmitter.type}
-            />
-          ))}
+        <div className="grid grid-cols-4 gap-2">
+          {site.transmitters.map(transmitter => {
+            // Numbered transmitters (1-12) are active, reserves are standby unless main tx are offline
+            const isActive = !transmitter.type.includes('reserve') || 
+                           site.transmitters.filter(tx => !tx.type.includes('reserve')).every(tx => tx.status === 'offline');
+            
+            return (
+              <TransmitterCard 
+                key={transmitter.id}
+                transmitter={transmitter}
+                isActive={isActive && transmitter.status !== 'offline'}
+              />
+            );
+          })}
         </div>
       </CardContent>
     </Card>
