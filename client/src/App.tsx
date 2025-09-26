@@ -1,19 +1,26 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Dashboard from "@/components/Dashboard";
+import Navigation from "@/components/Navigation";
+import MapPage from "@/pages/MapPage";
+import CardsPage from "@/pages/CardsPage";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Dashboard} />
-      {/* Fallback to 404 */}
-      <Route component={NotFound} />
-    </Switch>
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      <Switch>
+        <Route path="/" component={() => <Redirect to="/map" />} />
+        <Route path="/map" component={MapPage} />
+        <Route path="/cards" component={CardsPage} />
+        {/* Fallback to 404 */}
+        <Route component={NotFound} />
+      </Switch>
+    </div>
   );
 }
 
