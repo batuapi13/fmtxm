@@ -13,8 +13,8 @@ const mockSites: SiteData[] = [
     coordinates: { lat: 3.4205, lng: 101.7646 },
     broadcaster: 'Multiple Commercial Broadcasters',
     overallStatus: 'operational' as const,
-    activeTransmitterCount: 10,
-    backupTransmitterCount: 2,
+    activeTransmitterCount: 8,
+    backupTransmitterCount: 4,
     reserveTransmitterCount: 2,
     transmitters: [
       { id: 'tx001', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Eight FM', frequency: '88.1', status: 'operational' as const, transmitPower: 950, reflectPower: 15, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
