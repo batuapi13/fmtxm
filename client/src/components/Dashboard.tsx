@@ -242,29 +242,73 @@ export default function Dashboard() {
     // todo: implement settings panel
   };
 
-  // Simulate real-time updates
+  // Simulate real-time updates with reserve transmitter takeover logic
   useEffect(() => {
     const interval = setInterval(() => {
       setSites(currentSites => 
         currentSites.map(site => {
           const updatedSite = { ...site };
           
-          // Update all transmitters
-          updatedSite.transmitters = site.transmitters.map((transmitter, index) => {
+          // Check for failed transmitters that reserves need to take over
+          const activeTransmitters = site.transmitters.filter(tx => tx.role === 'active');
+          const backupTransmitters = site.transmitters.filter(tx => tx.role === 'backup');
+          const reserveTransmitters = site.transmitters.filter(tx => tx.role === 'reserve');
+          
+          const failedMainTransmitters = [...activeTransmitters, ...backupTransmitters].filter(tx => 
+            tx.status === 'offline' || tx.status === 'error'
+          );
+          
+          // Update all transmitters with power variations and takeover logic
+          updatedSite.transmitters = site.transmitters.map((transmitter) => {
             const powerVariation = transmitter.status === 'operational' ? 
               (Math.random() - 0.5) * 10 : 0;
             
-            // Numbered transmitters (1-12) are active, reserves are standby unless main tx are offline
-            const isActive = !transmitter.type.includes('reserve') || 
-                           site.transmitters.filter(tx => !tx.type.includes('reserve')).every(tx => tx.status === 'offline');
+            let updatedTransmitter = { ...transmitter };
             
-            const baseTransmitPower = isActive && transmitter.status === 'operational' ? 
+            // Reserve transmitter takeover logic
+            if (transmitter.role === 'reserve' && failedMainTransmitters.length > 0) {
+              const failedTx = failedMainTransmitters.find(tx => !reserveTransmitters.some(res => res.takenOverFrom === tx.id));
+              
+              if (failedTx && !transmitter.takenOverFrom) {
+                // Reserve takes over failed transmitter's role
+                updatedTransmitter = {
+                  ...transmitter,
+                  channelName: failedTx.channelName,
+                  frequency: failedTx.frequency,
+                  originalChannelName: transmitter.channelName,
+                  originalFrequency: transmitter.frequency,
+                  takenOverFrom: failedTx.id,
+                  isTransmitting: transmitter.status === 'operational'
+                };
+              } else if (transmitter.takenOverFrom) {
+                // Check if the original transmitter is back online
+                const originalTx = [...activeTransmitters, ...backupTransmitters].find(tx => tx.id === transmitter.takenOverFrom);
+                if (originalTx && originalTx.status === 'operational') {
+                  // Restore reserve to original state
+                  updatedTransmitter = {
+                    ...transmitter,
+                    channelName: transmitter.originalChannelName || transmitter.channelName,
+                    frequency: transmitter.originalFrequency || transmitter.frequency,
+                    originalChannelName: undefined,
+                    originalFrequency: undefined,
+                    takenOverFrom: undefined,
+                    isTransmitting: false
+                  };
+                }
+              }
+            } else if (transmitter.role !== 'reserve') {
+              // Update isTransmitting status for active/backup transmitters
+              updatedTransmitter.isTransmitting = transmitter.status === 'operational' || transmitter.status === 'warning';
+            }
+            
+            // Apply power variations
+            const baseTransmitPower = updatedTransmitter.isTransmitting && transmitter.status === 'operational' ? 
               Math.max(0, transmitter.transmitPower + powerVariation) :
               transmitter.transmitPower;
               
             return {
-              ...transmitter,
-              transmitPower: transmitter.type.includes('reserve') && !isActive ? 0 : baseTransmitPower,
+              ...updatedTransmitter,
+              transmitPower: updatedTransmitter.isTransmitting ? baseTransmitPower : 0,
               lastSeen: transmitter.connectivity ? 
                 `${Math.floor(Math.random() * 10) + 1} seconds ago` : 
                 transmitter.lastSeen
