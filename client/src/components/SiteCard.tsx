@@ -52,9 +52,9 @@ export default function SiteCard({ site, onSiteClick }: SiteCardProps) {
           <Badge variant="default" data-testid="active-transmitter-count">
             {site.runningActiveCount + site.runningBackupCount} of {site.activeTransmitterCount + site.backupTransmitterCount}
           </Badge>
-          <span className="text-muted-foreground">Active Reserves:</span>
-          <Badge variant="secondary" data-testid="reserve-transmitter-count">
-            {site.activeReserveCount} of {site.reserveTransmitterCount}
+          <span className="text-muted-foreground">Active Backups:</span>
+          <Badge variant="secondary" data-testid="standby-transmitter-count">
+            {site.activeStandbyCount} of {site.standbyTransmitterCount}
           </Badge>
         </div>
       </CardHeader>
@@ -63,8 +63,8 @@ export default function SiteCard({ site, onSiteClick }: SiteCardProps) {
         <div className="grid grid-cols-4 gap-2">
           {site.transmitters.map(transmitter => {
             // Correct Active/Standby logic - only transmitting units show as Active
-            const isReserve = transmitter.type.includes('reserve');
-            const isActive = transmitter.isTransmitting && (!isReserve || (isReserve && Boolean(transmitter.takenOverFrom)));
+            const isBackup = transmitter.type.includes('backup1') || transmitter.type.includes('backup2');
+            const isActive = transmitter.isTransmitting && (!isBackup || (isBackup && Boolean(transmitter.takenOverFrom)));
             
             return (
               <TransmitterCard 

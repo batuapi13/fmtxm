@@ -1,16 +1,16 @@
 export type TransmitterStatus = 'operational' | 'warning' | 'error' | 'offline';
-export type TransmitterType = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | 'reserve1' | 'reserve2';
-export type TransmitterRole = 'active' | 'backup' | 'reserve';
+export type TransmitterType = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | 'backup1' | 'backup2';
+export type TransmitterRole = 'active' | 'backup' | 'standby';
 
 export interface TransmitterData {
   id: string;
   type: TransmitterType;
-  role: TransmitterRole; // active, backup, or reserve
-  label: string; // "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "Reserve 1", "Reserve 2"
-  channelName: string; // Channel name from OID - can be taken over by reserve
-  frequency: string; // Frequency in MHz (e.g., "88.1", "95.8") - can be taken over by reserve
-  originalChannelName?: string; // Original channel name for reserve transmitters
-  originalFrequency?: string; // Original frequency for reserve transmitters
+  role: TransmitterRole; // active, backup, or standby  
+  label: string; // "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "Backup 1", "Backup 2"
+  channelName: string; // Channel name from OID - can be taken over by backup
+  frequency: string; // Frequency in MHz (e.g., "88.1", "95.8") - can be taken over by backup
+  originalChannelName?: string; // Original channel name for backup transmitters
+  originalFrequency?: string; // Original frequency for backup transmitters
   status: TransmitterStatus;
   transmitPower: number;
   reflectPower: number;
@@ -19,7 +19,7 @@ export interface TransmitterData {
   connectivity: boolean;
   lastSeen: string;
   isTransmitting: boolean; // Whether transmitter is actually transmitting
-  takenOverFrom?: string; // ID of transmitter this reserve has taken over from
+  takenOverFrom?: string; // ID of transmitter this backup has taken over from
 }
 
 export interface SiteData {
@@ -32,12 +32,12 @@ export interface SiteData {
   };
   broadcaster: string;
   overallStatus: TransmitterStatus;
-  transmitters: TransmitterData[]; // Array of 12+ transmitters (1-12, reserve1, reserve2)
+  transmitters: TransmitterData[]; // Array of 12+ transmitters (1-12, backup1, backup2)
   activeTransmitterCount: number; // Count of currently active transmitters
   backupTransmitterCount: number; // Count of backup transmitters
-  reserveTransmitterCount: number; // Count of reserve transmitters
+  standbyTransmitterCount: number; // Count of standby backup transmitters
   runningActiveCount: number; // Count of running active transmitters
   runningBackupCount: number; // Count of running backup transmitters
-  activeReserveCount: number; // Count of active (transmitting) reserve transmitters
+  activeStandbyCount: number; // Count of active (transmitting) standby backup transmitters
   alerts: number;
 }
