@@ -185,10 +185,10 @@ export function parseCSVData(csvContent: string): SiteData[] {
       const takenOverTx = shouldTakeOver ? downedTransmitters[i] : null;
       
       transmitters.push({
-        id: `tx${siteIndex.toString().padStart(3, '0')}_reserve${reserveId}`,
-        type: `reserve${reserveId}` as TransmitterType,
-        role: 'reserve',
-        label: `Reserve ${reserveId}`,
+        id: `tx${siteIndex.toString().padStart(3, '0')}_backup${reserveId}`,
+        type: `backup${reserveId}` as TransmitterType,
+        role: 'standby',
+        label: `Backup ${reserveId}`,
         channelName: takenOverTx ? takenOverTx.channelName : `Emergency Service ${reserveId}`,
         frequency: takenOverTx ? takenOverTx.frequency : `${100 + reserveId}.${Math.floor(Math.random() * 9)}`,
         originalChannelName: takenOverTx ? `Emergency Service ${reserveId}` : undefined,
@@ -208,11 +208,11 @@ export function parseCSVData(csvContent: string): SiteData[] {
     // Calculate counts
     const activeCount = transmitters.filter(tx => tx.role === 'active').length;
     const backupCount = transmitters.filter(tx => tx.role === 'backup').length;
-    const reserveCount = transmitters.filter(tx => tx.role === 'reserve').length;
+    const standbyCount = transmitters.filter(tx => tx.role === 'standby').length;
     
     const runningActiveCount = transmitters.filter(tx => tx.role === 'active' && tx.isTransmitting).length;
     const runningBackupCount = transmitters.filter(tx => tx.role === 'backup' && tx.isTransmitting).length;
-    const activeReserveCount = transmitters.filter(tx => tx.role === 'reserve' && tx.isTransmitting).length;
+    const activeStandbyCount = transmitters.filter(tx => tx.role === 'standby' && tx.isTransmitting).length;
     
     sites.push({
       id: `site${siteIndex.toString().padStart(3, '0')}`,
@@ -225,10 +225,10 @@ export function parseCSVData(csvContent: string): SiteData[] {
       transmitters,
       activeTransmitterCount: activeCount,
       backupTransmitterCount: backupCount, 
-      reserveTransmitterCount: reserveCount,
+      standbyTransmitterCount: standbyCount,
       runningActiveCount,
       runningBackupCount,
-      activeReserveCount,
+      activeStandbyCount,
       alerts: transmitters.filter(tx => tx.status === 'offline' || tx.status === 'error').length
     });
     
