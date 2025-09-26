@@ -1,20 +1,8 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import StatusIndicator from './StatusIndicator';
 import PowerMeter from './PowerMeter';
 import { Radio, Volume2, VolumeX, Wifi, WifiOff } from 'lucide-react';
-
-interface TransmitterData {
-  id: string;
-  type: 'main' | 'reserve';
-  status: 'operational' | 'warning' | 'error' | 'offline';
-  transmitPower: number;
-  reflectPower: number;
-  mainAudio: boolean;
-  backupAudio: boolean;
-  connectivity: boolean;
-  lastSeen: string;
-}
+import type { TransmitterData } from '@/types/dashboard';
 
 interface TransmitterCardProps {
   transmitter: TransmitterData;
@@ -22,30 +10,41 @@ interface TransmitterCardProps {
 }
 
 export default function TransmitterCard({ transmitter, isActive = false }: TransmitterCardProps) {
-  const typeColor = transmitter.type === 'main' ? 'bg-transmitter-main' : 'bg-transmitter-reserve';
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'operational': return 'text-status-operational';
+      case 'warning': return 'text-status-warning';
+      case 'error': return 'text-status-error';
+      case 'offline': return 'text-status-error';
+      default: return 'text-muted-foreground';
+    }
+  };
   
   return (
     <Card className={`border-card-border hover-elevate ${isActive ? 'ring-2 ring-primary' : ''}`}>
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Radio className={`w-4 h-4 ${transmitter.type === 'main' ? 'text-transmitter-main' : 'text-transmitter-reserve'}`} />
-            <span className="font-medium capitalize" data-testid={`transmitter-type-${transmitter.type}`}>
-              {transmitter.type}
+          <div className="flex items-center gap-1">
+            <Radio className={`w-3 h-3 ${getStatusColor(transmitter.status)}`} />
+            <span className="font-medium text-sm" data-testid={`transmitter-label-${transmitter.type}`}>
+              {transmitter.label}
             </span>
           </div>
           <Badge 
             variant={isActive ? 'default' : 'secondary'}
-            className="text-xs"
+            className="text-xs px-1 py-0"
             data-testid={`status-badge-${transmitter.type}`}
           >
             {isActive ? 'Active' : 'Standby'}
           </Badge>
         </div>
+        <div className="text-xs text-muted-foreground font-mono" data-testid={`channel-name-${transmitter.type}`}>
+          {transmitter.channelName}
+        </div>
       </CardHeader>
       
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-3">
+      <CardContent className="space-y-3 p-3">
+        <div className="space-y-2">
           <PowerMeter
             label="Fwd Power"
             value={transmitter.transmitPower}
@@ -64,55 +63,30 @@ export default function TransmitterCard({ transmitter, isActive = false }: Trans
           />
         </div>
         
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              {transmitter.mainAudio ? 
-                <Volume2 className="w-4 h-4 text-status-operational" /> : 
-                <VolumeX className="w-4 h-4 text-status-error" />
-              }
-              <span className="text-sm">Main Audio</span>
-            </div>
-            <StatusIndicator 
-              status={transmitter.mainAudio ? 'operational' : 'error'} 
-              size="sm"
-            />
+        <div className="flex items-center justify-center gap-3">
+          <div className="flex flex-col items-center gap-1">
+            {transmitter.mainAudio ? 
+              <Volume2 className="w-3 h-3 text-status-operational" data-testid="main-audio-icon" /> : 
+              <VolumeX className="w-3 h-3 text-status-error" data-testid="main-audio-icon" />
+            }
+            <span className="text-xs">Main</span>
           </div>
           
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              {transmitter.backupAudio ? 
-                <Volume2 className="w-4 h-4 text-status-operational" /> : 
-                <VolumeX className="w-4 h-4 text-status-error" />
-              }
-              <span className="text-sm">Backup Audio</span>
-            </div>
-            <StatusIndicator 
-              status={transmitter.backupAudio ? 'operational' : 'error'} 
-              size="sm"
-            />
+          <div className="flex flex-col items-center gap-1">
+            {transmitter.backupAudio ? 
+              <Volume2 className="w-3 h-3 text-status-operational" data-testid="backup-audio-icon" /> : 
+              <VolumeX className="w-3 h-3 text-status-error" data-testid="backup-audio-icon" />
+            }
+            <span className="text-xs">Backup</span>
           </div>
           
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              {transmitter.connectivity ? 
-                <Wifi className="w-4 h-4 text-status-operational" /> : 
-                <WifiOff className="w-4 h-4 text-status-error" />
-              }
-              <span className="text-sm">Connectivity</span>
-            </div>
-            <StatusIndicator 
-              status={transmitter.connectivity ? 'operational' : 'offline'} 
-              size="sm"
-              animate={transmitter.connectivity}
-            />
+          <div className="flex flex-col items-center gap-1">
+            {transmitter.connectivity ? 
+              <Wifi className="w-3 h-3 text-status-operational" data-testid="connectivity-icon" /> : 
+              <WifiOff className="w-3 h-3 text-status-error" data-testid="connectivity-icon" />
+            }
+            <span className="text-xs">Conn</span>
           </div>
-        </div>
-        
-        <div className="pt-2 border-t border-border">
-          <span className="text-xs text-muted-foreground" data-testid="last-seen">
-            Last seen: {transmitter.lastSeen}
-          </span>
         </div>
       </CardContent>
     </Card>
