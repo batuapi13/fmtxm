@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertTriangle, MapPin, Wifi, Activity } from 'lucide-react';
-import { parseCSVData } from '@/utils/csvParser';
+import { loadSiteData, extractAlarmsFromSites, type AlarmData } from '@/utils/siteDataLoader';
 import type { SiteData, TransmitterData } from '@/types/dashboard';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -17,77 +17,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-// Load CSV data with validation to prevent HTML corruption
-const loadCSVData = async (): Promise<SiteData[]> => {
-  try {
-    const response = await fetch('/attached_assets/malaysia_radio_frequencies_normalized_1758859695370.csv');
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    
-    const csvText = await response.text();
-    
-    // Validate that we received CSV content, not HTML
-    const firstLine = csvText.split('\n')[0]?.trim();
-    const expectedHeader = 'State,Site,Station,Frequency (MHz)';
-    
-    // Check for HTML indicators or wrong header
-    if (csvText.includes('<!DOCTYPE html>') || 
-        csvText.includes('THEME_PREVIEW_STYLE_ID') || 
-        csvText.includes('HIGHLIGHT_BG:') ||
-        firstLine !== expectedHeader) {
-      
-      console.error('CSV validation failed. Received HTML or invalid content instead of CSV.');
-      console.error('First 120 characters:', csvText.substring(0, 120));
-      throw new Error('Invalid CSV content - received HTML or malformed data');
-    }
-    
-    console.log('CSV validation passed. Loading authentic Malaysian radio frequency data...');
-    return parseCSVData(csvText);
-    
-  } catch (error) {
-    console.error('Error loading CSV data:', error);
-    console.log('Falling back to predefined site data to maintain functionality.');
-    return fallbackSites;
-  }
-};
-
-// Fallback sites data in case CSV loading fails
-const fallbackSites: SiteData[] = [
-  {
-    id: 'site001',
-    name: 'Gunung Ulu Kali',
-    location: 'SELANGOR, Malaysia',
-    coordinates: { lat: 3.4205, lng: 101.7646 },
-    broadcaster: 'Selangor Broadcasting Network',
-    overallStatus: 'operational' as const,
-    activeTransmitterCount: 8,
-    backupTransmitterCount: 4,
-    reserveTransmitterCount: 2,
-    runningActiveCount: 8,
-    runningBackupCount: 4,
-    activeReserveCount: 0,
-    transmitters: [
-      { id: 'tx001', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Eight FM', frequency: '88.1', status: 'operational' as const, transmitPower: 950, reflectPower: 15, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
-      { id: 'tx002', type: '2' as const, role: 'active' as const, label: '2', channelName: 'GoXuan FM', frequency: '90.5', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
-      { id: 'tx003', type: '3' as const, role: 'active' as const, label: '3', channelName: 'BFM 89.9', frequency: '89.9', status: 'warning' as const, transmitPower: 880, reflectPower: 45, mainAudio: true, backupAudio: false, connectivity: true, lastSeen: '3 seconds ago', isTransmitting: true },
-      { id: 'tx004', type: '11' as const, role: 'backup' as const, label: '11', channelName: 'Best FM', frequency: '104.1', status: 'error' as const, transmitPower: 0, reflectPower: 0, mainAudio: false, backupAudio: false, connectivity: false, lastSeen: '12 minutes ago', isTransmitting: false }
-    ],
-    alerts: 2
-  }
-];
-
-interface AlarmData {
-  state: string;
-  site: string;
-  channel: string;
-  frequency: string;
-  issue: string;
-  severity: 'error' | 'warning';
-  siteId: string;
-  coordinates: { lat: number; lng: number };
-}
 
 // Map control component to handle focusing on sites
 function MapController({ focusTarget }: { focusTarget: { lat: number; lng: number } | null }) {
@@ -113,37 +42,11 @@ export default function MapPage() {
   useEffect(() => {
     const initializeData = async () => {
       setIsLoading(true);
-      const data = await loadCSVData();
+      const data = await loadSiteData();
       setSites(data);
       
-      // Extract alarms from site data
-      const extractedAlarms: AlarmData[] = [];
-      data.forEach(site => {
-        const state = site.location.split(',')[0].trim();
-        site.transmitters.forEach(transmitter => {
-          if (transmitter.status === 'error' || transmitter.status === 'warning') {
-            let issue = '';
-            if (transmitter.status === 'error') {
-              issue = 'Transmitter offline - No connectivity';
-            } else if (transmitter.status === 'warning') {
-              if (!transmitter.backupAudio) issue = 'Backup audio failure';
-              if (transmitter.reflectPower > 40) issue = 'High reflect power';
-            }
-            
-            extractedAlarms.push({
-              state,
-              site: site.name,
-              channel: transmitter.channelName,
-              frequency: `${transmitter.frequency} MHz`,
-              issue,
-              severity: transmitter.status as 'error' | 'warning',
-              siteId: site.id,
-              coordinates: site.coordinates
-            });
-          }
-        });
-      });
-      
+      // Extract alarms using shared function
+      const extractedAlarms = extractAlarmsFromSites(data);
       setAlarms(extractedAlarms);
       setIsLoading(false);
     };

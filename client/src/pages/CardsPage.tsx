@@ -5,66 +5,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import StateCard from '@/components/StateCard';
 import { Search, Filter, RefreshCw, Settings, Layers } from 'lucide-react';
-import { parseCSVData } from '@/utils/csvParser';
+import { loadSiteData, extractAlarmsFromSites } from '@/utils/siteDataLoader';
 import type { SiteData } from '@/types/dashboard';
 
-// Load CSV data with validation to prevent HTML corruption
-const loadCSVData = async (): Promise<SiteData[]> => {
-  try {
-    const response = await fetch('/attached_assets/malaysia_radio_frequencies_normalized_1758859695370.csv');
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    
-    const csvText = await response.text();
-    
-    // Validate that we received CSV content, not HTML
-    const firstLine = csvText.split('\n')[0]?.trim();
-    const expectedHeader = 'State,Site,Station,Frequency (MHz)';
-    
-    // Check for HTML indicators or wrong header
-    if (csvText.includes('<!DOCTYPE html>') || 
-        csvText.includes('THEME_PREVIEW_STYLE_ID') || 
-        csvText.includes('HIGHLIGHT_BG:') ||
-        firstLine !== expectedHeader) {
-      
-      console.error('CSV validation failed. Received HTML or invalid content instead of CSV.');
-      console.error('First 120 characters:', csvText.substring(0, 120));
-      throw new Error('Invalid CSV content - received HTML or malformed data');
-    }
-    
-    console.log('CSV validation passed. Loading authentic Malaysian radio frequency data...');
-    return parseCSVData(csvText);
-    
-  } catch (error) {
-    console.error('Error loading CSV data:', error);
-    console.log('Falling back to predefined site data to maintain functionality.');
-    return fallbackSites;
-  }
-};
-
-// Fallback sites data in case CSV loading fails  
-const fallbackSites: SiteData[] = [
-  {
-    id: 'site001',
-    name: 'Gunung Ulu Kali',
-    location: 'SELANGOR, Malaysia',
-    coordinates: { lat: 3.4205, lng: 101.7646 },
-    broadcaster: 'Selangor Broadcasting Network',
-    overallStatus: 'operational' as const,
-    activeTransmitterCount: 8,
-    backupTransmitterCount: 4,
-    reserveTransmitterCount: 2,
-    runningActiveCount: 8,
-    runningBackupCount: 4,
-    activeReserveCount: 0,
-    transmitters: [
-      { id: 'tx001', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Eight FM', frequency: '88.1', status: 'operational' as const, transmitPower: 950, reflectPower: 15, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true }
-    ],
-    alerts: 0
-  }
-];
 
 export default function CardsPage() {
   const [sites, setSites] = useState<SiteData[]>([]);
@@ -72,14 +15,20 @@ export default function CardsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'operational' | 'warning' | 'error'>('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [totalAlarms, setTotalAlarms] = useState(0);
 
   // Load and set up data
   useEffect(() => {
     const initializeData = async () => {
       setIsLoading(true);
-      const data = await loadCSVData();
+      const data = await loadSiteData();
       setSites(data);
       setFilteredSites(data);
+      
+      // Use centralized alarm extraction to ensure consistency with MapPage
+      const alarms = extractAlarmsFromSites(data);
+      setTotalAlarms(alarms.length);
+      
       setIsLoading(false);
     };
 
@@ -161,9 +110,9 @@ export default function CardsPage() {
               <Badge variant="default">
                 {sites.filter(s => s.overallStatus === 'operational').length} Online
               </Badge>
-              {sites.reduce((sum, s) => sum + s.alerts, 0) > 0 && (
+              {totalAlarms > 0 && (
                 <Badge variant="destructive">
-                  {sites.reduce((sum, s) => sum + s.alerts, 0)} Alerts
+                  {totalAlarms} Alerts
                 </Badge>
               )}
             </div>
