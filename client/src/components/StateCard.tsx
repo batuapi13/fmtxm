@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import SiteCard from './SiteCard';
 import { MapPin, Wifi, AlertTriangle } from 'lucide-react';
 import type { SiteData } from '@/types/dashboard';
+import { extractAlarmsFromSites } from '@/utils/siteDataLoader';
 
 interface StateCardProps {
   state: string;
@@ -14,7 +15,8 @@ export default function StateCard({ state, sites, onSiteClick }: StateCardProps)
   // Calculate state-level statistics
   const totalSites = sites.length;
   const operationalSites = sites.filter(site => site.overallStatus === 'operational').length;
-  const totalAlerts = sites.reduce((sum, site) => sum + site.alerts, 0);
+  const allAlarms = extractAlarmsFromSites(sites);
+  const totalAlarms = allAlarms.length;
   const totalTransmitters = sites.reduce((sum, site) => sum + site.activeTransmitterCount + site.backupTransmitterCount, 0);
   const totalRunningTransmitters = sites.reduce((sum, site) => sum + site.runningActiveCount + site.runningBackupCount, 0);
 

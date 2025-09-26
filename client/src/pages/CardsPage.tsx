@@ -110,12 +110,9 @@ export default function CardsPage() {
               <Badge variant="default">
                 {sites.filter(s => s.overallStatus === 'operational').length} Online
               </Badge>
-              {(totalAlarms > 0 || sites.reduce((sum, s) => sum + s.alerts, 0) > 0) && (
+              {totalAlarms > 0 && (
                 <Badge variant="destructive">
-                  {sites.reduce((sum, s) => sum + s.alerts, 0)} {sites.reduce((sum, s) => sum + s.alerts, 0) === 1 ? 'Alert' : 'Alerts'}
-                  {totalAlarms > 0 && totalAlarms !== sites.reduce((sum, s) => sum + s.alerts, 0) && (
-                    <span className="ml-1">• {totalAlarms} Active</span>
-                  )}
+                  {totalAlarms} {totalAlarms === 1 ? 'Alarm' : 'Alarms'}
                 </Badge>
               )}
             </div>

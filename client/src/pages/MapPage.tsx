@@ -109,15 +109,10 @@ export default function MapPage() {
                 <Activity className="w-4 h-4" />
                 <span>{sites.reduce((sum, s) => sum + s.runningActiveCount + s.runningBackupCount, 0)} TX Active</span>
               </div>
-              {(alarms.length > 0 || sites.reduce((sum, s) => sum + s.alerts, 0) > 0) && (
+              {alarms.length > 0 && (
                 <div className="flex items-center gap-1 text-destructive">
                   <AlertTriangle className="w-4 h-4" />
-                  <span>
-                    {sites.reduce((sum, s) => sum + s.alerts, 0)} {sites.reduce((sum, s) => sum + s.alerts, 0) === 1 ? 'Alert' : 'Alerts'}
-                    {alarms.length > 0 && alarms.length !== sites.reduce((sum, s) => sum + s.alerts, 0) && (
-                      <span className="ml-1">• {alarms.length} Active</span>
-                    )}
-                  </span>
+                  <span>{alarms.length} {alarms.length === 1 ? 'Alarm' : 'Alarms'}</span>
                 </div>
               )}
             </div>
@@ -156,10 +151,10 @@ export default function MapPage() {
                         <Badge variant={site.overallStatus === 'operational' ? 'default' : site.overallStatus === 'warning' ? 'secondary' : 'destructive'}>
                           {site.overallStatus}
                         </Badge>
-                        {site.alerts > 0 && (
+                        {alarms.filter(alarm => alarm.siteId === site.id).length > 0 && (
                           <Badge variant="destructive" className="flex items-center gap-1">
                             <AlertTriangle className="w-3 h-3" />
-                            {site.alerts}
+                            {alarms.filter(alarm => alarm.siteId === site.id).length}
                           </Badge>
                         )}
                       </div>
