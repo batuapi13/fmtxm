@@ -135,6 +135,58 @@ const mockSites: SiteData[] = [
       { id: 'tx070', type: 'reserve2' as const, label: 'Reserve 2', channelName: 'Emergency TX', frequency: '102.9', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago' }
     ],
     alerts: 0
+  },
+  {
+    id: 'site006',
+    name: 'RTM Angkasapuri',
+    location: 'Kuala Lumpur, Malaysia',
+    coordinates: { lat: 3.1478, lng: 101.6953 },
+    broadcaster: 'RTM Headquarters',
+    overallStatus: 'operational' as const,
+    activeTransmitterCount: 12,
+    transmitters: [
+      { id: 'tx071', type: '1' as const, label: '1', channelName: 'Nasional FM', frequency: '92.3', status: 'operational' as const, transmitPower: 950, reflectPower: 14, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago' },
+      { id: 'tx072', type: '2' as const, label: '2', channelName: 'TraXX FM', frequency: '90.7', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago' },
+      { id: 'tx073', type: '3' as const, label: '3', channelName: 'Minnal FM', frequency: '99.9', status: 'operational' as const, transmitPower: 910, reflectPower: 21, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago' },
+      { id: 'tx074', type: '4' as const, label: '4', channelName: 'Ai FM', frequency: '96.7', status: 'operational' as const, transmitPower: 895, reflectPower: 26, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago' },
+      { id: 'tx075', type: '5' as const, label: '5', channelName: 'Wai FM', frequency: '105.3', status: 'operational' as const, transmitPower: 925, reflectPower: 17, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago' },
+      { id: 'tx076', type: '6' as const, label: '6', channelName: 'Sinar FM', frequency: '96.7', status: 'operational' as const, transmitPower: 885, reflectPower: 28, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago' },
+      { id: 'tx077', type: '7' as const, label: '7', channelName: 'Radio Klasik', frequency: '101.9', status: 'operational' as const, transmitPower: 905, reflectPower: 23, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago' },
+      { id: 'tx078', type: '8' as const, label: '8', channelName: 'Asyik FM', frequency: '107.1', status: 'operational' as const, transmitPower: 900, reflectPower: 22, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago' },
+      { id: 'tx079', type: '9' as const, label: '9', channelName: 'Mutiara FM', frequency: '103.9', status: 'operational' as const, transmitPower: 930, reflectPower: 16, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago' },
+      { id: 'tx080', type: '10' as const, label: '10', channelName: 'Sabah FM', frequency: '88.1', status: 'operational' as const, transmitPower: 875, reflectPower: 30, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago' },
+      { id: 'tx081', type: '11' as const, label: '11', channelName: 'Sarawak FM', frequency: '94.1', status: 'operational' as const, transmitPower: 915, reflectPower: 19, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago' },
+      { id: 'tx082', type: '12' as const, label: '12', channelName: 'Iban Radio', frequency: '91.5', status: 'operational' as const, transmitPower: 890, reflectPower: 25, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago' },
+      { id: 'tx083', type: 'reserve1' as const, label: 'Reserve 1', channelName: 'National Emergency', frequency: '102.3', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago' },
+      { id: 'tx084', type: 'reserve2' as const, label: 'Reserve 2', channelName: 'Disaster Broadcast', frequency: '102.9', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago' }
+    ],
+    alerts: 0
+  },
+  {
+    id: 'site007',
+    name: 'Mount Kinabalu',
+    location: 'Sabah, Malaysia',
+    coordinates: { lat: 6.0647, lng: 116.5581 },
+    broadcaster: 'Sabah Broadcasting Corporation',
+    overallStatus: 'operational' as const,
+    activeTransmitterCount: 12,
+    transmitters: [
+      { id: 'tx085', type: '1' as const, label: '1', channelName: 'Sabah FM', frequency: '88.1', status: 'operational' as const, transmitPower: 940, reflectPower: 15, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago' },
+      { id: 'tx086', type: '2' as const, label: '2', channelName: 'Sabah VFM', frequency: '106.1', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago' },
+      { id: 'tx087', type: '3' as const, label: '3', channelName: 'KadazanDusun', frequency: '91.1', status: 'operational' as const, transmitPower: 910, reflectPower: 21, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago' },
+      { id: 'tx088', type: '4' as const, label: '4', channelName: 'Murut Radio', frequency: '93.5', status: 'operational' as const, transmitPower: 895, reflectPower: 26, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago' },
+      { id: 'tx089', type: '5' as const, label: '5', channelName: 'Bajau FM', frequency: '95.7', status: 'operational' as const, transmitPower: 925, reflectPower: 17, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago' },
+      { id: 'tx090', type: '6' as const, label: '6', channelName: 'Era FM Sabah', frequency: '98.3', status: 'operational' as const, transmitPower: 885, reflectPower: 28, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago' },
+      { id: 'tx091', type: '7' as const, label: '7', channelName: 'Hot FM Sabah', frequency: '100.9', status: 'operational' as const, transmitPower: 905, reflectPower: 23, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago' },
+      { id: 'tx092', type: '8' as const, label: '8', channelName: 'Kota Kinabalu FM', frequency: '102.7', status: 'operational' as const, transmitPower: 900, reflectPower: 22, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago' },
+      { id: 'tx093', type: '9' as const, label: '9', channelName: 'Sandakan Radio', frequency: '104.3', status: 'operational' as const, transmitPower: 930, reflectPower: 16, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago' },
+      { id: 'tx094', type: '10' as const, label: '10', channelName: 'Tawau FM', frequency: '107.5', status: 'operational' as const, transmitPower: 875, reflectPower: 30, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago' },
+      { id: 'tx095', type: '11' as const, label: '11', channelName: 'Labuan Radio', frequency: '89.3', status: 'operational' as const, transmitPower: 915, reflectPower: 19, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago' },
+      { id: 'tx096', type: '12' as const, label: '12', channelName: 'Beaufort FM', frequency: '92.1', status: 'operational' as const, transmitPower: 890, reflectPower: 25, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago' },
+      { id: 'tx097', type: 'reserve1' as const, label: 'Reserve 1', channelName: 'Emergency Sabah', frequency: '105.1', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago' },
+      { id: 'tx098', type: 'reserve2' as const, label: 'Reserve 2', channelName: 'Disaster Relief', frequency: '105.7', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago' }
+    ],
+    alerts: 0
   }
 ];
 
