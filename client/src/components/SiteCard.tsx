@@ -64,7 +64,7 @@ export default function SiteCard({ site, onSiteClick }: SiteCardProps) {
           {site.transmitters.map(transmitter => {
             // Correct Active/Standby logic - only transmitting units show as Active
             const isReserve = transmitter.type.includes('reserve');
-            const isActive = transmitter.isTransmitting && (!isReserve || (isReserve && transmitter.takenOverFrom));
+            const isActive = transmitter.isTransmitting && (!isReserve || (isReserve && Boolean(transmitter.takenOverFrom)));
             
             return (
               <TransmitterCard 

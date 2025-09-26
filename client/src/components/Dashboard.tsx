@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import DashboardHeader from './DashboardHeader';
+import StateCard from './StateCard';
 import SiteCard from './SiteCard';
 import MalaysiaMap from './MalaysiaMap';
 import { parseCSVData } from '@/utils/csvParser';
@@ -412,6 +413,20 @@ export default function Dashboard() {
     handleSearch(searchQuery);
   }, [sites, searchQuery]);
 
+  // Group filtered sites by state
+  const groupedByState = filteredSites.reduce((groups, site) => {
+    // Extract state from location (e.g., "JOHOR, Malaysia" -> "JOHOR")
+    const state = site.location.split(',')[0].trim();
+    if (!groups[state]) {
+      groups[state] = [];
+    }
+    groups[state].push(site);
+    return groups;
+  }, {} as Record<string, SiteData[]>);
+
+  // Sort states alphabetically
+  const sortedStates = Object.keys(groupedByState).sort();
+
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader 
@@ -434,20 +449,21 @@ export default function Dashboard() {
           />
         </div>
         
-        {/* Site Cards Grid */}
+        {/* State Cards Grid */}
         <div>
           <h2 className="text-xl font-semibold mb-4" data-testid="sites-section-title">
-            Transmission Sites
+            Transmission Sites by State
           </h2>
-        <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6">
-          {filteredSites.map(site => (
-            <SiteCard 
-              key={site.id}
-              site={site}
-              onSiteClick={handleSiteClick}
-            />
-          ))}
-        </div>
+          <div className="space-y-6">
+            {sortedStates.map(state => (
+              <StateCard
+                key={state}
+                state={state}
+                sites={groupedByState[state]}
+                onSiteClick={handleSiteClick}
+              />
+            ))}
+          </div>
         
         {filteredSites.length === 0 && searchQuery && (
           <div className="text-center py-12">
