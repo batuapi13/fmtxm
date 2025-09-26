@@ -53,10 +53,10 @@ const fallbackSites: SiteData[] = [
     overallStatus: 'operational' as const,
     activeTransmitterCount: 8,
     backupTransmitterCount: 4,
-    reserveTransmitterCount: 2,
+    standbyTransmitterCount: 2,
     runningActiveCount: 8,
     runningBackupCount: 4,
-    activeReserveCount: 0,
+    activeStandbyCount: 0,
     transmitters: [
       { id: 'tx001', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Eight FM', frequency: '88.1', status: 'operational' as const, transmitPower: 950, reflectPower: 15, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
       { id: 'tx002', type: '2' as const, role: 'active' as const, label: '2', channelName: 'GoXuan FM', frequency: '90.5', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
@@ -70,8 +70,8 @@ const fallbackSites: SiteData[] = [
       { id: 'tx010', type: '10' as const, role: 'backup' as const, label: '10', channelName: 'Red FM', frequency: '97.7', status: 'operational' as const, transmitPower: 910, reflectPower: 21, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
       { id: 'tx011', type: '11' as const, role: 'backup' as const, label: '11', channelName: 'Suara Malaysia', frequency: '98.5', status: 'operational' as const, transmitPower: 895, reflectPower: 24, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago', isTransmitting: true },
       { id: 'tx012', type: '12' as const, role: 'backup' as const, label: '12', channelName: 'Rhythm FM', frequency: '99.7', status: 'operational' as const, transmitPower: 940, reflectPower: 17, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
-      { id: 'tx013', type: 'reserve1' as const, role: 'reserve' as const, label: 'Reserve 1', channelName: 'Emergency Service 1', frequency: '100.1', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: false },
-      { id: 'tx014', type: 'reserve2' as const, role: 'reserve' as const, label: 'Reserve 2', channelName: 'Emergency Service 2', frequency: '100.5', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago', isTransmitting: false }
+      { id: 'tx013', type: 'backup1' as const, role: 'standby' as const, label: 'Backup 1', channelName: 'Emergency Service 1', frequency: '100.1', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: false },
+      { id: 'tx014', type: 'backup2' as const, role: 'standby' as const, label: 'Backup 2', channelName: 'Emergency Service 2', frequency: '100.5', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago', isTransmitting: false }
     ],
     alerts: 1
   },
@@ -84,10 +84,10 @@ const fallbackSites: SiteData[] = [
     overallStatus: 'operational' as const,
     activeTransmitterCount: 8,
     backupTransmitterCount: 4,
-    reserveTransmitterCount: 2,
+    standbyTransmitterCount: 2,
     runningActiveCount: 8,
     runningBackupCount: 3,
-    activeReserveCount: 0,
+    activeStandbyCount: 0,
     transmitters: [
       { id: 'tx015', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Hot FM', frequency: '97.6', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx016', type: '2' as const, role: 'active' as const, label: '2', channelName: 'Fly FM', frequency: '95.8', status: 'operational' as const, transmitPower: 900, reflectPower: 22, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
@@ -101,8 +101,8 @@ const fallbackSites: SiteData[] = [
       { id: 'tx024', type: '10' as const, role: 'backup' as const, label: '10', channelName: 'Kedah FM', frequency: '103.5', status: 'operational' as const, transmitPower: 890, reflectPower: 26, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
       { id: 'tx025', type: '11' as const, role: 'backup' as const, label: '11', channelName: 'Best FM', frequency: '104.1', status: 'error' as const, transmitPower: 0, reflectPower: 0, mainAudio: false, backupAudio: false, connectivity: false, lastSeen: '12 minutes ago', isTransmitting: false },
       { id: 'tx026', type: '12' as const, role: 'backup' as const, label: '12', channelName: 'Era FM', frequency: '105.3', status: 'warning' as const, transmitPower: 650, reflectPower: 75, mainAudio: true, backupAudio: false, connectivity: true, lastSeen: '5 seconds ago', isTransmitting: true },
-      { id: 'tx027', type: 'reserve1' as const, role: 'reserve' as const, label: 'Reserve 1', channelName: 'Emergency Backup', frequency: '106.1', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: false },
-      { id: 'tx028', type: 'reserve2' as const, role: 'reserve' as const, label: 'Reserve 2', channelName: 'Standby Service', frequency: '106.7', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: false }
+      { id: 'tx027', type: 'backup1' as const, role: 'standby' as const, label: 'Backup 1', channelName: 'Emergency Backup', frequency: '106.1', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: false },
+      { id: 'tx028', type: 'backup2' as const, role: 'standby' as const, label: 'Backup 2', channelName: 'Standby Service', frequency: '106.7', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: false }
     ],
     alerts: 2
   },
@@ -115,10 +115,10 @@ const fallbackSites: SiteData[] = [
     overallStatus: 'operational' as const,
     activeTransmitterCount: 8,
     backupTransmitterCount: 4,
-    reserveTransmitterCount: 2,
+    standbyTransmitterCount: 2,
     runningActiveCount: 8,
     runningBackupCount: 4,
-    activeReserveCount: 0,
+    activeStandbyCount: 0,
     transmitters: [
       { id: 'tx029', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Red FM', frequency: '104.9', status: 'operational' as const, transmitPower: 930, reflectPower: 17, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx030', type: '2' as const, role: 'active' as const, label: '2', channelName: 'My FM', frequency: '101.8', status: 'operational' as const, transmitPower: 910, reflectPower: 21, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
@@ -132,8 +132,8 @@ const fallbackSites: SiteData[] = [
       { id: 'tx038', type: '10' as const, role: 'backup' as const, label: '10', channelName: 'Hot FM', frequency: '99.9', status: 'operational' as const, transmitPower: 915, reflectPower: 20, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
       { id: 'tx039', type: '11' as const, role: 'backup' as const, label: '11', channelName: 'Fly FM', frequency: '95.8', status: 'operational' as const, transmitPower: 900, reflectPower: 22, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx040', type: '12' as const, role: 'backup' as const, label: '12', channelName: 'Mix FM', frequency: '94.5', status: 'operational' as const, transmitPower: 935, reflectPower: 16, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
-      { id: 'tx041', type: 'reserve1' as const, role: 'reserve' as const, label: 'Reserve 1', channelName: 'Emergency Backup', frequency: '102.1', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: false },
-      { id: 'tx042', type: 'reserve2' as const, role: 'reserve' as const, label: 'Reserve 2', channelName: 'Disaster Response', frequency: '102.7', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago', isTransmitting: false }
+      { id: 'tx041', type: 'backup1' as const, role: 'standby' as const, label: 'Backup 1', channelName: 'Emergency Backup', frequency: '102.1', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: false },
+      { id: 'tx042', type: 'backup2' as const, role: 'standby' as const, label: 'Backup 2', channelName: 'Disaster Response', frequency: '102.7', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago', isTransmitting: false }
     ],
     alerts: 0
   },
@@ -146,10 +146,10 @@ const fallbackSites: SiteData[] = [
     overallStatus: 'warning' as const,
     activeTransmitterCount: 8,
     backupTransmitterCount: 4,
-    reserveTransmitterCount: 2,
+    standbyTransmitterCount: 2,
     runningActiveCount: 8,
     runningBackupCount: 3,
-    activeReserveCount: 0,
+    activeStandbyCount: 0,
     transmitters: [
       { id: 'tx043', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Perak FM', frequency: '106.1', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx044', type: '2' as const, role: 'active' as const, label: '2', channelName: 'THR Raaga', frequency: '99.3', status: 'operational' as const, transmitPower: 900, reflectPower: 22, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
@@ -163,8 +163,8 @@ const fallbackSites: SiteData[] = [
       { id: 'tx052', type: '10' as const, role: 'backup' as const, label: '10', channelName: 'Nasional FM', frequency: '107.9', status: 'operational' as const, transmitPower: 890, reflectPower: 26, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
       { id: 'tx053', type: '11' as const, role: 'backup' as const, label: '11', channelName: 'Radio Klasik', frequency: '108.5', status: 'operational' as const, transmitPower: 930, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx054', type: '12' as const, role: 'backup' as const, label: '12', channelName: 'Sinar FM', frequency: '100.9', status: 'error' as const, transmitPower: 0, reflectPower: 0, mainAudio: false, backupAudio: false, connectivity: false, lastSeen: '18 minutes ago', isTransmitting: false },
-      { id: 'tx055', type: 'reserve1' as const, role: 'reserve' as const, label: 'Reserve 1', channelName: 'Emergency TX 1', frequency: '103.1', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: false },
-      { id: 'tx056', type: 'reserve2' as const, role: 'reserve' as const, label: 'Reserve 2', channelName: 'Emergency TX 2', frequency: '103.7', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: false }
+      { id: 'tx055', type: 'backup1' as const, role: 'standby' as const, label: 'Backup 1', channelName: 'Emergency TX 1', frequency: '103.1', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: false },
+      { id: 'tx056', type: 'backup2' as const, role: 'standby' as const, label: 'Backup 2', channelName: 'Emergency TX 2', frequency: '103.7', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: false }
     ],
     alerts: 1
   },
@@ -177,10 +177,10 @@ const fallbackSites: SiteData[] = [
     overallStatus: 'operational' as const,
     activeTransmitterCount: 8,
     backupTransmitterCount: 4,
-    reserveTransmitterCount: 2,
+    standbyTransmitterCount: 2,
     runningActiveCount: 8,
     runningBackupCount: 4,
-    activeReserveCount: 0,
+    activeStandbyCount: 0,
     transmitters: [
       { id: 'tx057', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Johor FM', frequency: '101.9', status: 'operational' as const, transmitPower: 940, reflectPower: 15, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx058', type: '2' as const, role: 'active' as const, label: '2', channelName: 'Best FM', frequency: '104.1', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
@@ -194,8 +194,8 @@ const fallbackSites: SiteData[] = [
       { id: 'tx066', type: '10' as const, role: 'backup' as const, label: '10', channelName: 'Gegar FM', frequency: '103.9', status: 'operational' as const, transmitPower: 875, reflectPower: 30, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
       { id: 'tx067', type: '11' as const, role: 'backup' as const, label: '11', channelName: 'THR Raaga', frequency: '100.1', status: 'operational' as const, transmitPower: 915, reflectPower: 19, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx068', type: '12' as const, role: 'backup' as const, label: '12', channelName: 'Minnal FM', frequency: '105.1', status: 'operational' as const, transmitPower: 890, reflectPower: 25, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
-      { id: 'tx069', type: 'reserve1' as const, role: 'reserve' as const, label: 'Reserve 1', channelName: 'Backup Service', frequency: '102.3', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: false },
-      { id: 'tx070', type: 'reserve2' as const, role: 'reserve' as const, label: 'Reserve 2', channelName: 'Emergency TX', frequency: '102.9', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago', isTransmitting: false }
+      { id: 'tx069', type: 'backup1' as const, role: 'standby' as const, label: 'Backup 1', channelName: 'Backup Service', frequency: '102.3', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: false },
+      { id: 'tx070', type: 'backup2' as const, role: 'standby' as const, label: 'Backup 2', channelName: 'Emergency TX', frequency: '102.9', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago', isTransmitting: false }
     ],
     alerts: 0
   },
@@ -208,10 +208,10 @@ const fallbackSites: SiteData[] = [
     overallStatus: 'operational' as const,
     activeTransmitterCount: 8,
     backupTransmitterCount: 4,
-    reserveTransmitterCount: 2,
+    standbyTransmitterCount: 2,
     runningActiveCount: 8,
     runningBackupCount: 4,
-    activeReserveCount: 0,
+    activeStandbyCount: 0,
     transmitters: [
       { id: 'tx071', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Nasional FM', frequency: '92.3', status: 'operational' as const, transmitPower: 950, reflectPower: 14, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx072', type: '2' as const, role: 'active' as const, label: '2', channelName: 'TraXX FM', frequency: '90.7', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
@@ -225,8 +225,8 @@ const fallbackSites: SiteData[] = [
       { id: 'tx080', type: '10' as const, role: 'backup' as const, label: '10', channelName: 'Sabah FM', frequency: '88.1', status: 'operational' as const, transmitPower: 875, reflectPower: 30, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
       { id: 'tx081', type: '11' as const, role: 'backup' as const, label: '11', channelName: 'Sarawak FM', frequency: '94.1', status: 'operational' as const, transmitPower: 915, reflectPower: 19, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx082', type: '12' as const, role: 'backup' as const, label: '12', channelName: 'Iban Radio', frequency: '91.5', status: 'operational' as const, transmitPower: 890, reflectPower: 25, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
-      { id: 'tx083', type: 'reserve1' as const, role: 'reserve' as const, label: 'Reserve 1', channelName: 'National Emergency', frequency: '102.3', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: false },
-      { id: 'tx084', type: 'reserve2' as const, role: 'reserve' as const, label: 'Reserve 2', channelName: 'Disaster Broadcast', frequency: '102.9', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago', isTransmitting: false }
+      { id: 'tx083', type: 'backup1' as const, role: 'standby' as const, label: 'Backup 1', channelName: 'National Emergency', frequency: '102.3', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: false },
+      { id: 'tx084', type: 'backup2' as const, role: 'standby' as const, label: 'Backup 2', channelName: 'Disaster Broadcast', frequency: '102.9', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago', isTransmitting: false }
     ],
     alerts: 0
   },
@@ -239,10 +239,10 @@ const fallbackSites: SiteData[] = [
     overallStatus: 'operational' as const,
     activeTransmitterCount: 8,
     backupTransmitterCount: 4,
-    reserveTransmitterCount: 2,
+    standbyTransmitterCount: 2,
     runningActiveCount: 8,
     runningBackupCount: 4,
-    activeReserveCount: 0,
+    activeStandbyCount: 0,
     transmitters: [
       { id: 'tx085', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Sabah FM', frequency: '88.1', status: 'operational' as const, transmitPower: 940, reflectPower: 15, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx086', type: '2' as const, role: 'active' as const, label: '2', channelName: 'Sabah VFM', frequency: '106.1', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
@@ -256,8 +256,8 @@ const fallbackSites: SiteData[] = [
       { id: 'tx094', type: '10' as const, role: 'backup' as const, label: '10', channelName: 'Tawau FM', frequency: '107.5', status: 'operational' as const, transmitPower: 875, reflectPower: 30, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
       { id: 'tx095', type: '11' as const, role: 'backup' as const, label: '11', channelName: 'Labuan Radio', frequency: '89.3', status: 'operational' as const, transmitPower: 915, reflectPower: 19, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
       { id: 'tx096', type: '12' as const, role: 'backup' as const, label: '12', channelName: 'Beaufort FM', frequency: '92.1', status: 'operational' as const, transmitPower: 890, reflectPower: 25, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
-      { id: 'tx097', type: 'reserve1' as const, role: 'reserve' as const, label: 'Reserve 1', channelName: 'Emergency Sabah', frequency: '105.1', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: false },
-      { id: 'tx098', type: 'reserve2' as const, role: 'reserve' as const, label: 'Reserve 2', channelName: 'Disaster Relief', frequency: '105.7', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago', isTransmitting: false }
+      { id: 'tx097', type: 'backup1' as const, role: 'standby' as const, label: 'Backup 1', channelName: 'Emergency Sabah', frequency: '105.1', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: false },
+      { id: 'tx098', type: 'backup2' as const, role: 'standby' as const, label: 'Backup 2', channelName: 'Disaster Relief', frequency: '105.7', status: 'operational' as const, transmitPower: 0, reflectPower: 0, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago', isTransmitting: false }
     ],
     alerts: 0
   }
