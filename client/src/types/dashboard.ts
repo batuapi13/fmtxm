@@ -1,11 +1,12 @@
 export type TransmitterStatus = 'operational' | 'warning' | 'error' | 'offline';
-export type TransmitterType = '1' | '2' | '3' | '4' | 'reserve';
+export type TransmitterType = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | 'reserve1' | 'reserve2';
 
 export interface TransmitterData {
   id: string;
   type: TransmitterType;
-  label: string; // "1", "2", "3", "4", "Reserve"
+  label: string; // "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "Reserve 1", "Reserve 2"
   channelName: string; // Channel name from OID
+  frequency: string; // Frequency in MHz (e.g., "88.1", "95.8")
   status: TransmitterStatus;
   transmitPower: number;
   reflectPower: number;
@@ -24,9 +25,8 @@ export interface SiteData {
     lng: number;
   };
   broadcaster: string;
-  frequency: string;
   overallStatus: TransmitterStatus;
-  activeTransmitter: TransmitterType;
-  transmitters: TransmitterData[]; // Array of 5 transmitters (1,2,3,4,reserve)
+  transmitters: TransmitterData[]; // Array of 12+ transmitters (1-12, reserve1, reserve2)
+  activeTransmitterCount: number; // Count of currently active transmitters
   alerts: number;
 }
