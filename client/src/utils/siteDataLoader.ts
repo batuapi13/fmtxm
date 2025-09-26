@@ -12,10 +12,10 @@ const fallbackSites: SiteData[] = [
     overallStatus: 'operational' as const,
     activeTransmitterCount: 8,
     backupTransmitterCount: 4,
-    reserveTransmitterCount: 2,
+    standbyTransmitterCount: 2,
     runningActiveCount: 8,
     runningBackupCount: 4,
-    activeReserveCount: 0,
+    activeStandbyCount: 0,
     transmitters: [
       { id: 'tx001', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Eight FM', frequency: '88.1', status: 'operational' as const, transmitPower: 950, reflectPower: 15, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true },
       { id: 'tx002', type: '2' as const, role: 'active' as const, label: '2', channelName: 'GoXuan FM', frequency: '90.5', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true },
@@ -33,10 +33,10 @@ const fallbackSites: SiteData[] = [
     overallStatus: 'error' as const,
     activeTransmitterCount: 6,
     backupTransmitterCount: 3,
-    reserveTransmitterCount: 1,
+    standbyTransmitterCount: 1,
     runningActiveCount: 5,
     runningBackupCount: 2,
-    activeReserveCount: 1,
+    activeStandbyCount: 1,
     transmitters: [
       { id: 'tx005', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Gegar', frequency: '97.1', status: 'error' as const, transmitPower: 0, reflectPower: 0, mainAudio: false, backupAudio: false, connectivity: false, lastSeen: '45 minutes ago', isTransmitting: false },
       { id: 'tx006', type: '2' as const, role: 'active' as const, label: '2', channelName: 'Pahang FM', frequency: '95.3', status: 'operational' as const, transmitPower: 980, reflectPower: 12, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '1 second ago', isTransmitting: true }
@@ -52,10 +52,10 @@ const fallbackSites: SiteData[] = [
     overallStatus: 'warning' as const,
     activeTransmitterCount: 5,
     backupTransmitterCount: 2,
-    reserveTransmitterCount: 1,
+    standbyTransmitterCount: 1,
     runningActiveCount: 4,
     runningBackupCount: 2,
-    activeReserveCount: 0,
+    activeStandbyCount: 0,
     transmitters: [
       { id: 'tx007', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Mix FM', frequency: '94.5', status: 'warning' as const, transmitPower: 850, reflectPower: 42, mainAudio: true, backupAudio: false, connectivity: true, lastSeen: '5 seconds ago', isTransmitting: true },
       { id: 'tx008', type: '2' as const, role: 'active' as const, label: '2', channelName: 'Lite FM', frequency: '105.7', status: 'operational' as const, transmitPower: 920, reflectPower: 18, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '2 seconds ago', isTransmitting: true }
@@ -71,10 +71,10 @@ const fallbackSites: SiteData[] = [
     overallStatus: 'warning' as const,
     activeTransmitterCount: 4,
     backupTransmitterCount: 2,
-    reserveTransmitterCount: 1,
+    standbyTransmitterCount: 1,
     runningActiveCount: 3,
     runningBackupCount: 1,
-    activeReserveCount: 1,
+    activeStandbyCount: 1,
     transmitters: [
       { id: 'tx009', type: '1' as const, role: 'active' as const, label: '1', channelName: 'Red FM', frequency: '104.9', status: 'warning' as const, transmitPower: 750, reflectPower: 48, mainAudio: true, backupAudio: false, connectivity: true, lastSeen: '8 seconds ago', isTransmitting: true },
       { id: 'tx010', type: '2' as const, role: 'active' as const, label: '2', channelName: 'Cats FM', frequency: '99.9', status: 'operational' as const, transmitPower: 900, reflectPower: 20, mainAudio: true, backupAudio: true, connectivity: true, lastSeen: '3 seconds ago', isTransmitting: true }

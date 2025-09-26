@@ -23,22 +23,20 @@ export default function TransmitterCard({ transmitter, isActive = false }: Trans
   return (
     <Card className={`border-card-border hover-elevate ${isActive ? 'ring-2 ring-primary' : ''}`}>
       <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <Radio className={`w-3 h-3 ${getStatusColor(transmitter.status)}`} />
-            <span className="font-medium text-sm" data-testid={`transmitter-label-${transmitter.type}`}>
-              {transmitter.label}
-            </span>
-          </div>
+        <div className="flex items-center gap-1">
+          <Radio className={`w-3 h-3 ${getStatusColor(transmitter.status)}`} />
+          <span className="font-medium text-sm" data-testid={`transmitter-label-${transmitter.type}`}>
+            {transmitter.label}
+          </span>
+        </div>
+        <div className="space-y-1">
           <Badge 
             variant={isActive ? 'default' : 'secondary'}
-            className="text-xs px-1 py-0"
+            className="text-xs px-1 py-0 w-fit"
             data-testid={`status-badge-${transmitter.type}`}
           >
             {isActive ? 'Active' : 'Standby'}
           </Badge>
-        </div>
-        <div className="space-y-1">
           <div className="text-xs text-muted-foreground font-mono" data-testid={`channel-name-${transmitter.type}`}>
             {transmitter.channelName}
           </div>

@@ -109,10 +109,15 @@ export default function MapPage() {
                 <Activity className="w-4 h-4" />
                 <span>{sites.reduce((sum, s) => sum + s.runningActiveCount + s.runningBackupCount, 0)} TX Active</span>
               </div>
-              {alarms.length > 0 && (
+              {(alarms.length > 0 || sites.reduce((sum, s) => sum + s.alerts, 0) > 0) && (
                 <div className="flex items-center gap-1 text-destructive">
                   <AlertTriangle className="w-4 h-4" />
-                  <span>{alarms.length} {alarms.length === 1 ? 'Alarm' : 'Alarms'}</span>
+                  <span>
+                    {sites.reduce((sum, s) => sum + s.alerts, 0)} {sites.reduce((sum, s) => sum + s.alerts, 0) === 1 ? 'Alert' : 'Alerts'}
+                    {alarms.length > 0 && alarms.length !== sites.reduce((sum, s) => sum + s.alerts, 0) && (
+                      <span className="ml-1">• {alarms.length} Active</span>
+                    )}
+                  </span>
                 </div>
               )}
             </div>
@@ -161,7 +166,7 @@ export default function MapPage() {
                       <div className="text-sm">
                         <div>Active TX: {site.runningActiveCount}/{site.activeTransmitterCount}</div>
                         <div>Backup TX: {site.runningBackupCount}/{site.backupTransmitterCount}</div>
-                        <div>Reserves: {site.activeReserveCount}/{site.reserveTransmitterCount}</div>
+                        <div>Standby Pool: {site.activeStandbyCount}/{site.standbyTransmitterCount}</div>
                       </div>
                     </div>
                   </Popup>
