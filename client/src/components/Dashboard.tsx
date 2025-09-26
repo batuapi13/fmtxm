@@ -5,15 +5,39 @@ import MalaysiaMap from './MalaysiaMap';
 import { parseCSVData } from '@/utils/csvParser';
 import type { SiteData } from '@/types/dashboard';
 
-// Load CSV data
+// Load CSV data with validation to prevent HTML corruption
 const loadCSVData = async (): Promise<SiteData[]> => {
   try {
     const response = await fetch('/attached_assets/malaysia_radio_frequencies_normalized_1758859695370.csv');
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
     const csvText = await response.text();
+    
+    // Validate that we received CSV content, not HTML
+    const firstLine = csvText.split('\n')[0]?.trim();
+    const expectedHeader = 'State,Site,Station,Frequency (MHz)';
+    
+    // Check for HTML indicators or wrong header
+    if (csvText.includes('<!DOCTYPE html>') || 
+        csvText.includes('THEME_PREVIEW_STYLE_ID') || 
+        csvText.includes('HIGHLIGHT_BG:') ||
+        firstLine !== expectedHeader) {
+      
+      console.error('CSV validation failed. Received HTML or invalid content instead of CSV.');
+      console.error('First 120 characters:', csvText.substring(0, 120));
+      throw new Error('Invalid CSV content - received HTML or malformed data');
+    }
+    
+    console.log('CSV validation passed. Loading authentic Malaysian radio frequency data...');
     return parseCSVData(csvText);
+    
   } catch (error) {
     console.error('Error loading CSV data:', error);
-    return [];
+    console.log('Falling back to predefined site data to maintain functionality.');
+    return fallbackSites;
   }
 };
 
