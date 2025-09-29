@@ -71,3 +71,27 @@ Preferred communication style: Simple, everyday language.
 - **SNMP Protocol**: Designed to integrate with SNMP-enabled FM transmitter equipment for live telemetry
 - **Polling System**: Configurable polling intervals for different types of transmitter data
 - **Alert Management**: Status change detection and notification system for critical events
+
+## Key Project Files
+
+### Core Application Files
+- `client/src/pages/MapPage.tsx` - Main map page with Leaflet markers and alarm table
+- `client/src/pages/CardsPage.tsx` - State-grouped cards view for detailed transmitter monitoring
+- `client/src/utils/siteDataLoader.ts` - Primary data loading service with CSV parsing and fallback sites
+- `client/src/utils/alarmExtractor.ts` - Unified alarm system for extracting alarms from site data
+
+### UI Components
+- `client/src/components/SiteCard.tsx` - Individual site cards with transmitter grids
+- `client/src/components/StateCard.tsx` - State-level grouping cards with site summaries
+- `client/src/components/TransmitterCard.tsx` - Individual transmitter status cards
+- `client/src/components/PowerMeter.tsx` - Power value display (forward/reflect power)
+- `client/src/components/AlarmTable.tsx` - Active alarms table with site navigation
+
+### Type Definitions and Data
+- `client/src/types/dashboard.ts` - Core TypeScript interfaces for sites, transmitters, and alarms
+- `attached_assets/malaysia_radio_frequencies_normalized_1758859695370.csv` - Authentic Malaysian radio frequency data
+- `design_guidelines.md` - UI/UX design guidelines for consistent styling
+
+### Configuration
+- `client/src/App.tsx` - Main application routing and layout
+- `client/src/index.css` - Global styles and theme configuration
