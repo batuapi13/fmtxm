@@ -83,7 +83,6 @@ const fallbackSites: SiteData[] = [
   }
 ];
 
-import { transmitterSimulation } from '@/services/transmitterSimulation';
 
 // Centralized CSV data loading function with consistent validation and fallback
 export const loadSiteData = async (): Promise<SiteData[]> => {
@@ -113,14 +112,6 @@ export const loadSiteData = async (): Promise<SiteData[]> => {
     
     console.log('CSV validation passed. Loading authentic Malaysian radio frequency data...');
     const csvData = parseCSVData(csvText);
-    
-    // Initialize simulation with the loaded data
-    transmitterSimulation.initialize(csvData, {
-      updateInterval: 2000, // Update every 2 seconds
-      powerVariationRange: 0.08, // ±8% power variation
-      alarmProbability: 0.003, // 0.3% chance per minute for alarms
-      recoveryProbability: 0.15 // 15% chance per minute for recovery
-    });
     
     return csvData;
     
