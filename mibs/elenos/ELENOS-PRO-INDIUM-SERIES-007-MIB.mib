@@ -1,0 +1,2313 @@
+-- * -------------------------------------------------------------------------
+-- *
+-- *		(c) Elenos
+-- *		Via G.amendola 9  
+-- *		Poggio Renatico  
+-- *		44028 Ferrara  
+-- *		Italy
+-- *		tel +39 0532 829965
+-- *		fax +39 0532 829177
+-- *		info@elenos.com
+-- *
+-- *		(c) 2000-2011 ELENOS
+-- *		this MIB file is property of ELENOS, no copying nor distribution
+-- *		under any form is permitted without explicit written permission of the 
+-- *		manufacturer.
+-- *
+-- *		Indium Series generic power amplifier 
+-- *
+-- * ---------------------------------------------------------------------------- 
+--	Modifications: beware that this MIB needs main mib v103.
+-- 
+-- 
+-- 
+
+ELENOS-PRO-INDIUM-SERIES-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+	PowerFmAmplifiers
+		FROM ELENOS-PRO-MAIN-V103-MIB
+	OBJECT-TYPE
+		FROM RFC-1212;
+
+
+over2-3dbCarrier OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates the exceeded of 2/3 dB of the power set"
+	::= { states 31 }
+
+
+pilotPowerGood OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 66 }
+
+
+externalReferenceMissing OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 54 }
+
+exciterWorkingLimiter OBJECT-TYPE
+	SYNTAX  GeneralStatus
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 59 }
+	
+generalStatus OBJECT-TYPE
+	SYNTAX  GeneralStatus
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 60 }
+	
+
+	
+GeneralStatus ::= INTEGER {   
+			fault(1),
+			warning(2),
+			stop(3),
+			ok(4) }
+
+
+Onair ::= INTEGER {
+			off-the-air(1),
+			on-air(2) }
+
+
+Reset ::= INTEGER {          
+			reset-off(1),
+			reset-on(2) }
+
+
+Alarm ::= INTEGER {
+			alarm-off(1),
+			alarm-on(2) }
+
+
+Working-OK ::= INTEGER {
+			alarms-on(1),
+			working-ok(2) }
+
+
+State ::= INTEGER {
+			state-off(1),
+			state-on(2) }
+
+
+Aut-man ::= INTEGER {
+			auto(1),
+			manual(2) }
+
+
+Dig-alarm-behav ::= INTEGER {
+			disable-alarm-sending(1),
+			send-only-on-val-0(2),
+			send-only-on-val-1(3),
+			send-on-every-state-change(4) }
+
+
+Digital-alarm ::= INTEGER {
+			disabled(1),
+			enabled(2) }
+
+
+Exciter ::= INTEGER {
+			exciter-1(1),
+			exciter-2(2) }
+
+
+Fault ::= INTEGER {
+			normal(1),
+			fault(2) }
+
+
+Local-remote ::= INTEGER {
+			remote(1),
+			local(2) }
+
+
+Management ::= INTEGER {
+			start-and-stop(1),
+			start-only(2) }
+
+
+Master-slave ::= INTEGER {
+			master(1),
+			slave(2) }
+
+
+Minus3db ::= INTEGER {
+			power-normal(1),
+			minus-3db(2) }
+
+
+Off-comand ::= INTEGER {
+			idle(1),
+			turn-OFF(2) }
+
+
+Off-nop ::= INTEGER {
+			no-operation(1),
+			deactivate(2) }
+
+
+On-comand ::= INTEGER {
+			idle(1),
+			turn-ON(2) }
+
+
+On-nop ::= INTEGER {
+			no-operation(1),
+			activate(2) }
+
+
+TxOnOff ::= INTEGER {   --0,1  sostituito con 1,2
+			tx-on(1),
+			tx-off(2) }
+
+
+OffOn ::= INTEGER {  --0,1  sostituito con 1,2
+			off(1),
+			on(2) }
+
+
+Processing ::= INTEGER {
+			trap-only(1),
+			log-only(2),
+			trap-plus-log(3) }
+
+
+Relay-trigger ::= INTEGER {
+			no-operation(1),
+			trigger-on-alarm(2) }
+
+
+Setpoints ::= INTEGER {
+			disabled(1),
+			enabled(2) }
+
+
+Standby ::= INTEGER {
+			active(1),
+			stand-by(2) }
+
+
+ExciterMode ::= INTEGER { --0,1,2,3,4,5,6 sostituito con 1,2,3,4,5,6,7
+			mpx(1),
+			mono(2),
+			stereo(3),
+			mute(4),
+			digital-mpx(5),
+			mono-streaming(6),
+			stereo-streaming(7) }
+			
+UserAlarmType ::= INTEGER {
+                LOWER(0),
+				UPPER(1),
+				INSIDE(2),
+				OUTSIDE(3)}
+				
+PreempType ::= INTEGER {
+                0us(1),
+				25us(2),
+				50us(3),
+				75us(4)} 
+
+RDSEnType ::= INTEGER {    
+                OFF(1),
+				INTERNAL(2),
+				EXTERNAL(3),
+				SAT(4)} 
+				
+TCTsType ::= INTEGER {    
+                WARNING(1),
+				FAULT(2))} 				
+-- * --------------------------------------------------------------------------
+indiumSeries OBJECT IDENTIFIER 	::= { PowerFmAmplifiers 6 }
+
+alarmResetCommand OBJECT-TYPE
+	SYNTAX  Reset
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"This comand resets the accumulated alarms"
+	::= { indiumSeries 1 }
+
+
+
+maxTargetPower OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This is the maximum power the unit can sustain continuously."
+	::= { indiumSeries 4 }
+
+
+targetPowerSetting OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"This is the output power value the transmitter will try to match."
+	::= { indiumSeries 5 }
+
+
+onOffCommand OBJECT-TYPE
+	SYNTAX  TxOnOff
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"This command allows switch the transmitter between on and off."
+	::= { indiumSeries 6 }
+	
+pwr_adjust OBJECT-TYPE
+	SYNTAX  INTEGER (0..100)
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Adjust your power."
+	::= { indiumSeries 7 }	
+	
+fwd_adjusted OBJECT-TYPE
+	SYNTAX  INTEGER 
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		""
+	::= { indiumSeries 8 }		
+
+txInfo OBJECT IDENTIFIER 	::= { indiumSeries 10 }
+
+forwardPower OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This is the forward power expressed in watts."
+	::= { txInfo 1 }
+
+
+reflectedPower OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This is the reflected power expressed in watts."
+	::= { txInfo 2 }
+
+
+rfTemperature OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This is the internal temperature of the transmitter expressed in 1/10 of a degree celsius."
+	::= { txInfo 3 }
+
+
+local OBJECT-TYPE
+	SYNTAX  Local-remote
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Status of the control"
+	::= { txInfo 4 }
+
+
+plus5v OBJECT-TYPE
+	SYNTAX  INTEGER (0..600)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"5 v power supply voltage (in volts x 100)"
+	::= { txInfo 5 }
+
+
+plus12v OBJECT-TYPE
+	SYNTAX  INTEGER (0..1500)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"12 v power supply voltage (in volts x 100)"
+	::= { txInfo 6 }
+
+
+minus12 OBJECT-TYPE
+	SYNTAX  INTEGER (0..1500)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"-12v power supply voltage (in volts x 100)"
+	::= { txInfo 7 }
+
+
+rfEfficiency OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Efficiency of the transmitter (in % x 10)"
+	::= { txInfo 8 }
+
+
+psuVoltage OBJECT-TYPE
+	SYNTAX  INTEGER (0..600)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"States the power supply average voltage in 1/10 of a volt"
+	::= { txInfo 9 }
+
+
+psuCurrent OBJECT-TYPE
+	SYNTAX  INTEGER (0..450)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"States the power supply current in 1/10 of an ampere"
+	::= { txInfo 10 }
+
+
+psuTemperature OBJECT-TYPE
+	SYNTAX  INTEGER (0..1000)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"States the temperature of the power supply in 1/10 of a degree celsius"
+	::= { txInfo 11 }
+
+
+onAirStatus OBJECT-TYPE
+	SYNTAX  Onair
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Indicates if the transmitter is onair or not."
+	::= { txInfo 12 }
+
+
+standbyStatus OBJECT-TYPE
+	SYNTAX  Standby
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Indicates if the transmitter is in standby or normally functioning"
+	::= { txInfo 13 }
+
+
+txFrequency OBJECT-TYPE
+	SYNTAX  INTEGER (8750..10800)
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"This is the trasmission frequency in tens of KHz."
+	::= { txInfo 14 }
+
+
+txMpxPeak OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This is the MPX Peak (1 sec. window) in KHz."
+	::= { txInfo 15 }
+
+
+txAuxPeak OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This is the Aux Input Peak (1 sec. window) in KHz."
+	::= { txInfo 16 }
+
+
+txLeftPeak OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This is the Left Input Peak (1 sec. window) in KHz."
+	::= { txInfo 17 }
+
+
+txRightPeak OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This is the Right Input Peak (1 sec. window) in KHz."
+	::= { txInfo 18 }
+
+
+txPllLock OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"It indicates whether the PLL is locked or not."
+	::= { txInfo 19 }
+
+
+mpxRightLevel OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 20 }
+
+
+leftLevel OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 21 }
+
+
+aux1Level OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 22 }
+
+
+aux2Level OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 23 }
+
+
+exciterSubcarrierLevel OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 24 }
+
+
+exciterSubcarrierPhase OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 25 }
+
+
+exciterMpxLevelLimiter OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 26 }
+
+
+exciterWorkingMode OBJECT-TYPE
+	SYNTAX  ExciterMode
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 27 }
+
+
+exciterLRLockedLevels OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 28 }
+
+
+exciterWorkingPreenphasys OBJECT-TYPE
+	SYNTAX  PreempType
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 29 }
+
+	
+	
+txCoderMpxPeak OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This is the Output Coder Mpx Peak (1 sec. window) in KHz."
+	::= { txInfo 30 }
+	
+
+noAudioLevel OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 31 }
+
+
+noAudioTime OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 32 }
+
+
+overModulationLevel OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 33 }
+
+
+overModulationTime OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 34 }
+
+
+psuMaxCurrent OBJECT-TYPE
+	SYNTAX  INTEGER (0..600)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"States the power supply maximum current in 1/10 of an ampere"
+	::= { txInfo 35 }
+
+
+psuMaxVoltage OBJECT-TYPE
+	SYNTAX  INTEGER (0..600)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"States the power supply maximum voltage in 1/10 of a volt"
+	::= { txInfo 36 }
+
+
+rfTotalIds OBJECT-TYPE
+	SYNTAX  INTEGER (0..600)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 37 }
+
+
+rfMaxIds OBJECT-TYPE
+	SYNTAX  INTEGER (0..600)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 38 }
+
+
+rfVds OBJECT-TYPE
+	SYNTAX  INTEGER (0..600)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 39 }
+
+
+rfModulesTable OBJECT-TYPE
+	SYNTAX  SEQUENCE OF RfModulesEntry
+	ACCESS  not-accessible
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 41 }
+
+
+rfModulesEntry OBJECT-TYPE
+	SYNTAX  RfModulesEntry
+	ACCESS  not-accessible
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	INDEX {
+		rfModulesIndex }
+	::= { rfModulesTable 1 }
+
+
+RfModulesEntry ::= SEQUENCE {
+
+	rfModulesIndex INTEGER,
+	rf-temperature INTEGER,
+	rf-ids         INTEGER,
+	dc-power       INTEGER }
+
+
+rfModulesIndex OBJECT-TYPE
+	SYNTAX  INTEGER (0..99)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Consecutive number : index of the event in the list."
+	::= { rfModulesEntry 1 }
+
+
+rf-temperature OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { rfModulesEntry 2 }
+
+
+rf-ids OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { rfModulesEntry 3 }
+
+
+dc-power OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { rfModulesEntry 4 }
+
+
+environmentalTemp OBJECT-TYPE
+	SYNTAX  INTEGER (0..600)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 45 }
+
+
+rfDcPower OBJECT-TYPE
+	SYNTAX  INTEGER (0..600)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 46 }
+
+
+psuTable OBJECT-TYPE
+	SYNTAX  SEQUENCE OF PsuEntry
+	ACCESS  not-accessible
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 48 }
+
+
+psuEntry OBJECT-TYPE
+	SYNTAX  PsuEntry
+	ACCESS  not-accessible
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	INDEX {
+		psu-index }
+	::= { psuTable 1 }
+
+
+PsuEntry ::= SEQUENCE {
+
+	psu-index       INTEGER,
+	psu-temperature INTEGER,
+	v-out           INTEGER,
+	i-out           INTEGER }
+
+
+psu-index OBJECT-TYPE
+	SYNTAX  INTEGER (0..99)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Consecutive number : index of the event in the list."
+	::= { psuEntry 1 }
+
+
+psu-temperature OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { psuEntry 2 }
+
+
+v-out OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { psuEntry 3 }
+
+
+i-out OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { psuEntry 4 }
+
+
+forwardPowerDriver OBJECT-TYPE
+	SYNTAX  INTEGER (0..600)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 50 }
+
+
+faultLedStatus OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"none" --MancaDescr
+	::= { txInfo 55 }
+
+
+minFwrPwrLevelError OBJECT-TYPE
+	SYNTAX  INTEGER (0..600)
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 56 }
+
+
+exciterLevelAes_r OBJECT-TYPE
+	SYNTAX  INTEGER 
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "AES level of channel right" --MancaDescr
+	::= { txInfo 57 }
+
+exciterLevelAes_l OBJECT-TYPE
+	SYNTAX  INTEGER 
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "AES level of channel left" --MancaDescr
+	::= { txInfo 58 }
+	
+--noAudioErrorMode OBJECT-TYPE
+--	SYNTAX  INTEGER (0..600)
+--	ACCESS  read-write
+--	STATUS  mandatory
+--	DESCRIPTION
+--		"none" --MancaDescr
+--	::= { txInfo 58 }
+
+
+exciterWorkingLimiter OBJECT-TYPE
+	SYNTAX  state
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 59 }
+	
+
+muting OBJECT-TYPE
+	SYNTAX  state
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 61 }
+
+onlyCarrier OBJECT-TYPE
+	SYNTAX  state
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 62 }
+	
+hardSoftClipper OBJECT-TYPE
+	SYNTAX  state
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 63 }
+
+TcTsNoaudioSettings OBJECT-TYPE
+	SYNTAX  TCTsType
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 64 }
+
+
+alarmBit OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 99 }
+
+
+-- * --------------------------------------------------------------------------
+packedInfoConfigTable OBJECT-TYPE
+	SYNTAX  SEQUENCE OF PackedIinfoParamsEntry
+	ACCESS  not-accessible
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 105 }
+
+
+packedInfoConfigEntry OBJECT-TYPE
+	SYNTAX  PackedIinfoParamsEntry
+	ACCESS  not-accessible
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	INDEX {
+		packedInfoIndex }
+	::= { packedInfoConfigTable 1 }
+
+
+PackedIinfoParamsEntry ::= SEQUENCE {
+
+	packedInfoIndex INTEGER,
+	packedInfoData  OCTET STRING }
+
+
+packedInfoIndex OBJECT-TYPE
+	SYNTAX  INTEGER (0..99)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Index of the single packed data"
+	::= { packedInfoConfigEntry 1 }
+
+
+packedInfoData OBJECT-TYPE
+	SYNTAX  OCTET STRING
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Packed informations data"
+	::= { packedInfoConfigEntry 2 }
+
+
+-- * --------------------------------------------------------------------------
+powerManager OBJECT IDENTIFIER 	::= { indiumSeries 20 }
+
+constPwrEnable OBJECT-TYPE
+	SYNTAX  INTEGER {  --0,1  sostituito con 1,2
+			disabled(1),
+			enabled(2) }
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { powerManager 1 }
+
+
+psuPwrCons OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { powerManager 2 }
+
+
+psuDayCons OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { powerManager 3 }
+
+
+psuWeekCons OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { powerManager 4 }
+
+
+psuMonthCons OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { powerManager 5 }
+
+
+psuYearCons OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { powerManager 6 }
+
+
+psuMondayCons OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { powerManager 7 }
+
+
+psuTuesdayCons OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { powerManager 8 }
+
+
+psuWednesdayCons OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { powerManager 9 }
+
+
+psuThursdayCons OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { powerManager 10 }
+
+
+psuFridayCons OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { powerManager 11 }
+
+
+psuSaturdayCons OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { powerManager 12 }
+
+
+psuSundayCons OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { powerManager 13 }
+
+
+-- * --------------------------------------------------------------------------
+modulatorManager OBJECT IDENTIFIER 	::= { indiumSeries 30 }
+
+exciterBalancedMpx OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { modulatorManager 1 }
+
+
+exciterBalacedLR OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { modulatorManager 2 }
+
+
+exciter10KohmMpx OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { modulatorManager 3 }
+
+
+exciter10KohmLR OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { modulatorManager 4 }
+
+
+exciterAdjustLRlevel OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { modulatorManager 5 }
+
+
+exciterSfnEnable OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { modulatorManager 6 }
+
+
+exciterSfnDelay OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { modulatorManager 7 }
+
+
+exciterRdsEnable OBJECT-TYPE
+	SYNTAX  RDSEnType
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { modulatorManager 8 }
+
+
+exciterLevel57Khz OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { modulatorManager 9 }
+
+
+exciterAdjust10Mhz OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { modulatorManager 10 }
+
+
+exciterFreqReference OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { modulatorManager 11 }
+
+
+exciterRds57kHzPhase OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { modulatorManager 12 }
+
+
+exciterSfnLocked OBJECT-TYPE
+	SYNTAX  OffOn
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { modulatorManager 13 }
+
+
+exciterGpsLocked OBJECT-TYPE
+	SYNTAX  OffOn
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { modulatorManager 14 }
+
+
+-- * --------------------------------------------------------------------------
+states OBJECT IDENTIFIER 	::= { indiumSeries 60 }
+
+correctWorking OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates the correct functioning"
+	::= { states 1 }
+
+
+systemReset OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates that the alarm reset is in progress."
+	::= { states 2 }
+
+
+eepromCksumError OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates that the persistent data in memory are no longer reliable and the default configuration is loaded on the host device."
+	::= { states 3 }
+
+
+blocked OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates that the host device is blocked. Please refers to the user manual."
+	::= { states 4 }
+
+
+stop OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates that the host device is in stand-by, ready to start without alarms"
+	::= { states 5 }
+
+
+minus3dbCarrier OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates that the device is providing at least 3dB less power than the set target."
+	::= { states 6 }
+
+
+highRefPwr OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates the level of output reflected power is too high."
+	::= { states 7 }
+
+
+min12v OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates that the -12 V reference voltage is changed and prevents the proper functioning of protections."
+	::= { states 8 }
+
+
+rfAmplifierFault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicate a fault, on one or more RF modules"
+	::= { states 9 }
+
+
+rfAmpDerating OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicate a fault, on one or more RF modules, which implies a reduction of total max power."
+	::= { states 10 }
+
+
+rfThermalDerating OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates a too hot temperature on the RF modules, which implies a reduction of total max power."
+	::= { states 11 }
+
+
+rfOverTemperature OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates a maximum operating temperature overcoming. Refers to the user manual."
+	::= { states 12 }
+
+
+psuFault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates a power supply fault."
+	::= { states 13 }
+
+
+psuCurrentDerating OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates the power supply overhead, which implies a reduction of total max power."
+	::= { states 14 }
+
+
+psuOverCurrent OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates the host device turning off. This happens if the current doesn't decrease after 1 minute from derating."
+	::= { states 15 }
+
+
+psuThermalDerating OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates power supply overheating, which implies a reduction of total max power."
+	::= { states 16 }
+
+
+psuOverTemperature OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates power supply overheating, resulting in turning off the equipment"
+	::= { states 17 }
+
+
+psuCommTimeout OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates an IEEE485 internal bus communication fault."
+	::= { states 18 }
+
+
+externalInterlock OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates that interlock is active."
+	::= { states 19 }
+
+
+onAir OBJECT-TYPE
+	SYNTAX  Onair
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates that the host device is functioning properly and is on air"
+	::= { states 20 }
+
+
+powerUp OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates that is being inserted an alert regarding the host device restart."
+	::= { states 21 }
+
+
+powerDown OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates that is being inserted an alert regarding the host device shutdown."
+	::= { states 22 }
+
+
+psuThermalFault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates a power supply overheating when the host device has several power supplies. Refers to the user manual"
+	::= { states 23 }
+
+
+psuLowPower OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates a power supply overheating when the host device has a single power supply. Refers to the user manual"
+	::= { states 24 }
+
+
+psuRfOff OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates a power supply overheating when the host device has a single power supply. Refers to the user manual"
+	::= { states 25 }
+
+
+workingModeCombined OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates the host device working mode in a combined system"
+	::= { states 26 }
+
+
+swrFoldback OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates a power reduction of the host device, due to a too high reflected power"
+	::= { states 27 }
+
+
+unlock OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates the PLL is not locked, so the host device is stopped"
+	::= { states 28 }
+
+
+exciterCommErr OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates that the PLL and VCO are not programmable."
+	::= { states 29 }
+
+
+no_Audio  OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates audio signal absence "
+	::= { states 30 }
+
+
+preamplNotConnected OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates the reflected power value is 100%."
+	::= { states 32 }
+
+
+overModulation OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates overmodulation presence."
+	::= { states 33 }
+
+
+fastInhibit OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates problems with the HW lines that lead to RF inhibition."
+	::= { states 34 }
+
+
+tempSensorError OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates that al least one RF temperature sensor is damaged."
+	::= { states 35 }
+
+
+outPwrOscillation OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates oscillations on trasmitted power"
+	::= { states 36 }
+
+
+threeBlockOut OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates that the host machine is in one-hour break before an attempt to restore."
+	::= { states 37 }
+
+
+environmentalTemperatureWarning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates to set a different condition on environment temperature. Refers to the user manual."
+	::= { states 38 }
+
+
+rfTemperatureWarning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates to set a different condition on RF modules temperature. Refers to the user manual."
+	::= { states 39 }
+
+
+psuTemperatureWarning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates to set a different condition on power supply temperature. Refers to the user manual."
+	::= { states 40 }
+
+
+rfCurrentWarning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates to set a different condition on RF modules currents. Refers to the user manual."
+	::= { states 41 }
+
+
+psuCurrentWarning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates to set a different condition on power supply currents. Refers to the user manual."
+	::= { states 42 }
+
+
+forwardPowerWarning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates to set a different condition on forward power. Refers to the user manual."
+	::= { states 43 }
+
+
+reflectedPowerWarning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates to set a different condition on reflected power. Refers to the user manual."
+	::= { states 44 }
+
+
+outputPowerNotVerified OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 45 }
+
+
+upsActive OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 46 }
+
+
+shuntCommTimeout OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 47 }
+
+
+tempSensorWarning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 48 }
+
+
+audioOkMask OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 49 }
+
+
+drainVoltageFeedbackError OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 50 }
+
+
+overForwardPowerError OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 51 }
+
+
+psuVoltageDeratingError OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 52 }
+
+
+	
+	
+-- * --------------------------------------------------------------------------
+userAlarmsetting OBJECT IDENTIFIER 	::= { indiumSeries 65 }
+
+-- * --------------------------------------------------------------------------	
+
+enviromenttemp_alrenable OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 1 }
+
+enviromenttemp_alrmaxlimit OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 2 }	
+
+enviromenttemp_alrminlimit OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 3 }	
+
+enviromenttemp_alrlimittype OBJECT-TYPE
+	SYNTAX  UserAlarmType
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 4 }	
+
+enviromenttemp_alrdelaytime OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 5 }	
+	
+
+rftemp_alrenable OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 6 }
+
+rftemp_alrmaxlimit OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 7 }	
+
+rftemp_alrminlimit OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 8 }	
+
+rftemp_alrlimittype OBJECT-TYPE
+	SYNTAX  UserAlarmType
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 9 }	
+
+rftemp_alrdelaytime OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 10 }		
+	
+
+psutemp_alrenable OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 11 }
+
+psutemp_alrmaxlimit OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 12 }	
+
+psutemp_alrminlimit OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 13 }	
+
+psutemp_alrlimittype OBJECT-TYPE
+	SYNTAX  UserAlarmType
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 14 }	
+
+psutemp_alrdelaytime OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 15 }			
+	
+	
+psucurrent_alrenable OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 16 }
+
+psucurrent_alrmaxlimit OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 17 }	
+
+psucurrent_alrminlimit OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 18 }	
+
+psucurrent_alrlimittype OBJECT-TYPE
+	SYNTAX  UserAlarmType
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 19 }	
+
+psucurrent_alrdelaytime OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 20 }	
+
+
+	
+reflpwr_alrenable OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 21 }
+
+reflpwr_alrmaxlimit OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 22 }	
+
+reflpwr_alrminlimit OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 23 }	
+
+reflpwr_alrlimittype OBJECT-TYPE
+	SYNTAX  UserAlarmType
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 24 }	
+
+reflpwr_alrdelaytime OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 25 }		
+	
+	
+rfids_alrenable OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 26 }
+
+rfids_alrmaxlimit OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 27 }	
+
+rfids_alrminlimit OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 28 }	
+
+rfids_alrlimittype OBJECT-TYPE
+	SYNTAX  UserAlarmType
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 29 }	
+
+rfids_alrdelaytime OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 30 }			
+		
+
+fwdpower_alrenable OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 31 }
+
+fwdpower_alrmaxlimit OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 32 }	
+
+fwdpower_alrminlimit OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 33 }	
+
+fwdpower_alrlimittype OBJECT-TYPE
+	SYNTAX  UserAlarmType
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 34 }	
+
+fwdpower_alrdelaytime OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { userAlarmsetting 35 }		
+
+
+
+-- * --------------------------------------------------------------------------
+--deviceInformations OBJECT IDENTIFIER 	::= { indiumSeries 80 }
+
+
+-- * --------------------------------------------------------------------------
+profiles OBJECT IDENTIFIER 	::= { indiumSeries 90 }
+
+-- * --------------------------------------------------------------------------
+profilesTableIndex OBJECT-TYPE
+	SYNTAX  INTEGER (0..255)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"The number indicates how many profiles the device allows."
+	::= { profiles 1 }
+
+
+profilesTable OBJECT-TYPE
+	SYNTAX  SEQUENCE OF ProfilesEntry
+	ACCESS  not-accessible
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profiles 2 }
+
+
+profilesEntry OBJECT-TYPE
+	SYNTAX  ProfilesEntry
+	ACCESS  not-accessible
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	INDEX {
+		profilesIndex }
+	::= { profilesTable 1 }
+
+
+ProfilesEntry ::= SEQUENCE {
+
+	profilesIndex             INTEGER,
+	pTargetPower              INTEGER,
+	pExciterTxFrequency       INTEGER,
+	pExciterWrkMode           INTEGER,
+	pExciterWrkAudioInputMode INTEGER,
+	pExciterWrkPreenphasys    INTEGER,
+	pExciterLevelSameLR       INTEGER,
+	pExciterLevelMpxR         INTEGER,
+	pExciterLevelL            INTEGER,
+	pExciterLevelAux1         INTEGER,
+	pExciterLevelAux2         INTEGER,
+	pExciterWrkLimiter        INTEGER,
+	pExciterMpxLevelLimiter   INTEGER,
+	pExciterZin600            INTEGER,
+	pExciterLevelAES          INTEGER,
+	pFreqReference            INTEGER,
+	pExciterBalancedMPX       INTEGER,
+	pExciterBalancedLR        INTEGER,
+	pSfnEnable                INTEGER,
+	pSfnDelay                 INTEGER,
+	pRdsEnable                INTEGER }
+
+
+profilesIndex OBJECT-TYPE
+	SYNTAX  INTEGER (0..99)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Consecutive number : index of the event in the list."
+	::= { profilesEntry 1 }
+
+
+pTargetPower OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profilesEntry 2 }
+
+
+pExciterTxFrequency OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profilesEntry 3 }
+
+
+pExciterWrkMode OBJECT-TYPE
+	SYNTAX  ExciterMode
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "0= undefined 
+	             1= MPX,
+				 2= MONO,
+				 3= STEREO,
+				 4= MUTING,
+				 5= AES_EBU,
+				 6= AUTO" 
+	::= { profilesEntry 4 }
+
+
+--pExciterWrkAudioInputMode OBJECT-TYPE
+--	SYNTAX  INTEGER
+--	ACCESS  read-write
+--	STATUS  mandatory
+--	DESCRIPTION "none" --MancaDescr
+--	::= { profilesEntry 5 }
+--
+
+
+pExciterWrkPreenphasys OBJECT-TYPE
+	SYNTAX  PreempType
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "0= undefined,
+	             1= 0us,
+				 2= 25us,
+				 3= 50us,
+				 4= 75us" --MancaDescr
+	::= { profilesEntry 5 }
+
+
+pExciterLevelSameLR OBJECT-TYPE
+	SYNTAX  state
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "0= undefined,
+	             1= OFF,
+				 2= ON" --MancaDescr
+	::= { profilesEntry 6 }
+
+
+pExciterLevelMpxR OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profilesEntry 7 }
+
+
+pExciterLevelL OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profilesEntry 8 }
+
+
+pExciterLevelAux1 OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profilesEntry 9 }
+
+
+pExciterLevelAux2 OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profilesEntry 10 }
+
+
+pExciterWrkLimiter OBJECT-TYPE
+	SYNTAX  state
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "0= undefined,
+	             1= OFF,
+				 2= ON" --MancaDescr
+	::= { profilesEntry 11 }
+
+
+pExciterMpxLevelLimiter OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profilesEntry 12 }
+
+
+--pExciterZin600 OBJECT-TYPE
+--	SYNTAX  INTEGER
+--	ACCESS  read-write
+--	STATUS  mandatory
+--	DESCRIPTION "none" --MancaDescr
+--	::= { profilesEntry 14 }
+
+
+pExciterLevelAESEBUr OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profilesEntry 13 }
+
+pExciterLevelAESEBUl OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profilesEntry 14 }
+
+pFreqReference OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profilesEntry 15 }
+
+
+pExciterBalancedMPX OBJECT-TYPE
+	SYNTAX  state
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "0= undefined,
+	             1= OFF,
+				 2= ON" 
+	::= { profilesEntry 16 }
+
+
+pExciterBalancedLR OBJECT-TYPE
+	SYNTAX  state
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "0= undefined,
+	             1= OFF,
+				 2= ON" 
+	::= { profilesEntry 17 }
+
+
+pSfnEnable OBJECT-TYPE
+	SYNTAX  state
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "0= undefined,
+	             1= OFF,
+				 2= ON" 
+	::= { profilesEntry 18 }
+
+
+pSfnDelay OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profilesEntry 19 }
+
+
+pRdsEnable OBJECT-TYPE
+	SYNTAX  RDSEnType
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "0 = undefined, 
+				 1 = OFF, 
+				 2 = INTERNAL,
+				 3 = EXTERNAL, 
+				 4 = SAT" 
+	::= { profilesEntry 20 }
+	
+pExciter_level_mpx OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profilesEntry 21 }
+	
+pExciter_level_streaming_R OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profilesEntry 22 }
+	
+pExciter_level_streaming_L OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profilesEntry 23 }
+	
+pExciter_level_dig_mpx OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { profilesEntry 24 }
+
+
+psuNetOverVoltage OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 53 }
+
+
+maxTemperature OBJECT-TYPE
+	SYNTAX  INTEGER (0..600)
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION "none" --MancaDescr
+	::= { txInfo 49 }
+
+
+mpxNoAudio OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 55 }
+
+
+aesEbuNoAudio OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 56 }
+
+
+stereoNoAudio OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 57 }
+
+
+streamingNoAudio OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 58 }
+
+
+digitalMpxNoAudio OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 59 }
+
+
+batteryLow OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 60 }
+
+
+referenceVoltageError OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 61 }
+
+
+fan1Error OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 62 }
+
+
+fan2Error OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 63 }
+
+
+fan3Error OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 64 }
+
+
+drainVoltageControlError OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 65 }
+
+
+incresePilotPower OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 67 }
+
+
+decreasePilotPower OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 68 }
+
+
+badInputRfProtection OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Refers to the user manual."
+	::= { states 69 }
+
+
+END
+
+
