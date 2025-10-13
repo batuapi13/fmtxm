@@ -1,0 +1,797 @@
+-- * -------------------------------------------------------------------------
+-- *
+-- *		(c) Elenos
+-- *		Via G.amendola 9  
+-- *		Poggio Renatico  
+-- *		44028 Ferrara  
+-- *		Italy
+-- *		tel +39 0532 829965
+-- *		fax +39 0532 829177
+-- *		info@elenos.com
+-- *
+-- *		(c) 2000-2008 ELENOS
+-- *		this MIB file is property of ELENOS, no copying nor distribution
+-- *		under any form is permitted without explicit written permission of the 
+-- *		manufacturer.
+-- *
+-- *		Main definitions and company information MIB
+-- *
+-- * --------------------------------------------------------------------------
+ELENOS-PRO-MAIN-V103-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS 
+	OBJECT-TYPE			
+		FROM RFC-1212			
+	enterprises
+		FROM RFC1155-SMI;
+--IMPORTS
+--	enterprises
+--		FROM RFC1155-SMI
+--	OBJECT-TYPE
+--		FROM RFC-1212;
+
+
+IsClock ::= INTEGER {
+			absent(1),
+			present(2) }
+
+
+DayOfWeek ::= INTEGER {
+			monday(1),
+			tuesday(2),
+			wednesday(3),
+			thursday(4),
+			friday(5),
+			saturday(6),
+			sunday(7) }
+
+
+Month ::= INTEGER {
+			january(1),
+			february(2),
+			march(3),
+			april(4),
+			may(5),
+			june(6),
+			july(7),
+			august(8),
+			september(9),
+			october(10),
+			november(11),
+			december(12) }
+
+
+TGlobalEnable ::= INTEGER {
+			none(1),
+			alert(2),
+			criticity(3),
+			all(4),
+			custom(5) }
+
+
+Onair ::= INTEGER {
+			off-the-air(1),
+			on-air(2) }
+
+
+Reset ::= INTEGER {
+			reset-off(1), -- questo valore non può essere 0 ho meso 1 e 2 ma si deve discutere della cosa
+			reset-on(2) }
+
+
+Alarm ::= INTEGER {
+			alarm-off(1),
+			alarm-on(2) }
+
+
+Working-OK ::= INTEGER {
+			alarms-on(1),
+			working-ok(2) }
+
+
+State ::= INTEGER {
+			state-off(1),
+			state-on(2) }
+
+
+Manual ::= INTEGER {
+			auto(1),
+			manual(2) }
+			
+Automatic ::= INTEGER {
+			auto(2),
+			manual(1) }
+
+			
+
+Dig-alarm-behav ::= INTEGER {
+			disable-alarm-sending(1),
+			send-only-on-val-0(2),
+			send-only-on-val-1(3),
+			send-on-every-state-change(4) }
+
+
+Digital-alarm ::= INTEGER {
+			disabled(1),
+			enabled(2) }
+
+
+Exciter ::= INTEGER {
+			exciter-1(1),
+			exciter-2(2) }
+
+
+Fault ::= INTEGER {
+			normal(1),
+			fault(2) }
+
+
+Local-remote ::= INTEGER {
+			remote(1),
+			local(2) }
+
+
+Management ::= INTEGER {
+			start-and-stop(1),
+			start-only(2) }
+
+
+Master-slave ::= INTEGER {
+			master(1),
+			slave(2) }
+
+
+Minus3db ::= INTEGER {
+			power-normal(1),
+			minus-3db(2) }
+
+
+Off-comand ::= INTEGER {
+			idle(1),
+			turn-OFF(2) }
+
+
+Off-nop ::= INTEGER {
+			no-operation(1),
+			deactivate(2) }
+
+
+On-comand ::= INTEGER {
+			idle(1),
+			turn-ON(2) }
+
+
+On-nop ::= INTEGER {
+			no-operation(1),
+			activate(2) }
+
+
+OnOff ::= INTEGER {
+			tx-on(1),  -- questo valore non può essere 0 ho meso 1 e 2 ma si deve discutere della cosa
+			tx-off(2) }
+
+
+Processing ::= INTEGER {
+			trap-only(1),
+			log-only(2),
+			trap-plus-log(3) }
+
+
+Relay-trigger ::= INTEGER {
+			no-operation(1),
+			trigger-on-alarm(2) }
+
+
+Setpoints ::= INTEGER {
+			disabled(1),
+			enabled(2) }
+
+
+Standby ::= INTEGER {
+			active(1),
+			stand-by(2) }
+			
+TimeZone ::= OCTET STRING {
+		UTC,
+		Pacific/Wallis,
+		Pacific/Wake,
+		Pacific/Tongatapu,
+		Pacific/Tarawa,
+		Pacific/Tahiti,
+		Pacific/Saipan,
+		Pacific/Rarotonga,
+		Pacific/Port_Moresby,
+		Pacific/Pohnpei,
+		Pacific/Pitcairn,
+		Pacific/Palau,
+		Pacific/Pago_Pago,
+		Pacific/Noumea,
+		Pacific/Norfolk,
+		Pacific/Niue,
+		Pacific/Nauru,
+		Pacific/Midway,
+		Pacific/Marquesas,
+		Pacific/Majuro,
+		Pacific/Kwajalein,
+		Pacific/Kosrae,
+		Pacific/Kiritimati,
+		Pacific/Johnston,
+		Pacific/Honolulu,
+		Pacific/Guam,
+		Pacific/Guadalcanal,
+		Pacific/Gambier,
+		Pacific/Galapagos,
+		Pacific/Funafuti,
+		Pacific/Fiji,
+		Pacific/Fakaofo,
+		Pacific/Enderbury,
+		Pacific/Efate,
+		Pacific/Easter,
+		Pacific/Chuuk,
+		Pacific/Chatham,
+		Pacific/Auckland,
+		Pacific/Apia,
+		Indian/Reunion,
+		Indian/Mayotte,
+		Indian/Mauritius,
+		Indian/Maldives,
+		Indian/Mahe,
+		Indian/Kerguelen,
+		Indian/Comoro,
+		Indian/Cocos,
+		Indian/Christmas,
+		Indian/Chagos,
+		Indian/Antananarivo,
+		Europe/Zurich,
+		Europe/Zaporozhye,
+		Europe/Warsaw,
+		Europe/Volgograd,
+		Europe/Vilnius,
+		Europe/Vienna,
+		Europe/Vaduz,
+		Europe/Uzhgorod,
+		Europe/Tirane,
+		Europe/Tallinn,
+		Europe/Stockholm,
+		Europe/Sofia,
+		Europe/Simferopol,
+		Europe/Samara,
+		Europe/Rome,
+		Europe/Riga,
+		Europe/Prague,
+		Europe/Paris,
+		Europe/Oslo,
+		Europe/Moscow,
+		Europe/Monaco,
+		Europe/Minsk,
+		Europe/Malta,
+		Europe/Madrid,
+		Europe/Luxembourg,
+		Europe/London,
+		Europe/Lisbon,
+		Europe/Kiev,
+		Europe/Kaliningrad,
+		Europe/Istanbul,
+		Europe/Helsinki,
+		Europe/Gibraltar,
+		Europe/Dublin,
+		Europe/Copenhagen,
+		Europe/Chisinau,
+		Europe/Budapest,
+		Europe/Bucharest,
+		Europe/Brussels,
+		Europe/Berlin,
+		Europe/Belgrade,
+		Europe/Athens,
+		Europe/Andorra,
+		Europe/Amsterdam,
+		Australia/Sydney,
+		Australia/Perth,
+		Australia/Melbourne,
+		Australia/Lord_Howe,
+		Australia/Lindeman,
+		Australia/Hobart,
+		Australia/Eucla,
+		Australia/Darwin,
+		Australia/Currie,
+		Australia/Broken_Hill,
+		Australia/Brisbane,
+		Australia/Adelaide,
+		Atlantic/St_Helena,
+		Atlantic/Stanley,
+		Atlantic/South_Georgia,
+		Atlantic/Reykjavik,
+		Atlantic/Madeira,
+		Atlantic/Faroe,
+		Atlantic/Cape_Verde,
+		Atlantic/Canary,
+		Atlantic/Bermuda,
+		Atlantic/Azores,
+		Asia/Yerevan,
+		Asia/Yekaterinburg,
+		Asia/Yakutsk,
+		Asia/Vladivostok,
+		Asia/Vientiane,
+		Asia/Ust-Nera,
+		Asia/Urumqi,
+		Asia/Ulaanbaatar,
+		Asia/Tokyo,
+		Asia/Thimphu,
+		Asia/Tehran,
+		Asia/Tbilisi,
+		Asia/Tashkent,
+		Asia/Taipei,
+		Asia/Singapore,
+		Asia/Shanghai,
+		Asia/Seoul,
+		Asia/Samarkand,
+		Asia/Sakhalin,
+		Asia/Riyadh,
+		Asia/Rangoon,
+		Asia/Qyzylorda,
+		Asia/Qatar,
+		Asia/Pyongyang,
+		Asia/Pontianak,
+		Asia/Phnom_Penh,
+		Asia/Oral,
+		Asia/Omsk,
+		Asia/Novosibirsk,
+		Asia/Novokuznetsk,
+		Asia/Nicosia,
+		Asia/Muscat,
+		Asia/Manila,
+		Asia/Makassar,
+		Asia/Magadan,
+		Asia/Macau,
+		Asia/Kuwait,
+		Asia/Kuching,
+		Asia/Kuala_Lumpur,
+		Asia/Krasnoyarsk,
+		Asia/Kolkata,
+		Asia/Khandyga,
+		Asia/Kathmandu,
+		Asia/Kashgar,
+		Asia/Karachi,
+		Asia/Kamchatka,
+		Asia/Kabul,
+		Asia/Jerusalem,
+		Asia/Jayapura,
+		Asia/Jakarta,
+		Asia/Irkutsk,
+		Asia/Ho_Chi_Minh,
+		Asia/Hovd,
+		Asia/Hong_Kong,
+		Asia/Hebron,
+		Asia/Harbin,
+		Asia/Gaza,
+		Asia/Dushanbe,
+		Asia/Dubai,
+		Asia/Dili,
+		Asia/Dhaka,
+		Asia/Damascus,
+		Asia/Colombo,
+		Asia/Chongqing,
+		Asia/Choibalsan,
+		Asia/Brunei,
+		Asia/Bishkek,
+		Asia/Beirut,
+		Asia/Bangkok,
+		Asia/Baku,
+		Asia/Bahrain,
+		Asia/Baghdad,
+		Asia/Ashgabat,
+		Asia/Aqtobe,
+		Asia/Aqtau,
+		Asia/Anadyr,
+		Asia/Amman,
+		Asia/Almaty,
+		Asia/Aden,
+		Antarctica/Vostok,
+		Antarctica/Troll,
+		Antarctica/Syowa,
+		Antarctica/Rothera,
+		Antarctica/Palmer,
+		Antarctica/Mawson,
+		Antarctica/Macquarie,
+		Antarctica/DumontDUrville,
+		Antarctica/Davis,
+		Antarctica/Casey,
+		America/Yellowknife,
+		America/Yakutat,
+		America/Winnipeg,
+		America/Whitehorse,
+		America/Vancouver,
+		America/Tortola,
+		America/Toronto,
+		America/Tijuana,
+		America/Thunder_Bay,
+		America/Thule,
+		America/Tegucigalpa,
+		America/Swift_Current,
+		America/St_Vincent,
+		America/St_Thomas,
+		America/St_Lucia,
+		America/St_Kitts,
+		America/St_Johns,
+		America/Sitka,
+		America/Scoresbysund,
+		America/Sao_Paulo,
+		America/Santo_Domingo,
+		America/Santiago,
+		America/Santa_Isabel,
+		America/Santarem,
+		America/Rio_Branco,
+		America/Resolute,
+		America/Regina,
+		America/Recife,
+		America/Rankin_Inlet,
+		America/Rainy_River,
+		America/Puerto_Rico,
+		America/Port_of_Spain,
+		America/Porto_Velho,
+		America/Port-au-Prince,
+		America/Phoenix,
+		America/Paramaribo,
+		America/Pangnirtung,
+		America/Panama,
+		America/Ojinaga,
+		America/North_Dakota/New_Salem,
+		America/North_Dakota/Center,
+		America/North_Dakota/Beulah,
+		America/Noronha,
+		America/Nome,
+		America/Nipigon,
+		America/New_York,
+		America/Nassau,
+		America/Montserrat,
+		America/Montreal,
+		America/Montevideo,
+		America/Monterrey,
+		America/Moncton,
+		America/Miquelon,
+		America/Mexico_City,
+		America/Metlakatla,
+		America/Merida,
+		America/Menominee,
+		America/Mazatlan,
+		America/Matamoros,
+		America/Martinique,
+		America/Manaus,
+		America/Managua,
+		America/Maceio,
+		America/Los_Angeles,
+		America/Lima,
+		America/La_Paz,
+		America/Kentucky/Monticello,
+		America/Kentucky/Louisville,
+		America/Juneau,
+		America/Jamaica,
+		America/Iqaluit,
+		America/Inuvik,
+		America/Indiana/Winamac,
+		America/Indiana/Vincennes,
+		America/Indiana/Vevay,
+		America/Indiana/Valparaiso,
+		America/Indiana/Tell_City,
+		America/Indiana/Petersburg,
+		America/Indiana/Marengo,
+		America/Indiana/Knox,
+		America/Indiana/Indianapolis,
+		America/Hermosillo,
+		America/Havana,
+		America/Halifax,
+		America/Guyana,
+		America/Guayaquil,
+		America/Guatemala,
+		America/Guadeloupe,
+		America/Grenada,
+		America/Grand_Turk,
+		America/Goose_Bay,
+		America/Godthab,
+		America/Glace_Bay,
+		America/Fortaleza,
+		America/El_Salvador,
+		America/Eirunepe,
+		America/Edmonton,
+		America/Dominica,
+		America/Detroit,
+		America/Denver,
+		America/Dawson_Creek,
+		America/Dawson,
+		America/Danmarkshavn,
+		America/Curacao,
+		America/Cuiaba,
+		America/Creston,
+		America/Costa_Rica,
+		America/Chihuahua,
+		America/Chicago,
+		America/Cayman,
+		America/Cayenne,
+		America/Caracas,
+		America/Cancun,
+		America/Campo_Grande,
+		America/Cambridge_Bay,
+		America/Boise,
+		America/Bogota,
+		America/Boa_Vista,
+		America/Blanc-Sablon,
+		America/Belize,
+		America/Belem,
+		America/Barbados,
+		America/Bahia_Banderas,
+		America/Bahia,
+		America/Atikokan,
+		America/Asuncion,
+		America/Aruba,
+		America/Argentina/Ushuaia,
+		America/Argentina/Tucuman,
+		America/Argentina/San_Luis,
+		America/Argentina/San_Juan,
+		America/Argentina/Salta,
+		America/Argentina/Rio_Gallegos,
+		America/Argentina/Mendoza,
+		America/Argentina/La_Rioja,
+		America/Argentina/Jujuy,
+		America/Argentina/Cordoba,
+		America/Argentina/Catamarca,
+		America/Argentina/Buenos_Aires,
+		America/Araguaina,
+		America/Antigua,
+		America/Anguilla,
+		America/Anchorage,
+		America/Adak,
+		Africa/Windhoek,
+		Africa/Tunis,
+		Africa/Tripoli,
+		Africa/Sao_Tome,
+		Africa/Porto-Novo,
+		Africa/Ouagadougou,
+		Africa/Nouakchott,
+		Africa/Niamey,
+		Africa/Ndjamena,
+		Africa/Nairobi,
+		Africa/Monrovia,
+		Africa/Mogadishu,
+		Africa/Mbabane,
+		Africa/Maseru,
+		Africa/Maputo,
+		Africa/Malabo,
+		Africa/Lusaka,
+		Africa/Lubumbashi,
+		Africa/Luanda,
+		Africa/Lome,
+		Africa/Libreville,
+		Africa/Lagos,
+		Africa/Kinshasa,
+		Africa/Kigali,
+		Africa/Khartoum,
+		Africa/Kampala,
+		Africa/Johannesburg,
+		Africa/Harare,
+		Africa/Gaborone,
+		Africa/Freetown,
+		Africa/El_Aaiun,
+		Africa/Douala,
+		Africa/Djibouti,
+		Africa/Dar_es_Salaam,
+		Africa/Dakar,
+		Africa/Conakry,
+		Africa/Ceuta,
+		Africa/Casablanca,
+		Africa/Cairo,
+		Africa/Bujumbura,
+		Africa/Brazzaville,
+		Africa/Blantyre,
+		Africa/Banjul,
+		Africa/Bangui,
+		Africa/Bamako,
+		Africa/Asmara,
+		Africa/Algiers,
+		Africa/Addis_Ababa,
+		Africa/Accra,
+		Africa/Abidjan
+}
+
+
+-- this version contains the following modifications:
+-- 1) apply changes now has 2 values, 1 is no operation and 2 applies the changes
+
+elenos OBJECT IDENTIFIER 	::= { enterprises 31946 }
+
+interfaceInfo OBJECT IDENTIFIER 	::= { elenos 1 }
+
+
+information OBJECT IDENTIFIER 	::= { elenos 3 }
+
+
+systemInfo OBJECT IDENTIFIER 	::= { information 1}
+
+-- * --------------------------------------------------------------------------
+
+
+ActivityInfo OBJECT IDENTIFIER 	::= { interfaceInfo 10 }
+
+
+
+HeartBit NOTIFICATION-TYPE
+OBJECTS { Activityinfo }
+STATUS current
+DESCRIPTION
+"Heart-Bit Machine - every 30 sec around"
+::= { ActivityInfo 0 }
+
+
+
+telemetry_version OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		""
+	::= { systemInfo 1 }
+	
+softwareVersion OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Contains the software version number, please comunicate this value in case
+		support is needed"
+	::= { systemInfo 2 }
+
+
+dataMapVersion OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Contains the data map number, please comunicate this value in case
+		support is needed"
+	::= { systemInfo 3 }
+	
+ntp_ipaddress OBJECT-TYPE
+	SYNTAX OCTET STRING
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		""
+	::= { systemInfo 4 }
+	
+transmitter_location OBJECT-TYPE
+	SYNTAX OCTET STRING
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		""
+	::= { systemInfo 5 }
+	
+transmitter_identity OBJECT-TYPE
+	SYNTAX OCTET STRING
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		""
+	::= { systemInfo 6 }
+	
+radio_name OBJECT-TYPE
+	SYNTAX OCTET STRING
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		""
+	::= { systemInfo 7 }
+	
+ntp_timezone OBJECT-TYPE
+    SYNTAX  TimeZone
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+	::= { systemInfo 8 }	
+
+-- * --------------------------------------------------------------------------
+snmpInfo OBJECT IDENTIFIER 	::= { information 2 }
+
+
+community_public OBJECT-TYPE
+	SYNTAX OCTET STRING
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		""
+	::= { snmpInfo 1 }
+	
+community_private OBJECT-TYPE
+	SYNTAX OCTET STRING
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		""
+	::= { snmpInfo 2 }	
+	
+
+	
+sys_location OBJECT-TYPE
+	SYNTAX OCTET STRING
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		""
+	::= { snmpInfo 3 }	
+
+sys_contact OBJECT-TYPE
+	SYNTAX OCTET STRING
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		""
+	::= { snmpInfo 4 }	
+	
+enable_disable_traps OBJECT-TYPE 
+	SYNTAX  State
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		""
+	::= { snmpInfo 5 }	
+	
+	
+--sys_description OBJECT-TYPE
+--	SYNTAX OCTET STRING
+--	ACCESS  read-write
+--	STATUS  mandatory
+--	DESCRIPTION
+--		""
+--	::= { snmpInfo 6 }	
+	
+	
+--sys_name OBJECT-TYPE
+--	SYNTAX OCTET STRING
+--	ACCESS  read-write
+--	STATUS  mandatory
+--	DESCRIPTION
+--		""
+--	::= { snmpInfo 7 }		
+	
+--trap_destination_address OBJECT-TYPE 
+	--SYNTAX OCTET STRING
+	--ACCESS  read-write
+	--STATUS  mandatory
+	--DESCRIPTION
+	--	""
+	--::= { snmpInfo 8 }	
+
+--trap_destination_port OBJECT-TYPE
+	--SYNTAX  INTEGER
+	--ACCESS  read-write
+	--STATUS  mandatory
+	--DESCRIPTION
+	--	""
+	--::= { snmpInfo 9 }		
+	
+
+	
+	
+	
+-- * --------------------------------------------------------------------------
+
+equipment OBJECT IDENTIFIER 	::= { elenos 4 }
+
+-- highPowerFmAmplifiers OBJECT IDENTIFIER 	::= { equipment 1 }
+
+PowerFmAmplifiers OBJECT IDENTIFIER 	::= { equipment 2 }
+
+--PowerFmAmplifiers OBJECT IDENTIFIER 	::= { equipment 3 }
+
+changeOver OBJECT IDENTIFIER 	::= { equipment 4 }
+
+--telemetry OBJECT IDENTIFIER 	::= { equipment 5 }
+
+combinedDevices OBJECT IDENTIFIER 	::= { equipment 6 }
+
+--digitalDevices OBJECT IDENTIFIER 	::= { equipment 50 }
+
+--specialDevices OBJECT IDENTIFIER 	::= { equipment 99 }
+
+END
+-- This MIB was created using NuDesign Team's Visual MIBuilder (Ver 4.7).
+

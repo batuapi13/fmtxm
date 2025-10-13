@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Navigation from "@/components/Navigation";
 import MapPage from "@/pages/MapPage";
 import CardsPage from "@/pages/CardsPage";
+import SiteConfigPage from "@/pages/SiteConfigPage";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 
@@ -17,6 +18,7 @@ function Router() {
         <Route path="/" component={() => <Redirect to="/map" />} />
         <Route path="/map" component={MapPage} />
         <Route path="/cards" component={CardsPage} />
+        <Route path="/site-config" component={SiteConfigPage} />
         {/* Fallback to 404 */}
         <Route component={NotFound} />
       </Switch>

@@ -1,0 +1,886 @@
+-- * -------------------------------------------------------------------------
+-- *
+-- *            (c) Elenos
+-- *            Via G.amendola 9  
+-- *            Poggio Renatico  
+-- *            44028 Ferrara  
+-- *            Italy
+-- *            tel +39 0532 829965
+-- *            fax +39 0532 829177
+-- *            info@elenos.com
+-- *
+-- *            (c) 2000-2011 ELENOS
+-- *            this MIB file is property of ELENOS, no copying nor distribution
+-- *            under any form is permitted without explicit written permission of the 
+-- *            manufacturer.
+-- *
+-- *            ECHOS 7
+-- *
+-- * ---------------------------------------------------------------------------- 
+--      
+-- 
+-- 
+-- 
+
+ELENOS-PRO-ECHOS7-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+	changeOver
+		FROM ELENOS-PRO-MAIN-V103-MIB
+	OBJECT-TYPE
+		FROM RFC-1212;
+	
+
+
+ForceToLoad ::= INTEGER {
+			ForceToLoad(2),
+			default(1) }	
+			
+Origintype ::= INTEGER {
+			SetToorigin(2),
+			default(1) }			
+		
+tx4TcTsFault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 20 }
+
+
+automatic OBJECT-TYPE
+	SYNTAX  Automatic
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { info 1 }
+
+
+correctWorking OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates the correct functioning"
+	::= { states 1 }
+
+
+systemReset OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates that the alarm reset is in progress."
+	::= { states 2 }
+
+
+eepromCksumError OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"This alarm indicates that the persistent data in memory are no longer reliable and the default configuration is loaded on the host device."
+	::= { states 3 }
+
+
+psuWarning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 4 }
+
+
+hardwareFault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 5 }
+
+
+reserveProfileError OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 6 }
+
+
+audioMatrixProfileError OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 7 }
+
+
+tooManyTxToLoad OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 8 }
+
+
+undefinedCoaxPosition OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 9 }
+
+
+coax1Fault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 10 }
+
+
+coax2Fault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 11 }
+
+
+coax3Fault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 12 }
+
+
+coax4Fault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 13 }
+
+
+coax5Fault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 14 }
+
+
+coax6Fault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 15 }
+
+
+reserveTcTsFault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 16 }
+
+
+tx1TcTsFault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 17 }
+
+
+tx2TcTsFault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 18 }
+
+
+tx3TcTsFault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 19 }
+
+
+tx5TcTsFault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 21 }
+
+
+tx6TcTsFault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 22 }
+
+
+tx1IsToLoad OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 23 }
+
+
+tx2IsToLoad OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 24 }
+
+
+tx3IsToLoad OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 25 }
+
+
+tx4IsToLoad OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 26 }
+
+
+tx5ToLoad OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 27 }
+
+
+tx6IsToLoad OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 28 }
+
+
+reserveFault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 29 }
+
+
+tx1Fault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 30 }
+
+
+tx2Fault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 31 }
+
+
+tx3Fault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 32 }
+
+
+tx4Fault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 33 }
+
+
+tx5Fault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 34 }
+
+
+tx6Fault OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 35 }
+
+
+reserveInLocal OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 36 }
+
+
+tx1InLocal OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 37 }
+
+
+tx2InLocal OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 38 }
+
+
+tx3InLocal OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 39 }
+
+
+tx4InLocal OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 40 }
+
+
+tx5InLocal OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 41 }
+
+
+tx6InLocal OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 42 }
+
+
+tx1NotHandled OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 43 }
+	
+
+
+
+-- * --------------------------------------------------------------------------
+echos OBJECT IDENTIFIER 	::= { changeOver 16 }
+
+alarm-reset-comand OBJECT-TYPE
+	SYNTAX  Reset
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION
+		"This comand resets the accumulated alarms"
+	::= { echos 1 }
+
+
+-- * --------------------------------------------------------------------------
+info OBJECT IDENTIFIER 	::= { echos 10 }
+
+
+-- * --------------------------------------------------------------------------
+channels-table OBJECT-TYPE
+	SYNTAX  SEQUENCE OF Channels-entry
+	ACCESS  not-accessible
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { info 103 }
+
+
+channels-entry OBJECT-TYPE
+	SYNTAX  Channels-entry
+	ACCESS  not-accessible
+	STATUS  mandatory
+	DESCRIPTION ""
+	INDEX {
+		channels-index }
+	::= { channels-table 1 }
+
+
+Channels-entry ::= SEQUENCE {
+
+	channels-index             INTEGER,
+	channels-time-warning      INTEGER,
+	channels-time-before       INTEGER,
+	channels-time-after        INTEGER,
+	channels-tx-priority       INTEGER,
+	channels-handled-tx-cmd    INTEGER,
+	channels-I-tx-on           INTEGER,
+	channels-I-tx-remote       INTEGER,
+	channels-I-tx-fault        INTEGER,
+	channels-I-tx-warning      INTEGER,
+	channels-I-local-interlock INTEGER,
+	channels-I-tx-on-f         INTEGER,
+	channels-I-handled-tx      INTEGER,
+	channels-I-coax-load       INTEGER,
+	channels-I-coax-antenna    INTEGER,
+	channels-I-bad-audio       INTEGER }
+
+
+channels-index OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Consecutive number : index of the event in the list."
+	::= { channels-entry 1 }
+
+
+channels-time-warning OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { channels-entry 2 }
+
+
+channels-time-before OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { channels-entry 3 }
+
+
+channels-time-after OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { channels-entry 4 }
+
+
+channels-tx-priority OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { channels-entry 5 }
+
+
+channels-handled-tx-cmd OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { channels-entry 6 }
+
+
+channels-I-tx-on OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { channels-entry 7 }
+
+
+channels-I-tx-remote OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { channels-entry 8 }
+
+
+channels-I-tx-fault OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { channels-entry 9 }
+
+
+channels-I-tx-warning OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { channels-entry 10 }
+
+
+channels-I-local-interlock OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { channels-entry 11 }
+
+
+channels-I-tx-on-f OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { channels-entry 12 }
+
+
+channels-I-handled-tx OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { channels-entry 13 }
+
+
+channels-I-bad-audio OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { channels-entry 14}
+
+
+-- * --------------------------------------------------------------------------
+states OBJECT IDENTIFIER 	::= { echos 60 }
+
+tx2NotHandled OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 44 }
+
+
+tx3NotHandled OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 45 }
+
+
+tx4NotHandled OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 46 }
+
+
+tx5NotHandled OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 47 }
+
+
+tx6NotHandled OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 48 }
+
+
+reserveBadBaseband OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 49 }
+
+
+tx1BadBaseband OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 50 }
+
+
+tx2BadBaseband OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 51 }
+
+
+tx3BadBaseband OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 52 }
+
+
+tx4BadBaseband OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 53 }
+
+
+tx5BadBaseband OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 54 }
+
+
+tx6BadBaseband OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 55 }
+
+
+echosInLocal OBJECT-TYPE
+	SYNTAX  Local-remote
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 56 }
+
+
+echosInManual OBJECT-TYPE
+	SYNTAX  Manual
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 57 }
+
+
+reserveWarning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 58 }
+
+
+tx1Warning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 59 }
+
+
+tx2Warning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 60 }
+
+
+tx3Warning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 61 }
+
+
+tx4Warning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 62 }
+
+
+tx5Warning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 63 }
+
+
+tx6Warning OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { states 64 }
+
+
+numberOfChannels OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { info 18 }
+	
+----------
+reserve_channel OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { info 19 }
+	
+internal_bb_matrix OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { info 20 }
+
+	
+external_bb_channel OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { info 21 }	
+	
+	
+enable_auto_test OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { info 22 }	
+	
+time_hh_auto_test OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { info 23 }		
+	
+time_mm_auto_test OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { info 24 }		
+
+power_up_time OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { info 25 }		
+-------
+
+
+
+
+externalAudioMatrix OBJECT-TYPE
+	SYNTAX  OnOff
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { info 17 }
+
+
+priorityEnable OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { info 97 }
+
+
+originRq OBJECT-TYPE
+	SYNTAX  Origintype
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { info 98 }
+
+
+-- * --------------------------------------------------------------------------
+txOnTable OBJECT-TYPE
+	SYNTAX  SEQUENCE OF TxOnEntry
+	ACCESS  not-accessible
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { info 101 }
+
+
+tx-on-entry OBJECT-TYPE
+	SYNTAX  TxOnEntry
+	ACCESS  not-accessible
+	STATUS  mandatory
+	DESCRIPTION ""
+	INDEX {
+		tx-on-index }
+	::= { txOnTable 1 }
+
+
+TxOnEntry ::= SEQUENCE {
+
+	tx-on-index INTEGER,
+	forceToLoad INTEGER,
+	txOn        INTEGER,
+	txReset     INTEGER }
+
+
+tx-on-index OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-only
+	STATUS  mandatory
+	DESCRIPTION
+		"Consecutive number : index of the event in the list."
+	::= { tx-on-entry 1 }
+
+
+forceToLoad OBJECT-TYPE
+	SYNTAX  ForceToLoad
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { tx-on-entry 2 }
+
+
+txOn OBJECT-TYPE
+	SYNTAX  State
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { tx-on-entry 3 }
+
+
+txReset OBJECT-TYPE
+	SYNTAX  INTEGER
+	ACCESS  read-write
+	STATUS  mandatory
+	DESCRIPTION ""
+	::= { tx-on-entry 4 }
+
+
+END
