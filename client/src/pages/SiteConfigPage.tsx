@@ -5,8 +5,8 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MapPin, Download, Upload, Edit, Plus, Trash2, Power, Settings } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Settings, Plus, Trash2, Download, Upload, Edit, Power } from 'lucide-react';
 import { SiteData } from '@/types/dashboard';
 
 interface TransmitterDevice {
@@ -17,6 +17,7 @@ interface TransmitterDevice {
   channelName: string;
   frequency: string;
   oidOffset: string;
+  ipAddress: string;
 }
 
 interface SiteConfig {
@@ -24,11 +25,6 @@ interface SiteConfig {
   name: string;
   location: string;
   description: string;
-  hostIp: string;
-  port: string;
-  communityString: string;
-  snmpVersion: string;
-  baseOid: string;
   latitude: string;
   longitude: string;
   technician: string;
@@ -37,141 +33,36 @@ interface SiteConfig {
   transmitters: TransmitterDevice[];
 }
 
-const mockSites: SiteData[] = [
-  {
-    id: 'site-1',
-    name: 'Gunung Ulu Kali',
-    location: 'SELANGOR, Malaysia',
-    coordinates: { lat: 3.4048, lng: 101.7680 },
-    broadcaster: 'RTM',
-    overallStatus: 'offline',
-    transmitters: [],
-    activeTransmitterCount: 3,
-    backupTransmitterCount: 1,
-    standbyTransmitterCount: 0,
-    runningActiveCount: 0,
-    runningBackupCount: 0,
-    activeStandbyCount: 0,
-    alerts: 0
-  },
-  {
-    id: 'site-2',
-    name: 'Kuantan | Bukit Pelindung',
-    location: 'PAHANG, Malaysia',
-    coordinates: { lat: 3.8077, lng: 103.3260 },
-    broadcaster: 'RTM',
-    overallStatus: 'offline',
-    transmitters: [],
-    activeTransmitterCount: 1,
-    backupTransmitterCount: 1,
-    standbyTransmitterCount: 0,
-    runningActiveCount: 0,
-    runningBackupCount: 0,
-    activeStandbyCount: 0,
-    alerts: 0
-  },
-  {
-    id: 'site-3',
-    name: 'Penang Hill',
-    location: 'PENANG, Malaysia',
-    coordinates: { lat: 5.4164, lng: 100.3327 },
-    broadcaster: 'RTM',
-    overallStatus: 'offline',
-    transmitters: [],
-    activeTransmitterCount: 1,
-    backupTransmitterCount: 1,
-    standbyTransmitterCount: 0,
-    runningActiveCount: 0,
-    runningBackupCount: 0,
-    activeStandbyCount: 0,
-    alerts: 0
-  },
-  {
-    id: 'site-4',
-    name: 'Mount Santubong',
-    location: 'SARAWAK, Malaysia',
-    coordinates: { lat: 1.7297, lng: 110.3371 },
-    broadcaster: 'RTM',
-    overallStatus: 'offline',
-    transmitters: [],
-    activeTransmitterCount: 1,
-    backupTransmitterCount: 1,
-    standbyTransmitterCount: 0,
-    runningActiveCount: 0,
-    runningBackupCount: 0,
-    activeStandbyCount: 0,
-    alerts: 0
-  }
-];
-
 export default function SiteConfigPage() {
-  const [selectedSite, setSelectedSite] = useState<string | null>('site-1');
+  const [selectedSite, setSelectedSite] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [originalConfig, setOriginalConfig] = useState<SiteConfig | null>(null);
+  const [sites, setSites] = useState<SiteData[]>([]);
   const [siteConfig, setSiteConfig] = useState<SiteConfig>({
-    name: 'Gunung Ulu Kali',
-    location: 'SELANGOR, Malaysia',
-    description: 'Optional description of the site',
-    hostIp: '192.168.1.100',
-    port: '161',
-    communityString: 'public',
-    snmpVersion: 'v2c',
-    baseOid: '1.3.6.1.4.1.12345',
+    name: '',
+    location: '',
+    description: '',
     latitude: '',
     longitude: '',
     technician: '',
     phone: '',
     email: '',
-    transmitters: [
-      {
-        id: '1',
-        type: '1',
-        label: '1',
-        role: 'Active',
-        channelName: 'Eight FM',
-        frequency: '88.1',
-        oidOffset: '.1'
-      },
-      {
-        id: '2',
-        type: '2',
-        label: '2',
-        role: 'Active',
-        channelName: 'GoXuan FM',
-        frequency: '90.5',
-        oidOffset: '.2'
-      },
-      {
-        id: '3',
-        type: '3',
-        label: '3',
-        role: 'Active',
-        channelName: 'IFM 89.9',
-        frequency: '89.9',
-        oidOffset: '.3'
-      },
-      {
-        id: '4',
-        type: '11',
-        label: '11',
-        role: 'Backup',
-        channelName: 'Best FM',
-        frequency: '104.1',
-        oidOffset: '.11'
-      }
-    ]
+    transmitters: []
   });
 
   // Initialize original config when component mounts or site changes
   React.useEffect(() => {
-    if (!originalConfig) {
+    if (!isEditing) {
       setOriginalConfig({ ...siteConfig });
     }
-  }, [siteConfig, originalConfig]);
+  }, [selectedSite, isEditing]);
 
   const handleInputChange = (field: keyof SiteConfig, value: string) => {
-    setSiteConfig(prev => ({ ...prev, [field]: value }));
+    setSiteConfig(prev => ({
+      ...prev,
+      [field]: value
+    }));
     setHasUnsavedChanges(true);
   };
 
@@ -187,14 +78,16 @@ export default function SiteConfigPage() {
 
   const addTransmitter = () => {
     const newTransmitter: TransmitterDevice = {
-      id: Date.now().toString(),
-      type: '',
-      label: '',
+      id: `tx-${Date.now()}`,
+      type: 'FM Transmitter',
+      label: `TX ${siteConfig.transmitters.length + 1}`,
       role: 'Active',
       channelName: '',
       frequency: '',
-      oidOffset: ''
+      oidOffset: '',
+      ipAddress: ''
     };
+    
     setSiteConfig(prev => ({
       ...prev,
       transmitters: [...prev.transmitters, newTransmitter]
@@ -211,29 +104,12 @@ export default function SiteConfigPage() {
   };
 
   const handleSave = () => {
-    // Basic validation
-    if (!siteConfig.name.trim()) {
-      alert('Site name is required');
-      return;
-    }
-    if (!siteConfig.hostIp.trim()) {
-      alert('Host/IP address is required');
-      return;
-    }
-    if (!siteConfig.port.trim()) {
-      alert('Port is required');
-      return;
-    }
-
-    // TODO: Implement actual save functionality (API call)
-    console.log('Saving site configuration:', siteConfig);
-    
-    // Update original config and reset unsaved changes flag
-    setOriginalConfig({ ...siteConfig });
+    // TODO: Implement save functionality
+    console.log('Saving configuration:', siteConfig);
+    setIsEditing(false);
     setHasUnsavedChanges(false);
-    
-    // Show success message (in a real app, this would be a toast notification)
-    alert('Site configuration saved successfully!');
+    setOriginalConfig({ ...siteConfig });
+    alert('Configuration saved successfully!');
   };
 
   const handleCancel = () => {
@@ -250,8 +126,12 @@ export default function SiteConfigPage() {
   };
 
   const handleExport = () => {
-    // TODO: Implement export functionality
-    const dataStr = JSON.stringify(mockSites, null, 2);
+    // Export empty configuration template since no sites are configured
+    const emptyConfig = {
+      sites: [],
+      message: "No sites configured. This is an empty configuration template."
+    };
+    const dataStr = JSON.stringify(emptyConfig, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
     
     const exportFileDefaultName = 'site-configuration.json';
@@ -308,16 +188,15 @@ export default function SiteConfigPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-6">
+    <div className="min-h-screen bg-gray-900 text-white p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center">
-            <span className="text-white font-bold text-sm">FM</span>
-          </div>
-          <h1 className="text-xl font-semibold">Malaysian FM Network Monitor</h1>
+        <div>
+          <h1 className="text-2xl font-bold">FM Transmitter Management</h1>
+          <p className="text-gray-400">Configure and monitor FM transmitter sites</p>
         </div>
-        <div className="flex items-center gap-2">
+        
+        <div className="flex gap-2">
           <Button variant="outline" size="sm" className="border-gray-600 text-gray-300">
             <MapPin className="w-4 h-4 mr-2" />
             Map View
@@ -379,364 +258,364 @@ export default function SiteConfigPage() {
           </div>
 
           <div className="space-y-2">
-            {mockSites.map((site) => (
-              <Card 
-                key={site.id}
-                className={`cursor-pointer transition-colors ${
-                  selectedSite === site.id 
-                    ? 'bg-blue-500/20 border-blue-500/50' 
-                    : 'bg-gray-800/50 border-gray-700 hover:bg-gray-800/70'
-                }`}
-                onClick={() => setSelectedSite(site.id)}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-medium text-sm">{site.name}</h3>
-                    <div className="flex gap-1">
-                      <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
-                        <Power className="w-3 h-3" />
-                      </Button>
-                      <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
-                        <Edit className="w-3 h-3" />
-                      </Button>
-                      <Button size="sm" variant="ghost" className="h-6 w-6 p-0 text-red-400">
-                        <Trash2 className="w-3 h-3" />
-                      </Button>
-                    </div>
-                  </div>
-                  <p className="text-xs text-gray-400 mb-2">{site.location}</p>
-                  
-                  <div className="space-y-2">
-                    <div className="text-xs">
-                      <span className="text-gray-400">SNMP Configuration</span>
-                      <div className="text-gray-300">Host: 192.168.1.100</div>
-                      <div className="text-gray-300">Port: 161</div>
-                      <div className="text-gray-300">Version: v2c</div>
-                      <div className="text-gray-300">Community: public</div>
-                    </div>
-                    
-                    <div className="text-xs">
-                      <span className="text-gray-400">Transmitters ({site.activeTransmitterCount + site.backupTransmitterCount})</span>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {site.id === 'site-1' && (
-                          <>
-                            <Badge variant="secondary" className="text-xs bg-blue-500/20 text-blue-400">
-                              Eight FM (88.1 MHz)
-                            </Badge>
-                            <Badge variant="secondary" className="text-xs bg-blue-500/20 text-blue-400">
-                              GoXuan FM (90.5 MHz)
-                            </Badge>
-                            <Badge variant="secondary" className="text-xs bg-blue-500/20 text-blue-400">
-                              IFM 89.9 (89.9 MHz)
-                            </Badge>
-                          </>
-                        )}
-                        {site.id === 'site-2' && (
-                          <>
-                            <Badge variant="secondary" className="text-xs bg-blue-500/20 text-blue-400">
-                              Traxx FM (90.1 MHz)
-                            </Badge>
-                            <Badge variant="secondary" className="text-xs bg-blue-500/20 text-blue-400">
-                              Minnal FM (95.1 MHz)
-                            </Badge>
-                          </>
-                        )}
-                        {site.id === 'site-3' && (
-                          <>
-                            <Badge variant="secondary" className="text-xs bg-blue-500/20 text-blue-400">
-                              Mix FM (94.5 MHz)
-                            </Badge>
-                            <Badge variant="secondary" className="text-xs bg-blue-500/20 text-blue-400">
-                              Hot FM (97.6 MHz)
-                            </Badge>
-                          </>
-                        )}
-                        {site.id === 'site-4' && (
-                          <>
-                            <Badge variant="secondary" className="text-xs bg-blue-500/20 text-blue-400">
-                              Red FM (104.9 MHz)
-                            </Badge>
-                            <Badge variant="secondary" className="text-xs bg-blue-500/20 text-blue-400">
-                              Cats FM (99.3 MHz)
-                            </Badge>
-                          </>
-                        )}
-                      </div>
-                      <div className="text-gray-500 mt-1">+1 more...</div>
-                    </div>
-                  </div>
+            {sites.length === 0 ? (
+              <Card className="bg-gray-800/50 border-gray-700">
+                <CardContent className="p-4 text-center">
+                  <p className="text-gray-400 text-sm">No sites configured</p>
+                  <p className="text-gray-500 text-xs mt-1">Click "Add Site" to create your first site</p>
                 </CardContent>
               </Card>
-            ))}
+            ) : (
+              sites.map((site) => (
+                <Card 
+                  key={site.id}
+                  className={`cursor-pointer transition-colors ${
+                    selectedSite === site.id 
+                      ? 'bg-blue-500/20 border-blue-500/50' 
+                      : 'bg-gray-800/50 border-gray-700 hover:bg-gray-800/70'
+                  }`}
+                  onClick={() => setSelectedSite(site.id)}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-medium text-sm">{site.name}</h3>
+                      <div className="flex gap-1">
+                        <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
+                          <Power className="w-3 h-3" />
+                        </Button>
+                        <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
+                          <Edit className="w-3 h-3" />
+                        </Button>
+                        <Button size="sm" variant="ghost" className="h-6 w-6 p-0 text-red-400">
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-400 mb-2">{site.location}</p>
+                    
+                    <div className="space-y-2">
+                      <div className="text-xs">
+                        <span className="text-gray-400">SNMP Configuration</span>
+                        <div className="text-gray-300">Host: Not configured</div>
+                        <div className="text-gray-300">Port: Not configured</div>
+                        <div className="text-gray-300">Version: Not configured</div>
+                        <div className="text-gray-300">Community: Not configured</div>
+                      </div>
+                      
+                      <div className="text-xs">
+                        <span className="text-gray-400">Transmitters ({site.activeTransmitterCount + site.backupTransmitterCount})</span>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          <Badge variant="secondary" className="text-xs px-1 py-0">
+                            No transmitters configured
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         </div>
 
-        {/* Right Panel - Site Configuration Form */}
+        {/* Right Panel - Configuration Form */}
         <div className="flex-1">
-          <Card className="bg-gray-800/50 border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-lg">Edit Site</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Basic Information */}
-              <div>
-                <h3 className="text-sm font-medium mb-4">Basic Information</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="siteName" className="text-sm text-gray-300">Site Name</Label>
-                    <Input
-                      id="siteName"
-                      value={siteConfig.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
-                      className="bg-gray-900/50 border-gray-600 text-white"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="location" className="text-sm text-gray-300">Location</Label>
-                    <Input
-                      id="location"
-                      value={siteConfig.location}
-                      onChange={(e) => handleInputChange('location', e.target.value)}
-                      className="bg-gray-900/50 border-gray-600 text-white"
-                    />
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <Label htmlFor="description" className="text-sm text-gray-300">Description</Label>
-                  <Textarea
-                    id="description"
-                    value={siteConfig.description}
-                    onChange={(e) => handleInputChange('description', e.target.value)}
-                    className="bg-gray-900/50 border-gray-600 text-white"
-                    rows={3}
-                  />
-                </div>
-              </div>
-
-              {/* SNMP Configuration */}
-              <div>
-                <h3 className="text-sm font-medium mb-4">SNMP Configuration</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="hostIp" className="text-sm text-gray-300">Host/IP Address</Label>
-                    <Input
-                      id="hostIp"
-                      value={siteConfig.hostIp}
-                      onChange={(e) => handleInputChange('hostIp', e.target.value)}
-                      className="bg-gray-900/50 border-gray-600 text-white"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="port" className="text-sm text-gray-300">Port</Label>
-                    <Input
-                      id="port"
-                      value={siteConfig.port}
-                      onChange={(e) => handleInputChange('port', e.target.value)}
-                      className="bg-gray-900/50 border-gray-600 text-white"
-                    />
+          {selectedSite ? (
+            <Card className="bg-gray-800/50 border-gray-700">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg">Site Configuration</CardTitle>
+                  <div className="flex gap-2">
+                    {!isEditing ? (
+                      <Button 
+                        size="sm" 
+                        onClick={() => setIsEditing(true)}
+                        className="bg-blue-500 hover:bg-blue-600"
+                      >
+                        <Edit className="w-4 h-4 mr-1" />
+                        Edit
+                      </Button>
+                    ) : (
+                      <>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={handleCancel}
+                          className="border-gray-600 text-gray-300"
+                        >
+                          Cancel
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          onClick={handleSave}
+                          className="bg-green-500 hover:bg-green-600"
+                          disabled={!hasUnsavedChanges}
+                        >
+                          Save Changes
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4 mt-4">
-                  <div>
-                    <Label htmlFor="communityString" className="text-sm text-gray-300">Community String</Label>
-                    <Input
-                      id="communityString"
-                      value={siteConfig.communityString}
-                      onChange={(e) => handleInputChange('communityString', e.target.value)}
-                      className="bg-gray-900/50 border-gray-600 text-white"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="snmpVersion" className="text-sm text-gray-300">SNMP Version</Label>
-                    <Select value={siteConfig.snmpVersion} onValueChange={(value) => handleInputChange('snmpVersion', value)}>
-                      <SelectTrigger className="bg-gray-900/50 border-gray-600 text-white">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-gray-800 border-gray-600">
-                        <SelectItem value="v1">v1</SelectItem>
-                        <SelectItem value="v2c">v2c</SelectItem>
-                        <SelectItem value="v3">v3</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="baseOid" className="text-sm text-gray-300">Base OID</Label>
-                    <Input
-                      id="baseOid"
-                      value={siteConfig.baseOid}
-                      onChange={(e) => handleInputChange('baseOid', e.target.value)}
-                      className="bg-gray-900/50 border-gray-600 text-white"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Coordinates */}
-              <div>
-                <h3 className="text-sm font-medium mb-4">Coordinates (Optional)</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="latitude" className="text-sm text-gray-300">Latitude</Label>
-                    <Input
-                      id="latitude"
-                      value={siteConfig.latitude}
-                      onChange={(e) => handleInputChange('latitude', e.target.value)}
-                      className="bg-gray-900/50 border-gray-600 text-white"
-                      placeholder="e.g., 3.1390"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="longitude" className="text-sm text-gray-300">Longitude</Label>
-                    <Input
-                      id="longitude"
-                      value={siteConfig.longitude}
-                      onChange={(e) => handleInputChange('longitude', e.target.value)}
-                      className="bg-gray-900/50 border-gray-600 text-white"
-                      placeholder="e.g., 101.6869"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Contact Information */}
-              <div>
-                <h3 className="text-sm font-medium mb-4">Contact Information (Optional)</h3>
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <Label htmlFor="technician" className="text-sm text-gray-300">Technician</Label>
-                    <Input
-                      id="technician"
-                      value={siteConfig.technician}
-                      onChange={(e) => handleInputChange('technician', e.target.value)}
-                      className="bg-gray-900/50 border-gray-600 text-white"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="phone" className="text-sm text-gray-300">Phone</Label>
-                    <Input
-                      id="phone"
-                      value={siteConfig.phone}
-                      onChange={(e) => handleInputChange('phone', e.target.value)}
-                      className="bg-gray-900/50 border-gray-600 text-white"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="email" className="text-sm text-gray-300">Email</Label>
-                    <Input
-                      id="email"
-                      value={siteConfig.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      className="bg-gray-900/50 border-gray-600 text-white"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Transmitters/Devices */}
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium">Transmitters/Devices</h3>
-                  <Button 
-                    size="sm" 
-                    onClick={addTransmitter}
-                    className="bg-blue-500 hover:bg-blue-600"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Device
-                  </Button>
-                </div>
-                
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Site Information */}
                 <div className="space-y-4">
-                  {siteConfig.transmitters.map((transmitter, index) => (
-                    <div key={transmitter.id} className="border border-gray-600 rounded-lg p-4 space-y-4">
-                      <div className="grid grid-cols-3 gap-4">
-                        <div>
-                          <Label className="text-sm text-gray-300">Type</Label>
-                          <Input
-                            value={transmitter.type}
-                            onChange={(e) => handleTransmitterChange(index, 'type', e.target.value)}
-                            className="bg-gray-900/50 border-gray-600 text-white"
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-sm text-gray-300">Label</Label>
-                          <Input
-                            value={transmitter.label}
-                            onChange={(e) => handleTransmitterChange(index, 'label', e.target.value)}
-                            className="bg-gray-900/50 border-gray-600 text-white"
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-sm text-gray-300">Role</Label>
-                          <Select 
-                            value={transmitter.role} 
-                            onValueChange={(value) => handleTransmitterChange(index, 'role', value as 'Active' | 'Backup' | 'Standby')}
-                          >
-                            <SelectTrigger className="bg-gray-900/50 border-gray-600 text-white">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="bg-gray-800 border-gray-600">
-                              <SelectItem value="Active">Active</SelectItem>
-                              <SelectItem value="Backup">Backup</SelectItem>
-                              <SelectItem value="Standby">Standby</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
+                  <h3 className="text-md font-semibold border-b border-gray-700 pb-2">Site Information</h3>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="siteName">Site Name</Label>
+                      <Input
+                        id="siteName"
+                        value={siteConfig.name}
+                        onChange={(e) => handleInputChange('name', e.target.value)}
+                        disabled={!isEditing}
+                        className="bg-gray-700 border-gray-600"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="location">Location</Label>
+                      <Input
+                        id="location"
+                        value={siteConfig.location}
+                        onChange={(e) => handleInputChange('location', e.target.value)}
+                        disabled={!isEditing}
+                        className="bg-gray-700 border-gray-600"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea
+                      id="description"
+                      value={siteConfig.description}
+                      onChange={(e) => handleInputChange('description', e.target.value)}
+                      disabled={!isEditing}
+                      className="bg-gray-700 border-gray-600"
+                      rows={3}
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="latitude">Latitude</Label>
+                      <Input
+                        id="latitude"
+                        value={siteConfig.latitude}
+                        onChange={(e) => handleInputChange('latitude', e.target.value)}
+                        disabled={!isEditing}
+                        className="bg-gray-700 border-gray-600"
+                        placeholder="e.g., 3.1390"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="longitude">Longitude</Label>
+                      <Input
+                        id="longitude"
+                        value={siteConfig.longitude}
+                        onChange={(e) => handleInputChange('longitude', e.target.value)}
+                        disabled={!isEditing}
+                        className="bg-gray-700 border-gray-600"
+                        placeholder="e.g., 101.6869"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact Information */}
+                <div className="space-y-4">
+                  <h3 className="text-md font-semibold border-b border-gray-700 pb-2">Contact Information</h3>
+                  
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="technician">Site Technician</Label>
+                      <Input
+                        id="technician"
+                        value={siteConfig.technician}
+                        onChange={(e) => handleInputChange('technician', e.target.value)}
+                        disabled={!isEditing}
+                        className="bg-gray-700 border-gray-600"
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="phone">Phone Number</Label>
+                        <Input
+                          id="phone"
+                          value={siteConfig.phone}
+                          onChange={(e) => handleInputChange('phone', e.target.value)}
+                          disabled={!isEditing}
+                          className="bg-gray-700 border-gray-600"
+                        />
                       </div>
                       
-                      <div className="grid grid-cols-3 gap-4">
-                        <div>
-                          <Label className="text-sm text-gray-300">Channel Name</Label>
-                          <Input
-                            value={transmitter.channelName}
-                            onChange={(e) => handleTransmitterChange(index, 'channelName', e.target.value)}
-                            className="bg-gray-900/50 border-gray-600 text-white"
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-sm text-gray-300">Frequency (MHz)</Label>
-                          <Input
-                            value={transmitter.frequency}
-                            onChange={(e) => handleTransmitterChange(index, 'frequency', e.target.value)}
-                            className="bg-gray-900/50 border-gray-600 text-white"
-                          />
-                        </div>
-                        <div className="flex items-end gap-2">
-                          <div className="flex-1">
-                            <Label className="text-sm text-gray-300">OID Offset</Label>
-                            <Input
-                              value={transmitter.oidOffset}
-                              onChange={(e) => handleTransmitterChange(index, 'oidOffset', e.target.value)}
-                              className="bg-gray-900/50 border-gray-600 text-white"
-                            />
-                          </div>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => removeTransmitter(index)}
-                            className="border-red-500/50 text-red-400 hover:bg-red-500/20"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                            Remove
-                          </Button>
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email Address</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          value={siteConfig.email}
+                          onChange={(e) => handleInputChange('email', e.target.value)}
+                          disabled={!isEditing}
+                          className="bg-gray-700 border-gray-600"
+                        />
                       </div>
                     </div>
-                  ))}
+                  </div>
                 </div>
-              </div>
 
-              {/* Form Actions */}
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-600">
-                <Button variant="outline" className="border-gray-600 text-gray-300">
-                  Cancel
-                </Button>
-                <Button className="bg-blue-500 hover:bg-blue-600">
-                  Save
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                {/* Transmitter Configuration */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-md font-semibold border-b border-gray-700 pb-2">Transmitter Configuration</h3>
+                    {isEditing && (
+                      <Button 
+                        size="sm" 
+                        onClick={addTransmitter}
+                        className="bg-green-500 hover:bg-green-600"
+                      >
+                        <Plus className="w-4 h-4 mr-1" />
+                        Add Transmitter
+                      </Button>
+                    )}
+                  </div>
+                  
+                  {siteConfig.transmitters.length === 0 ? (
+                    <div className="text-center py-8 text-gray-400">
+                      <p>No transmitters configured</p>
+                      {isEditing && (
+                        <p className="text-sm mt-1">Click "Add Transmitter" to configure your first transmitter</p>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {siteConfig.transmitters.map((transmitter, index) => (
+                        <Card key={transmitter.id} className="bg-gray-700/50 border-gray-600">
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between mb-4">
+                              <h4 className="font-medium">Transmitter {index + 1}</h4>
+                              {isEditing && (
+                                <Button 
+                                  size="sm" 
+                                  variant="ghost" 
+                                  onClick={() => removeTransmitter(index)}
+                                  className="text-red-400 hover:text-red-300"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              )}
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label>Type</Label>
+                                <Select 
+                                  value={transmitter.type} 
+                                  onValueChange={(value) => handleTransmitterChange(index, 'type', value)}
+                                  disabled={!isEditing}
+                                >
+                                  <SelectTrigger className="bg-gray-600 border-gray-500">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="FM Transmitter">FM Transmitter</SelectItem>
+                                    <SelectItem value="AM Transmitter">AM Transmitter</SelectItem>
+                                    <SelectItem value="Digital Transmitter">Digital Transmitter</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label>Label</Label>
+                                <Input
+                                  value={transmitter.label}
+                                  onChange={(e) => handleTransmitterChange(index, 'label', e.target.value)}
+                                  disabled={!isEditing}
+                                  className="bg-gray-600 border-gray-500"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label>Role</Label>
+                                <Select 
+                                  value={transmitter.role} 
+                                  onValueChange={(value) => handleTransmitterChange(index, 'role', value as 'Active' | 'Backup' | 'Standby')}
+                                  disabled={!isEditing}
+                                >
+                                  <SelectTrigger className="bg-gray-600 border-gray-500">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="Active">Active</SelectItem>
+                                    <SelectItem value="Backup">Backup</SelectItem>
+                                    <SelectItem value="Standby">Standby</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label>Channel Name</Label>
+                                <Input
+                                  value={transmitter.channelName}
+                                  onChange={(e) => handleTransmitterChange(index, 'channelName', e.target.value)}
+                                  disabled={!isEditing}
+                                  className="bg-gray-600 border-gray-500"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label>Frequency (MHz)</Label>
+                                <Input
+                                  value={transmitter.frequency}
+                                  onChange={(e) => handleTransmitterChange(index, 'frequency', e.target.value)}
+                                  disabled={!isEditing}
+                                  className="bg-gray-600 border-gray-500"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label>IP Address</Label>
+                                <Input
+                                  value={transmitter.ipAddress}
+                                  onChange={(e) => handleTransmitterChange(index, 'ipAddress', e.target.value)}
+                                  disabled={!isEditing}
+                                  className="bg-gray-600 border-gray-500"
+                                />
+                              </div>
+                            </div>
+                            
+                            <div className="mt-4">
+                              <Label>SNMP OID Offset</Label>
+                              <Input
+                                value={transmitter.oidOffset}
+                                onChange={(e) => handleTransmitterChange(index, 'oidOffset', e.target.value)}
+                                disabled={!isEditing}
+                                className="bg-gray-600 border-gray-500 mt-2"
+                                placeholder="e.g., 1.3.6.1.4.1.12345.1.1"
+                              />
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="bg-gray-800/50 border-gray-700">
+              <CardContent className="p-8 text-center">
+                <MapPin className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium mb-2">No Site Selected</h3>
+                <p className="text-gray-400">Select a site from the left panel to configure its settings</p>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

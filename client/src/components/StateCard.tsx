@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import SiteCard from './SiteCard';
-import { MapPin, Wifi, AlertTriangle } from 'lucide-react';
+import { MapPin, Wifi, AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
 import type { SiteData } from '@/types/dashboard';
 import { extractAlarmsFromSites } from '@/utils/siteDataLoader';
 
@@ -12,6 +13,7 @@ interface StateCardProps {
 }
 
 export default function StateCard({ state, sites, onSiteClick }: StateCardProps) {
+  const [isExpanded, setIsExpanded] = useState(true);
   // Calculate state-level statistics
   const totalSites = sites.length;
   const operationalSites = sites.filter(site => site.overallStatus === 'operational').length;
@@ -25,7 +27,10 @@ export default function StateCard({ state, sites, onSiteClick }: StateCardProps)
 
   return (
     <Card className="border-card-border">
-      <CardHeader className="pb-4">
+      <CardHeader 
+        className="pb-4 cursor-pointer hover:bg-muted/50 transition-colors" 
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
         <div className="flex items-start justify-between">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
@@ -54,20 +59,30 @@ export default function StateCard({ state, sites, onSiteClick }: StateCardProps)
               )}
             </div>
           </div>
+          
+          <div className="flex items-center">
+            {isExpanded ? (
+              <ChevronUp className="w-5 h-5 text-muted-foreground" />
+            ) : (
+              <ChevronDown className="w-5 h-5 text-muted-foreground" />
+            )}
+          </div>
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          {sortedSites.map(site => (
-            <SiteCard 
-              key={site.id} 
-              site={site} 
-              onSiteClick={onSiteClick}
-            />
-          ))}
-        </div>
-      </CardContent>
+      {isExpanded && (
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+            {sortedSites.map(site => (
+              <SiteCard 
+                key={site.id} 
+                site={site} 
+                onSiteClick={onSiteClick}
+              />
+            ))}
+          </div>
+        </CardContent>
+      )}
     </Card>
   );
 }

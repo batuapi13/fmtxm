@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertTriangle, MapPin, Wifi, Activity } from 'lucide-react';
-import { loadSiteData, extractAlarmsFromSites, type AlarmData } from '@/utils/siteDataLoader';
+import { extractAlarmsFromSites, type AlarmData } from '@/utils/siteDataLoader';
+import { snmpService } from '@/services/snmpService';
 import type { SiteData, TransmitterData } from '@/types/dashboard';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -37,18 +38,89 @@ export default function MapPage() {
   const [alarms, setAlarms] = useState<AlarmData[]>([]);
   const [focusTarget, setFocusTarget] = useState<{ lat: number; lng: number } | null>(null);
   const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
+  const [transmitters, setTransmitters] = useState<any[]>([]);
+  const [dbSites, setDbSites] = useState<any[]>([]);
+
+  // Convert raw transmitter and site data to SiteData format
+  const convertMetricsToSiteData = (transmitters: any[], sites: any[], metrics: any[]): SiteData[] => {
+    return sites.map(site => {
+      const siteTransmitters = transmitters.filter(t => t.siteId === site.id);
+      const siteMetrics = metrics.filter(m => siteTransmitters.some(t => t.id === m.transmitterId));
+      
+      const transmitterData: TransmitterData[] = siteTransmitters.map(transmitter => {
+        const metric = siteMetrics.find(m => m.transmitterId === transmitter.id);
+        
+        return {
+          id: transmitter.id,
+          name: transmitter.name,
+          type: transmitter.type?.toString() || '1',
+          role: transmitter.role === 'main' ? 'active' : transmitter.role === 'backup' ? 'backup' : 'standby',
+          status: metric ? (metric.isOnline ? 'operational' : 'offline') : 'offline',
+          frequency: metric?.frequency || 0,
+          power: metric?.power || 0,
+          transmitPower: metric?.transmitPower || 0,
+          reflectPower: metric?.reflectPower || 0,
+          mainAudio: metric?.mainAudio || 0,
+          backupAudio: metric?.backupAudio || 0,
+          connectivity: metric?.isOnline ? 'connected' : 'disconnected',
+          lastSeen: metric?.timestamp ? new Date(metric.timestamp) : new Date(),
+          isTransmitting: metric?.isTransmitting || false
+        };
+      });
+
+      const operationalCount = transmitterData.filter(t => t.status === 'operational').length;
+      const warningCount = transmitterData.filter(t => t.status === 'warning').length;
+      const errorCount = transmitterData.filter(t => t.status === 'error').length;
+      const offlineCount = transmitterData.filter(t => t.status === 'offline').length;
+
+      let overallStatus: 'operational' | 'warning' | 'error' | 'offline' = 'operational';
+      if (errorCount > 0) overallStatus = 'error';
+      else if (warningCount > 0) overallStatus = 'warning';
+      else if (offlineCount === transmitterData.length) overallStatus = 'offline';
+
+      return {
+        id: site.id,
+        name: site.name,
+        state: site.state,
+        coordinates: { lat: site.latitude, lng: site.longitude },
+        status: overallStatus,
+        transmitters: transmitterData,
+        totalTransmitters: transmitterData.length,
+        operationalCount,
+        warningCount,
+        errorCount,
+        offlineCount
+      };
+    });
+  };
 
   // Load and set up data
   useEffect(() => {
     const initializeData = async () => {
       setIsLoading(true);
-      const data = await loadSiteData();
-      setSites(data);
-      
-      // Extract alarms using shared function
-      const extractedAlarms = extractAlarmsFromSites(data);
-      setAlarms(extractedAlarms);
-      setIsLoading(false);
+      try {
+        // Fetch data from database
+        const [transmittersData, sitesData, latestMetrics] = await Promise.all([
+          snmpService.getTransmitters(),
+          snmpService.getSites(),
+          snmpService.getLatestTransmitterMetrics()
+        ]);
+
+        setTransmitters(transmittersData);
+        setDbSites(sitesData);
+
+        // Convert to SiteData format
+        const siteData = convertMetricsToSiteData(transmittersData, sitesData, latestMetrics);
+        setSites(siteData);
+        
+        // Extract alarms using shared function
+        const extractedAlarms = extractAlarmsFromSites(siteData);
+        setAlarms(extractedAlarms);
+      } catch (error) {
+        console.error('Failed to load data:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     initializeData();

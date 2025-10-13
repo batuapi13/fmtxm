@@ -10,16 +10,21 @@ interface TransmitterCardProps {
 }
 
 export default function TransmitterCard({ transmitter, isActive = false }: TransmitterCardProps) {
+  
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'operational': return 'text-status-operational';
-      case 'warning': return 'text-status-warning';
-      case 'error': return 'text-status-error';
-      case 'offline': return 'text-status-error';
-      default: return 'text-muted-foreground';
+      case 'operational':
+        return 'text-status-operational';
+      case 'warning':
+        return 'text-status-warning';
+      case 'error':
+      case 'offline':
+        return 'text-status-error';
+      default:
+        return 'text-muted-foreground';
     }
   };
-  
+
   return (
     <Card className={`border-card-border hover-elevate ${isActive ? 'ring-2 ring-primary' : ''}`}>
       <CardHeader className="pb-2">
@@ -35,7 +40,7 @@ export default function TransmitterCard({ transmitter, isActive = false }: Trans
             className="text-xs px-1 py-0 w-fit"
             data-testid={`status-badge-${transmitter.type}`}
           >
-            {isActive ? 'Active' : 'Standby'}
+            {transmitter.status === 'operational' ? 'Active' : transmitter.status === 'warning' ? 'Standby' : 'Offline'}
           </Badge>
           <div className="text-xs text-muted-foreground font-mono" data-testid={`channel-name-${transmitter.type}`}>
             {transmitter.channelName}

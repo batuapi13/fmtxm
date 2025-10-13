@@ -2,77 +2,94 @@ import MalaysiaMap from '../MalaysiaMap';
 import type { SiteData } from '@/types/dashboard';
 
 export default function MalaysiaMapExample() {
-  //todo: remove mock functionality
   const mockSites: SiteData[] = [
     {
       id: 'site001',
-      name: 'Downtown FM',
+      name: 'KL Tower',
       location: 'Kuala Lumpur',
+      coordinates: { lat: 3.1478, lng: 101.6953 },
+      broadcaster: 'KL Broadcasting',
       overallStatus: 'operational',
-      activeTransmitter: 'main',
-      transmitters: {
-        main: {
+      activeTransmitterCount: 1,
+      backupTransmitterCount: 1,
+      standbyTransmitterCount: 0,
+      runningActiveCount: 1,
+      runningBackupCount: 0,
+      activeStandbyCount: 0,
+      transmitters: [
+        {
           id: 'tx001',
-          type: 'main',
+          type: '1',
+          role: 'active',
+          label: '1',
+          channelName: 'KL FM',
+          frequency: '95.8',
           status: 'operational',
           transmitPower: 950,
           reflectPower: 15,
           mainAudio: true,
           backupAudio: true,
           connectivity: true,
-          lastSeen: '2 seconds ago'
+          lastSeen: '2 seconds ago',
+          isTransmitting: true
         },
-        reserve: {
+        {
           id: 'tx002',
-          type: 'reserve',
+          type: 'backup1',
+          role: 'backup',
+          label: 'Backup 1',
+          channelName: 'Reserve',
+          frequency: '95.8',
           status: 'operational',
           transmitPower: 0,
           reflectPower: 0,
           mainAudio: true,
           backupAudio: true,
           connectivity: true,
-          lastSeen: '5 seconds ago'
+          lastSeen: '5 seconds ago',
+          isTransmitting: false
         }
-      },
+      ],
       alerts: 0
     },
     {
       id: 'site002',
       name: 'Valley Station',
       location: 'Selangor',
+      coordinates: { lat: 3.0738, lng: 101.5183 },
+      broadcaster: 'Valley Broadcasting',
       overallStatus: 'warning',
-      activeTransmitter: 'main',
-      transmitters: {
-        main: {
+      activeTransmitterCount: 1,
+      backupTransmitterCount: 1,
+      standbyTransmitterCount: 0,
+      runningActiveCount: 1,
+      runningBackupCount: 0,
+      activeStandbyCount: 0,
+      transmitters: [
+        {
           id: 'tx003',
-          type: 'main',
+          type: '1',
+          role: 'active',
+          label: '1',
+          channelName: 'Valley FM',
+          frequency: '102.3',
           status: 'warning',
           transmitPower: 820,
-          reflectPower: 65,
+          reflectPower: 25,
           mainAudio: true,
           backupAudio: false,
           connectivity: true,
-          lastSeen: '1 minute ago'
-        },
-        reserve: {
-          id: 'tx004',
-          type: 'reserve',
-          status: 'operational',
-          transmitPower: 0,
-          reflectPower: 0,
-          mainAudio: true,
-          backupAudio: true,
-          connectivity: true,
-          lastSeen: '3 seconds ago'
+          lastSeen: '8 seconds ago',
+          isTransmitting: true
         }
-      },
-      alerts: 2
+      ],
+      alerts: 1
     }
   ];
 
   return (
-    <div className="max-w-4xl">
-      <MalaysiaMap sites={mockSites} selectedSiteId="site001" />
+    <div className="w-full h-96">
+      <MalaysiaMap sites={mockSites} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { MapPin, Layers, Settings } from 'lucide-react';
+import { MapPin, Layers, Settings, Network } from 'lucide-react';
 
 export default function Navigation() {
   const [location] = useLocation();
@@ -38,6 +38,30 @@ export default function Navigation() {
               >
                 <Layers className="w-4 h-4" />
                 Site Cards
+              </Button>
+            </Link>
+            
+            <Link href="/snmp-devices">
+              <Button 
+                variant={location === '/snmp-devices' ? 'default' : 'ghost'}
+                size="sm"
+                className="flex items-center gap-2"
+                data-testid="nav-snmp-devices"
+              >
+                <Network className="w-4 h-4" />
+                SNMP Devices
+              </Button>
+            </Link>
+            
+            <Link href="/snmp-config">
+              <Button 
+                variant={location === '/snmp-config' ? 'default' : 'ghost'}
+                size="sm"
+                className="flex items-center gap-2"
+                data-testid="nav-snmp-config"
+              >
+                <Settings className="w-4 h-4" />
+                SNMP Config
               </Button>
             </Link>
             

@@ -7,6 +7,8 @@ import Navigation from "@/components/Navigation";
 import MapPage from "@/pages/MapPage";
 import CardsPage from "@/pages/CardsPage";
 import SiteConfigPage from "@/pages/SiteConfigPage";
+import SNMPConfigPage from "@/pages/SNMPConfigPage";
+import SNMPDevicesPage from "@/pages/SNMPDevicesPage";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 
@@ -19,6 +21,8 @@ function Router() {
         <Route path="/map" component={MapPage} />
         <Route path="/cards" component={CardsPage} />
         <Route path="/site-config" component={SiteConfigPage} />
+        <Route path="/snmp-config" component={SNMPConfigPage} />
+        <Route path="/snmp-devices" component={SNMPDevicesPage} />
         {/* Fallback to 404 */}
         <Route component={NotFound} />
       </Switch>
