@@ -5,9 +5,91 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import StateCard from '@/components/StateCard';
 import { Search, Filter, RefreshCw, Settings, Layers } from 'lucide-react';
-import { loadSiteData, extractAlarmsFromSites } from '@/utils/siteDataLoader';
+import { extractAlarmsFromSites } from '@/utils/siteDataLoader';
+import { snmpService } from '@/services/snmpService';
 import type { SiteData } from '@/types/dashboard';
 
+
+// Convert raw transmitter and site data to SiteData format
+const convertMetricsToSiteData = (transmitters: any[], sites: any[], latestMetrics: any[]): SiteData[] => {
+  // Group transmitters by site
+  const transmittersBySite = transmitters.reduce((acc: Record<string, any[]>, transmitter: any) => {
+    const siteId = transmitter.site_id;
+    if (!acc[siteId]) {
+      acc[siteId] = [];
+    }
+    acc[siteId].push(transmitter);
+    return acc;
+  }, {} as Record<string, any[]>);
+
+  // Create metrics lookup
+  const metricsLookup = latestMetrics.reduce((acc: Record<string, any>, item: any) => {
+    acc[item.transmitterId] = item.metrics;
+    return acc;
+  }, {} as Record<string, any>);
+
+  return sites.map((site: any): SiteData => {
+    const siteTransmitters = transmittersBySite[site.id] || [];
+    
+    const transmitterData: any[] = siteTransmitters.map((transmitter: any) => {
+      const metrics = metricsLookup[transmitter.id] || {};
+      
+      return {
+        id: transmitter.id,
+        label: transmitter.label || transmitter.name,
+        type: (transmitter.type || '1'),
+        role: (transmitter.role || 'active'),
+        status: (transmitter.status || 'offline'),
+        channelName: transmitter.channel_name || 'Unknown',
+        frequency: transmitter.frequency?.toString() || '0.0',
+        transmitPower: metrics.transmit_power || 0,
+        reflectPower: metrics.reflect_power || 0,
+        mainAudio: metrics.main_audio || false,
+        backupAudio: metrics.backup_audio || false,
+        connectivity: metrics.connectivity || false,
+        lastSeen: metrics.last_seen ? new Date(metrics.last_seen).toISOString() : new Date().toISOString(),
+        isTransmitting: metrics.is_transmitting || false
+      };
+    });
+
+    // Calculate counts
+    const activeCount = transmitterData.filter(t => t.role === 'active').length;
+    const backupCount = transmitterData.filter(t => t.role === 'backup').length;
+    const standbyCount = transmitterData.filter(t => t.role === 'standby').length;
+    const runningCount = transmitterData.filter(t => t.isTransmitting).length;
+    const alertCount = transmitterData.filter(t => t.status === 'error' || t.status === 'warning').length;
+
+    // Determine overall status
+    let overallStatus = 'operational';
+    if (alertCount > 0) {
+      overallStatus = 'error';
+    } else if (runningCount === 0) {
+      overallStatus = 'offline';
+    } else if (runningCount < activeCount) {
+      overallStatus = 'warning';
+    }
+
+    return {
+      id: site.id,
+      name: site.name,
+      location: site.location || 'Unknown',
+      coordinates: {
+        lat: site.latitude || 0,
+        lng: site.longitude || 0
+      },
+      broadcaster: site.broadcaster || 'Unknown',
+      transmitters: transmitterData,
+      overallStatus,
+      alerts: alertCount,
+      activeTransmitterCount: activeCount,
+      backupTransmitterCount: backupCount,
+      standbyTransmitterCount: standbyCount,
+      runningActiveCount: runningCount,
+      runningBackupCount: transmitterData.filter(t => t.role === 'backup' && t.isTransmitting).length,
+      activeStandbyCount: transmitterData.filter(t => t.role === 'standby' && t.isTransmitting).length
+    };
+  });
+};
 
 export default function CardsPage() {
   const [sites, setSites] = useState<SiteData[]>([]);
@@ -16,20 +98,39 @@ export default function CardsPage() {
   const [statusFilter, setStatusFilter] = useState<'all' | 'operational' | 'warning' | 'error'>('all');
   const [isLoading, setIsLoading] = useState(true);
   const [totalAlarms, setTotalAlarms] = useState(0);
+  const [transmitters, setTransmitters] = useState<any[]>([]);
+  const [dbSites, setDbSites] = useState<any[]>([]);
 
-  // Load and set up data
+  // Initialize data from database
   useEffect(() => {
     const initializeData = async () => {
-      setIsLoading(true);
-      const data = await loadSiteData();
-      setSites(data);
-      setFilteredSites(data);
-      
-      // Use centralized alarm extraction to ensure consistency with MapPage
-      const alarms = extractAlarmsFromSites(data);
-      setTotalAlarms(alarms.length);
-      
-      setIsLoading(false);
+      try {
+        setIsLoading(true);
+        
+        // Fetch transmitters and sites from database
+        const [transmittersData, sitesData] = await Promise.all([
+          snmpService.getTransmitters(),
+          snmpService.getSites()
+        ]);
+        
+        setTransmitters(transmittersData);
+        setDbSites(sitesData);
+        
+        // Get latest metrics and convert to site data
+        const latestMetrics = await snmpService.getLatestTransmitterMetrics();
+        const siteData = convertMetricsToSiteData(transmittersData, sitesData, latestMetrics);
+        
+        setSites(siteData);
+        setFilteredSites(siteData);
+        
+        // Use centralized alarm extraction to ensure consistency with MapPage
+        const alarms = extractAlarmsFromSites(siteData);
+        setTotalAlarms(alarms.length);
+      } catch (error) {
+        console.error('Failed to initialize cards page data:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     initializeData();
@@ -75,8 +176,20 @@ export default function CardsPage() {
     console.log(`Site selected: ${siteId}`);
   };
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     console.log('Refreshing all site data...');
+    try {
+      const latestMetrics = await snmpService.getLatestTransmitterMetrics();
+      const updatedSiteData = convertMetricsToSiteData(transmitters, dbSites, latestMetrics);
+      setSites(updatedSiteData);
+      setFilteredSites(updatedSiteData);
+      
+      // Update alarms count
+      const alarms = extractAlarmsFromSites(updatedSiteData);
+      setTotalAlarms(alarms.length);
+    } catch (error) {
+      console.error('Failed to refresh data:', error);
+    }
   };
 
   const handleSettings = () => {
