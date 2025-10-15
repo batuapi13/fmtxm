@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import StateCard from '@/components/StateCard';
-import { Search, Filter, RefreshCw, Settings, Layers } from 'lucide-react';
+import { Search, Filter, RefreshCw, Layers } from 'lucide-react';
 import { extractAlarmsFromSites } from '@/utils/siteDataLoader';
 import { snmpService } from '@/services/snmpService';
 import type { SiteData, TransmitterData, TransmitterStatus, TransmitterType, TransmitterRole } from '@/types/dashboard';
@@ -201,9 +201,7 @@ export default function CardsPage() {
     }
   };
 
-  const handleSettings = () => {
-    console.log('Opening SNMP configuration settings...');
-  };
+  
 
   if (isLoading) {
     return (
@@ -244,10 +242,6 @@ export default function CardsPage() {
             <Button variant="outline" size="sm" onClick={handleRefresh}>
               <RefreshCw className="w-4 h-4 mr-2" />
               Refresh
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleSettings}>
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
             </Button>
           </div>
         </div>
