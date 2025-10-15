@@ -4,7 +4,7 @@ import path from "path";
 import { createServer as createViteServer, createLogger } from "vite";
 import { type Server } from "http";
 import viteConfig from "../vite.config";
-import { nanoid } from "nanoid";
+// Removed nanoid; we will use a stable query param for main.tsx during dev
 
 const viteLogger = createLogger();
 
@@ -24,7 +24,9 @@ export async function setupVite(app: Express, server: Server) {
   const __dirname = path.dirname(new URL(import.meta.url).pathname);
   const serverOptions = {
     middlewareMode: true,
-    hmr: { port: 5000, clientPort: 5000 },
+    // Disable HMR on a conflicting port to avoid EADDRINUSE on 5000
+    // You can set this back or customize ports if needed.
+    hmr: false,
     allowedHosts: true as const,
   };
 
@@ -57,11 +59,12 @@ export async function setupVite(app: Express, server: Server) {
         "index.html",
       );
 
-      // always reload the index.html file from disk incase it changes
+      // always reload the index.html file from disk in case it changes
+      // use a stable query param to avoid forcing a full reload each request
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
       template = template.replace(
         `src="/src/main.tsx"`,
-        `src="/src/main.tsx?v=${nanoid()}"`,
+        `src="/src/main.tsx?v=dev"`,
       );
       const page = await vite.transformIndexHtml(url, template);
       res.status(200).set({ "Content-Type": "text/html" }).end(page);

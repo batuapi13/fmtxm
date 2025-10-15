@@ -286,7 +286,6 @@ export default function MapPage() {
                       <div className="text-sm">
                         <div>Active TX: {site.runningActiveCount}/{site.activeTransmitterCount}</div>
                         <div>Backup TX: {site.runningBackupCount}/{site.backupTransmitterCount}</div>
-                        <div>Standby Pool: {site.activeStandbyCount}/{site.standbyTransmitterCount}</div>
                       </div>
                     </div>
                   </Popup>
