@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import { transmitters, transmitterMetrics, sites } from '../../shared/schema';
+import { transmitters, transmitterMetrics, sites, alarms } from '../../shared/schema';
 import { eq, desc, and, gte, lte } from 'drizzle-orm';
 import type { DeviceResult } from './snmp-poller';
 
@@ -24,6 +24,66 @@ export interface TransmitterMetricData {
 }
 
 export class DatabaseService {
+  // Normalize a site row to ensure contactInfo is an object
+  private normalizeSite(row: any): any {
+    if (!row) return row;
+    let contact = row.contactInfo;
+    if (contact) {
+      if (typeof contact === 'string') {
+        const trimmed = contact.trim();
+        try {
+          const parsed = JSON.parse(trimmed);
+          if (parsed && typeof parsed === 'object') {
+            contact = parsed;
+          } else {
+            contact = { technician: '', phone: '', email: contact };
+          }
+        } catch (_) {
+          // If it's not valid JSON, treat as legacy email string
+          contact = { technician: '', phone: '', email: contact };
+        }
+      }
+      // if it's already an object, leave as is
+    } else {
+      contact = null;
+    }
+    return { ...row, contactInfo: contact };
+  }
+  /**
+   * Get a single transmitter by ID
+   */
+  async getTransmitterById(transmitterId: string): Promise<any | null> {
+    try {
+      const rows = await db
+        .select()
+        .from(transmitters)
+        .where(eq(transmitters.id, transmitterId))
+        .limit(1);
+      return rows[0] || null;
+    } catch (error) {
+      console.error('Failed to get transmitter by id:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get a single site by ID
+   */
+  async getSiteById(siteId: string): Promise<any | null> {
+    try {
+      const rows = await db
+        .select()
+        .from(sites)
+        .where(eq(sites.id, siteId))
+        .limit(1);
+      const row = rows[0] || null;
+      return row ? this.normalizeSite(row) : null;
+    } catch (error) {
+      console.error('Failed to get site by id:', error);
+      throw error;
+    }
+  }
+
   /**
    * Store SNMP poll result in the database
    */
@@ -171,6 +231,15 @@ export class DatabaseService {
    */
   async upsertTransmitter(transmitterData: any): Promise<any> {
     try {
+      // If no ID provided, insert as new transmitter
+      if (!transmitterData.id) {
+        const [inserted] = await db
+          .insert(transmitters)
+          .values(transmitterData)
+          .returning();
+        return inserted;
+      }
+
       // Check if transmitter exists
       const existing = await db
         .select()
@@ -208,9 +277,118 @@ export class DatabaseService {
    */
   async getAllSites(): Promise<any[]> {
     try {
-      return await db.select().from(sites);
+      const rows = await db.select().from(sites);
+      return rows.map((row) => this.normalizeSite(row));
     } catch (error) {
       console.error('Failed to get sites:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Create a new site
+   */
+  async createSite(siteData: any): Promise<any> {
+    try {
+      const [newSite] = await db.insert(sites).values({
+        name: siteData.name,
+        location: siteData.location,
+        latitude: siteData.latitude ? parseFloat(siteData.latitude) : null,
+        longitude: siteData.longitude ? parseFloat(siteData.longitude) : null,
+        address: siteData.address || null,
+        contactInfo: siteData.contactInfo
+          ? (typeof siteData.contactInfo === 'string'
+              ? siteData.contactInfo
+              : JSON.stringify(siteData.contactInfo))
+          : null,
+        isActive: siteData.isActive !== undefined ? siteData.isActive : true,
+      }).returning();
+      return this.normalizeSite(newSite);
+    } catch (error) {
+      console.error('Failed to create site:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update an existing site
+   */
+  async updateSite(siteId: string, updates: any): Promise<any> {
+    try {
+      const data: any = { updatedAt: new Date() };
+
+      if (Object.prototype.hasOwnProperty.call(updates, 'name')) {
+        data.name = updates.name;
+      }
+      if (Object.prototype.hasOwnProperty.call(updates, 'location')) {
+        data.location = updates.location;
+      }
+      if (Object.prototype.hasOwnProperty.call(updates, 'latitude')) {
+        data.latitude = updates.latitude !== null && updates.latitude !== undefined
+          ? parseFloat(updates.latitude)
+          : null;
+      }
+      if (Object.prototype.hasOwnProperty.call(updates, 'longitude')) {
+        data.longitude = updates.longitude !== null && updates.longitude !== undefined
+          ? parseFloat(updates.longitude)
+          : null;
+      }
+      if (Object.prototype.hasOwnProperty.call(updates, 'address')) {
+        data.address = updates.address ?? null;
+      }
+      if (Object.prototype.hasOwnProperty.call(updates, 'contactInfo')) {
+        data.contactInfo = updates.contactInfo
+          ? (typeof updates.contactInfo === 'string'
+              ? updates.contactInfo
+              : JSON.stringify(updates.contactInfo))
+          : null;
+      }
+      if (Object.prototype.hasOwnProperty.call(updates, 'isActive')) {
+        data.isActive = updates.isActive;
+      }
+
+      const [updated] = await db
+        .update(sites)
+        .set(data)
+        .where(eq(sites.id, siteId))
+        .returning();
+
+      return this.normalizeSite(updated);
+    } catch (error) {
+      console.error('Failed to update site:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete a site and cascade delete related transmitters, metrics, and alarms
+   */
+  async deleteSite(siteId: string): Promise<boolean> {
+    try {
+      // Fetch transmitters for the site
+      const siteTransmitters = await db
+        .select()
+        .from(transmitters)
+        .where(eq(transmitters.siteId, siteId));
+
+      // Delete metrics and alarms for each transmitter
+      for (const tx of siteTransmitters) {
+        await db.delete(transmitterMetrics).where(eq(transmitterMetrics.transmitterId, tx.id));
+        await db.delete(alarms).where(eq(alarms.transmitterId, tx.id));
+      }
+
+      // Delete transmitters for the site
+      await db.delete(transmitters).where(eq(transmitters.siteId, siteId));
+
+      // Delete site-level alarms
+      await db.delete(alarms).where(eq(alarms.siteId, siteId));
+
+      // Finally delete the site
+      await db.delete(sites).where(eq(sites.id, siteId));
+
+      return true;
+    } catch (error) {
+      console.error('Failed to delete site:', error);
       throw error;
     }
   }

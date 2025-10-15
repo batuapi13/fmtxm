@@ -25,7 +25,7 @@ export interface SNMPResult {
 }
 
 class SNMPService {
-  private baseUrl = 'http://localhost:5000/api/snmp';
+  private baseUrl = '/api/snmp';
   private eventSource: EventSource | null = null;
   private listeners: Map<string, Function[]> = new Map();
 
@@ -208,6 +208,40 @@ class SNMPService {
     }
   }
 
+  async createTransmitter(data: any): Promise<any | null> {
+    try {
+      const response = await fetch(`${this.baseUrl}/transmitters`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating transmitter:', error);
+      return null;
+    }
+  }
+
+  async updateTransmitter(id: string, data: any): Promise<any | null> {
+    try {
+      const response = await fetch(`${this.baseUrl}/transmitters/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating transmitter:', error);
+      return null;
+    }
+  }
+
   async getLatestTransmitterMetrics(): Promise<any[]> {
     try {
       const response = await fetch(`${this.baseUrl}/transmitters/metrics/latest`);
@@ -259,6 +293,56 @@ class SNMPService {
     } catch (error) {
       console.error('Error fetching sites:', error);
       return [];
+    }
+  }
+
+  async createSite(siteData: any): Promise<any> {
+    try {
+      const response = await fetch(`${this.baseUrl}/sites`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(siteData),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating site:', error);
+      throw error;
+    }
+  }
+
+  async updateSite(siteId: string, updates: any): Promise<any> {
+    try {
+      const response = await fetch(`${this.baseUrl}/sites/${siteId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating site:', error);
+      throw error;
+    }
+  }
+
+  async deleteSite(siteId: string): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.baseUrl}/sites/${siteId}`, {
+        method: 'DELETE',
+      });
+      return response.ok;
+    } catch (error) {
+      console.error('Error deleting site:', error);
+      return false;
     }
   }
 

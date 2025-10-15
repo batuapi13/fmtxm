@@ -48,11 +48,37 @@ interface DeviceResult {
 }
 
 const SNMPDevicesPage: React.FC = () => {
+  // Ensure hash fragment scrolls to diagnostics section when present
+  useEffect(() => {
+    const scrollToHash = () => {
+      const { hash } = window.location;
+      if (hash) {
+        const el = document.querySelector(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    };
+    // Try immediately and on hash changes
+    scrollToHash();
+    window.addEventListener('hashchange', scrollToHash);
+    return () => window.removeEventListener('hashchange', scrollToHash);
+  }, []);
   const [devices, setDevices] = useState<SNMPDevice[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<SNMPDevice | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [deviceResults, setDeviceResults] = useState<{ [deviceId: string]: DeviceResult }>({});
   const [pollerRunning, setPollerRunning] = useState(false);
+  // Re-scroll to hash when key content mounts/updates
+  useEffect(() => {
+    const { hash } = window.location;
+    if (hash) {
+      const el = document.querySelector(hash);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [selectedDevice, deviceResults]);
 
   // Mock initial devices
   useEffect(() => {
@@ -320,6 +346,8 @@ const SNMPDevicesPage: React.FC = () => {
 
         {/* Device Configuration */}
         <div className="lg:col-span-2">
+          {/* Persistent anchor for diagnostics section (always present) */}
+          <div id="problems_and_diagnostics" className="scroll-mt-24" />
           {selectedDevice ? (
             <Card>
               <CardHeader>
@@ -517,7 +545,7 @@ const SNMPDevicesPage: React.FC = () => {
 
                 {/* Display last poll results */}
                 {deviceResults[selectedDevice.id] && (
-                  <div className="space-y-2">
+                  <div id="diagnostics_results" className="space-y-2">
                     <Label>Last Poll Results</Label>
                     <div className="p-3 bg-muted rounded-lg">
                       <div className="text-sm space-y-1">

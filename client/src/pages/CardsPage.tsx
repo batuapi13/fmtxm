@@ -7,14 +7,15 @@ import StateCard from '@/components/StateCard';
 import { Search, Filter, RefreshCw, Settings, Layers } from 'lucide-react';
 import { extractAlarmsFromSites } from '@/utils/siteDataLoader';
 import { snmpService } from '@/services/snmpService';
-import type { SiteData } from '@/types/dashboard';
+import type { SiteData, TransmitterData, TransmitterStatus, TransmitterType, TransmitterRole } from '@/types/dashboard';
 
 
 // Convert raw transmitter and site data to SiteData format
 const convertMetricsToSiteData = (transmitters: any[], sites: any[], latestMetrics: any[]): SiteData[] => {
-  // Group transmitters by site
+  // Group transmitters by site (use camelCase siteId from DB)
   const transmittersBySite = transmitters.reduce((acc: Record<string, any[]>, transmitter: any) => {
-    const siteId = transmitter.site_id;
+    const siteId = transmitter.siteId;
+    if (!siteId) return acc;
     if (!acc[siteId]) {
       acc[siteId] = [];
     }
@@ -22,7 +23,7 @@ const convertMetricsToSiteData = (transmitters: any[], sites: any[], latestMetri
     return acc;
   }, {} as Record<string, any[]>);
 
-  // Create metrics lookup
+  // Create metrics lookup keyed by transmitterId
   const metricsLookup = latestMetrics.reduce((acc: Record<string, any>, item: any) => {
     acc[item.transmitterId] = item.metrics;
     return acc;
@@ -31,24 +32,27 @@ const convertMetricsToSiteData = (transmitters: any[], sites: any[], latestMetri
   return sites.map((site: any): SiteData => {
     const siteTransmitters = transmittersBySite[site.id] || [];
     
-    const transmitterData: any[] = siteTransmitters.map((transmitter: any) => {
+    const transmitterData: TransmitterData[] = siteTransmitters.map((transmitter: any): TransmitterData => {
       const metrics = metricsLookup[transmitter.id] || {};
-      
+      const isActiveStatus = metrics?.status === 'active';
+      const forwardPower = metrics?.forwardPower ?? 0;
+      const reflectedPower = metrics?.reflectedPower ?? 0;
+
       return {
         id: transmitter.id,
-        label: transmitter.label || transmitter.name,
-        type: (transmitter.type || '1'),
-        role: (transmitter.role || 'active'),
-        status: (transmitter.status || 'offline'),
-        channelName: transmitter.channel_name || 'Unknown',
-        frequency: transmitter.frequency?.toString() || '0.0',
-        transmitPower: metrics.transmit_power || 0,
-        reflectPower: metrics.reflect_power || 0,
-        mainAudio: metrics.main_audio || false,
-        backupAudio: metrics.backup_audio || false,
-        connectivity: metrics.connectivity || false,
-        lastSeen: metrics.last_seen ? new Date(metrics.last_seen).toISOString() : new Date().toISOString(),
-        isTransmitting: metrics.is_transmitting || false
+        label: transmitter.label || '1',
+        type: (transmitter.type || '1') as TransmitterType,
+        role: (transmitter.role || 'active') as TransmitterRole,
+        status: (isActiveStatus ? 'operational' : (metrics?.status === 'fault' ? 'error' : 'offline')) as TransmitterStatus,
+        channelName: transmitter.name || 'Unknown',
+        frequency: (metrics?.frequency ?? transmitter.frequency ?? 0).toString(),
+        transmitPower: forwardPower,
+        reflectPower: reflectedPower,
+        mainAudio: false,
+        backupAudio: false,
+        connectivity: isActiveStatus,
+        lastSeen: metrics?.timestamp ? new Date(metrics.timestamp).toISOString() : new Date().toISOString(),
+        isTransmitting: forwardPower > 0
       };
     });
 
@@ -60,7 +64,7 @@ const convertMetricsToSiteData = (transmitters: any[], sites: any[], latestMetri
     const alertCount = transmitterData.filter(t => t.status === 'error' || t.status === 'warning').length;
 
     // Determine overall status
-    let overallStatus = 'operational';
+    let overallStatus: TransmitterStatus = 'operational';
     if (alertCount > 0) {
       overallStatus = 'error';
     } else if (runningCount === 0) {
@@ -96,6 +100,7 @@ export default function CardsPage() {
   const [filteredSites, setFilteredSites] = useState<SiteData[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'operational' | 'warning' | 'error'>('all');
+  const [stateFilter, setStateFilter] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [totalAlarms, setTotalAlarms] = useState(0);
   const [transmitters, setTransmitters] = useState<any[]>([]);
@@ -136,7 +141,7 @@ export default function CardsPage() {
     initializeData();
   }, []);
 
-  // Filter sites based on search and status
+  // Filter sites based on search, status, and state
   useEffect(() => {
     let filtered = sites;
 
@@ -154,9 +159,12 @@ export default function CardsPage() {
     if (statusFilter !== 'all') {
       filtered = filtered.filter(site => site.overallStatus === statusFilter);
     }
+    if (stateFilter) {
+      filtered = filtered.filter(site => site.location.split(',')[0].trim() === stateFilter);
+    }
 
     setFilteredSites(filtered);
-  }, [sites, searchTerm, statusFilter]);
+  }, [sites, searchTerm, statusFilter, stateFilter]);
 
   // Group filtered sites by state
   const groupedByState = filteredSites.reduce((groups, site) => {
@@ -171,6 +179,7 @@ export default function CardsPage() {
 
   // Sort states alphabetically
   const sortedStates = Object.keys(groupedByState).sort();
+  const allStates = Array.from(new Set(sites.map(s => s.location.split(',')[0].trim()))).sort();
 
   const handleSiteClick = (siteId: string) => {
     console.log(`Site selected: ${siteId}`);
@@ -297,6 +306,27 @@ export default function CardsPage() {
                   Error
                 </Button>
               </div>
+            </div>
+
+            {/* State filter chips */}
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Button
+                size="sm"
+                variant={stateFilter === null ? 'default' : 'outline'}
+                onClick={() => setStateFilter(null)}
+              >
+                Show All States
+              </Button>
+              {allStates.map(st => (
+                <Button
+                  key={st}
+                  size="sm"
+                  variant={stateFilter === st ? 'default' : 'outline'}
+                  onClick={() => setStateFilter(st)}
+                >
+                  {st}
+                </Button>
+              ))}
             </div>
           </CardContent>
         </Card>

@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MapPin, Download, Upload, Edit, Plus, Trash2, Power, Settings } from 'lucide-react';
+import { MapPin, Download, Upload, Edit, Plus, Trash2, Settings } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { SiteData } from '@/types/dashboard';
+import { snmpService } from '@/services/snmpService';
+import { Switch } from '@/components/ui/switch';
 
 interface TransmitterDevice {
   id: string;
@@ -18,12 +19,16 @@ interface TransmitterDevice {
   frequency: string;
   oidOffset: string;
   ipAddress: string;
+  templateId?: string;
+  pollInterval?: number;
 }
 
 interface SiteConfig {
   id?: string;
   name: string;
-  location: string;
+  location: string; // stored as "STATE, District" for now
+  state?: string;
+  district?: string;
   description: string;
   latitude: string;
   longitude: string;
@@ -33,15 +38,60 @@ interface SiteConfig {
   transmitters: TransmitterDevice[];
 }
 
+// Shape of site objects returned from the database/service layer
+interface ContactInfo {
+  technician?: string;
+  phone?: string;
+  email?: string;
+}
+
+interface DbSite {
+  id: string;
+  name: string;
+  location?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  address?: string | null;
+  contactInfo?: ContactInfo | null;
+  isActive?: boolean | null;
+}
+
 export default function SiteConfigPage() {
+  const OID_TEMPLATES: { id: string; name: string; oids: string[] }[] = [
+    {
+      id: 'standard-mib',
+      name: 'Elenos ETG5000 - Standard MIB',
+      oids: [
+        '1.3.6.1.2.1.1.1.0', // sysDescr
+        '1.3.6.1.2.1.1.3.0', // sysUpTime
+        '1.3.6.1.2.1.1.5.0', // sysName
+      ],
+    },
+    {
+      id: 'production-mib',
+      name: 'Elenos ETG5000 - Production MIB',
+      oids: [
+        '1.3.6.1.4.1.31946.4.2.6.10.1', // Forward Power
+        '1.3.6.1.4.1.31946.4.2.6.10.2', // Reflected Power
+        '1.3.6.1.4.1.31946.4.2.6.10.12', // On Air Status
+      ],
+    },
+  ];
   const [selectedSite, setSelectedSite] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [originalConfig, setOriginalConfig] = useState<SiteConfig | null>(null);
-  const [sites, setSites] = useState<SiteData[]>([]);
-  const [siteConfig, setSiteConfig] = useState<SiteConfig>({
+  const [sites, setSites] = useState<DbSite[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCreatingNew, setIsCreatingNew] = useState(false);
+  const [stateFilter, setStateFilter] = useState<string | null>(null);
+  
+  // Default empty site configuration
+  const defaultSiteConfig: SiteConfig = {
     name: '',
     location: '',
+    state: '',
+    district: '',
     description: '',
     latitude: '',
     longitude: '',
@@ -49,7 +99,48 @@ export default function SiteConfigPage() {
     phone: '',
     email: '',
     transmitters: []
-  });
+  };
+
+  const [siteConfig, setSiteConfig] = useState<SiteConfig>(defaultSiteConfig);
+
+  const loadSiteTransmitters = async (siteId: string): Promise<TransmitterDevice[]> => {
+    try {
+      const txs = await snmpService.getTransmitters();
+      const siteTxs = (txs || []).filter((t: any) => t.siteId === siteId);
+      return siteTxs.map((t: any) => ({
+        id: t.id,
+        type: 'FM Transmitter',
+        label: t.name || 'Transmitter',
+        role: t.status === 'active' ? 'Active' : (t.status === 'standby' ? 'Standby' : 'Backup'),
+        channelName: '',
+        frequency: typeof t.frequency === 'number' ? String(t.frequency) : (t.frequency || ''),
+        oidOffset: Array.isArray(t.oids) && t.oids.length > 0 ? t.oids[0] : '',
+        ipAddress: t.snmpHost || '',
+        templateId: undefined,
+        pollInterval: t.pollInterval || 30000,
+      }));
+    } catch (e) {
+      console.error('Failed to load transmitters for site', siteId, e);
+      return [];
+    }
+  };
+
+  // Load sites from database
+  useEffect(() => {
+    const loadSites = async () => {
+      try {
+        setIsLoading(true);
+        const sitesData = await snmpService.getSites();
+        setSites(sitesData);
+      } catch (error) {
+        console.error('Failed to load sites:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSites();
+  }, []);
 
   // Initialize original config when component mounts or site changes
   React.useEffect(() => {
@@ -59,18 +150,43 @@ export default function SiteConfigPage() {
   }, [selectedSite, isEditing]);
 
   const handleInputChange = (field: keyof SiteConfig, value: string) => {
-    setSiteConfig(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    // Special handling for state/district to compose location
+    if (field === 'state') {
+      setSiteConfig(prev => {
+        const newState = value;
+        const composedLocation = newState && prev.district ? `${newState}, ${prev.district}` : newState || prev.district || '';
+        return { ...prev, state: newState, location: composedLocation };
+      });
+    } else if (field === 'district') {
+      setSiteConfig(prev => {
+        const newDistrict = value;
+        const composedLocation = prev.state && newDistrict ? `${prev.state}, ${newDistrict}` : prev.state || newDistrict || '';
+        return { ...prev, district: newDistrict, location: composedLocation };
+      });
+    } else if (field === 'location') {
+      // If user edits raw location, attempt to split into state/district
+      const [st, dist] = value.split(',').map(s => s?.trim()).filter(Boolean);
+      setSiteConfig(prev => ({ ...prev, location: value, state: st ?? prev.state ?? '', district: dist ?? prev.district ?? '' }));
+    } else {
+      setSiteConfig(prev => ({
+        ...prev,
+        [field]: value
+      }));
+    }
     setHasUnsavedChanges(true);
   };
 
-  const handleTransmitterChange = (index: number, field: keyof TransmitterDevice, value: string) => {
+  const handleTransmitterChange = (index: number, field: keyof TransmitterDevice, value: string | undefined) => {
     setSiteConfig(prev => ({
       ...prev,
       transmitters: prev.transmitters.map((tx, i) => 
-        i === index ? { ...tx, [field]: value } : tx
+        i === index 
+          ? (
+            field === 'templateId'
+              ? { ...tx, templateId: value }
+              : { ...tx, [field]: value as string }
+            )
+          : tx
       )
     }));
     setHasUnsavedChanges(true);
@@ -85,7 +201,9 @@ export default function SiteConfigPage() {
       channelName: '',
       frequency: '',
       oidOffset: '',
-      ipAddress: ''
+      ipAddress: '',
+      templateId: undefined,
+      pollInterval: 30000,
     };
     
     setSiteConfig(prev => ({
@@ -103,13 +221,134 @@ export default function SiteConfigPage() {
     setHasUnsavedChanges(true);
   };
 
-  const handleSave = () => {
-    // TODO: Implement save functionality
-    console.log('Saving configuration:', siteConfig);
-    setIsEditing(false);
-    setHasUnsavedChanges(false);
-    setOriginalConfig({ ...siteConfig });
-    alert('Configuration saved successfully!');
+  const handleSave = async () => {
+    try {
+      if (isCreatingNew) {
+        // Create new site
+        const newSite = await snmpService.createSite({
+          name: siteConfig.name,
+          location: siteConfig.location || [siteConfig.state, siteConfig.district].filter(Boolean).join(', '),
+          latitude: parseFloat(siteConfig.latitude) || 0,
+          longitude: parseFloat(siteConfig.longitude) || 0,
+          address: siteConfig.description,
+          contactInfo: {
+            technician: siteConfig.technician,
+            phone: siteConfig.phone,
+            email: siteConfig.email
+          },
+          isActive: true
+        });
+        
+        // Add the new site to the sites list
+        setSites(prev => [...prev, newSite]);
+        setSelectedSite(newSite.id);
+        setIsCreatingNew(false);
+        // Persist transmitters for the new site
+        if (siteConfig.transmitters.length > 0) {
+          const siteId = newSite.id;
+          const updatedTransmitters = [...siteConfig.transmitters];
+
+          for (let i = 0; i < updatedTransmitters.length; i++) {
+            const tx = updatedTransmitters[i];
+            const template = tx.templateId ? OID_TEMPLATES.find(t => t.id === tx.templateId) : undefined;
+            const oids = template ? template.oids : (tx.oidOffset ? [tx.oidOffset] : []);
+
+            const payload = {
+              siteId,
+              name: tx.label || 'Transmitter',
+              frequency: tx.frequency ? parseFloat(tx.frequency) : 0,
+              power: 0,
+              status: tx.role === 'Active' ? 'active' : tx.role === 'Standby' ? 'standby' : 'offline',
+              snmpHost: tx.ipAddress || '127.0.0.1',
+              snmpPort: 161,
+              snmpCommunity: 'public',
+              snmpVersion: 1,
+              oids,
+              pollInterval: tx.pollInterval || 30000,
+              isActive: true,
+            };
+
+            const created = await snmpService.createTransmitter(payload);
+            if (created && created.id) {
+              updatedTransmitters[i] = { ...tx, id: created.id };
+            }
+          }
+
+          setSiteConfig(prev => ({ ...prev, transmitters: updatedTransmitters }));
+        }
+
+        alert('Site and transmitters created successfully!');
+      } else {
+        if (!selectedSite) {
+          alert('No site selected to update');
+          return;
+        }
+
+        const updates = {
+          name: siteConfig.name,
+          location: siteConfig.location || [siteConfig.state, siteConfig.district].filter(Boolean).join(', '),
+          latitude: siteConfig.latitude ? parseFloat(siteConfig.latitude) : null,
+          longitude: siteConfig.longitude ? parseFloat(siteConfig.longitude) : null,
+          address: siteConfig.description,
+          contactInfo: {
+            technician: siteConfig.technician,
+            phone: siteConfig.phone,
+            email: siteConfig.email
+          },
+        };
+
+        const updatedSite = await snmpService.updateSite(selectedSite, updates);
+
+        // Persist transmitters for existing site (create or update)
+        if (siteConfig.transmitters.length > 0) {
+          const siteId = selectedSite;
+          const updatedTransmitters = [...siteConfig.transmitters];
+
+          for (let i = 0; i < updatedTransmitters.length; i++) {
+            const tx = updatedTransmitters[i];
+            const template = tx.templateId ? OID_TEMPLATES.find(t => t.id === tx.templateId) : undefined;
+            const oids = template ? template.oids : (tx.oidOffset ? [tx.oidOffset] : []);
+
+            const payload = {
+              siteId,
+              name: tx.label || 'Transmitter',
+              frequency: tx.frequency ? parseFloat(tx.frequency) : 0,
+              power: 0,
+              status: tx.role === 'Active' ? 'active' : tx.role === 'Standby' ? 'standby' : 'offline',
+              snmpHost: tx.ipAddress || '127.0.0.1',
+              snmpPort: 161,
+              snmpCommunity: 'public',
+              snmpVersion: 1,
+              oids,
+              pollInterval: tx.pollInterval || 30000,
+              isActive: true,
+            };
+
+            if (tx.id && !tx.id.startsWith('tx-')) {
+              await snmpService.updateTransmitter(tx.id, payload);
+            } else {
+              const created = await snmpService.createTransmitter(payload);
+              if (created && created.id) {
+                updatedTransmitters[i] = { ...tx, id: created.id };
+              }
+            }
+          }
+
+          setSiteConfig(prev => ({ ...prev, transmitters: updatedTransmitters }));
+        }
+        
+        // Update local sites list
+        setSites(prev => prev.map(site => site.id === updatedSite.id ? updatedSite : site));
+        alert('Changes saved successfully!');
+      }
+      
+      setIsEditing(false);
+      setHasUnsavedChanges(false);
+      setOriginalConfig({ ...siteConfig });
+    } catch (error) {
+      console.error('Failed to save site:', error);
+      alert('Failed to save site. Please try again.');
+    }
   };
 
   const handleCancel = () => {
@@ -118,11 +357,31 @@ export default function SiteConfigPage() {
       if (!confirmCancel) return;
     }
     
-    // Restore original configuration
-    if (originalConfig) {
-      setSiteConfig({ ...originalConfig });
+    if (isCreatingNew) {
+      // Cancel creating new site
+      setIsCreatingNew(false);
+      setSelectedSite(null);
+      setSiteConfig(defaultSiteConfig);
+    } else {
+      // Restore original configuration
+      if (originalConfig) {
+        setSiteConfig({ ...originalConfig });
+      }
     }
+    
+    setIsEditing(false);
     setHasUnsavedChanges(false);
+  };
+
+  // Toggle site monitoring state (isActive)
+  const toggleSiteActive = async (siteId: string, isActive: boolean) => {
+    try {
+      const updated = await snmpService.updateSite(siteId, { isActive });
+      setSites(prev => prev.map(s => (s.id === siteId ? updated : s)));
+    } catch (error) {
+      console.error('Failed to update site monitoring state:', error);
+      alert('Failed to update site monitoring state.');
+    }
   };
 
   const handleExport = () => {
@@ -171,10 +430,19 @@ export default function SiteConfigPage() {
   };
 
   const handleAddSite = () => {
-    // TODO: Implement add site functionality
-    const newSiteId = `site-${Date.now()}`;
-    console.log('Adding new site with ID:', newSiteId);
-    alert('Add Site functionality will be implemented in the next version');
+    // Check if there are unsaved changes
+    if (hasUnsavedChanges) {
+      const confirmDiscard = window.confirm('You have unsaved changes. Are you sure you want to discard them and create a new site?');
+      if (!confirmDiscard) return;
+    }
+    
+    // Set up for creating a new site
+    setIsCreatingNew(true);
+    setIsEditing(true);
+    setSelectedSite(null);
+    setSiteConfig(defaultSiteConfig);
+    setOriginalConfig(null);
+    setHasUnsavedChanges(false);
   };
 
   const getStatusBadgeColor = (status: string) => {
@@ -190,75 +458,87 @@ export default function SiteConfigPage() {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold">FM Transmitter Management</h1>
-          <p className="text-gray-400">Configure and monitor FM transmitter sites</p>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-2xl font-bold">FM Transmitter Management</h1>
+            <p className="text-gray-400">Configure and monitor FM transmitter sites</p>
+          </div>
         </div>
-        
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="border-gray-600 text-gray-300">
-            <MapPin className="w-4 h-4 mr-2" />
-            Map View
+
+      {/* Page Controls - Full Width */}
+      <div className="space-y-3 mb-6">
+        <div className="flex items-center gap-2">
+          <MapPin className="w-5 h-5" />
+          <h2 className="text-lg font-semibold">Site Configuration</h2>
+        </div>
+        <p className="text-sm text-gray-400">
+          Manage transmitter sites and their SNMP connection settings
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="border-gray-600 text-gray-300 hover:bg-gray-700"
+            onClick={handleExport}
+          >
+            <Download className="w-4 h-4 mr-1" />
+            Export
           </Button>
-          <Button variant="outline" size="sm" className="border-gray-600 text-gray-300">
-            Site Cards
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="border-gray-600 text-gray-300 hover:bg-gray-700"
+            onClick={handleImport}
+          >
+            <Upload className="w-4 h-4 mr-1" />
+            Import
           </Button>
-          <Button variant="outline" size="sm" className="border-gray-600 text-gray-300">
-            <Settings className="w-4 h-4 mr-2" />
-            SNMP Config
+          <Button 
+            size="sm" 
+            className="bg-blue-500 hover:bg-blue-600"
+            onClick={handleAddSite}
+          >
+            <Plus className="w-4 h-4 mr-1" />
+            Add Site
           </Button>
-          <Button size="sm" className="bg-blue-500 hover:bg-blue-600">
-            Site Config
+        </div>
+
+        {/* State filter chips - Full Width */}
+        <div className="flex flex-wrap gap-2">
+          <Button
+            size="sm"
+            variant={stateFilter === null ? 'default' : 'outline'}
+            onClick={() => setStateFilter(null)}
+          >
+            All States
           </Button>
+          {Array.from(new Set(sites.map(s => (s.location || '').split(',')[0].trim())))
+            .filter(st => st && st.length > 0)
+            .sort()
+            .map((st) => (
+              <Button
+                key={st}
+                size="sm"
+                variant={stateFilter === st ? 'default' : 'outline'}
+                onClick={() => setStateFilter(st)}
+              >
+                {st}
+              </Button>
+            ))}
         </div>
       </div>
 
       <div className="flex gap-6">
         {/* Left Panel - Site List */}
         <div className="w-80 space-y-4">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <MapPin className="w-5 h-5" />
-              <h2 className="text-lg font-semibold">Site Configuration</h2>
-            </div>
-            
-            <p className="text-sm text-gray-400">
-              Manage transmitter sites and their SNMP connection settings
-            </p>
-            
-             <div className="flex flex-wrap gap-2">
-               <Button 
-                 size="sm" 
-                 variant="outline" 
-                 className="border-gray-600 text-gray-300 hover:bg-gray-700"
-                 onClick={handleExport}
-               >
-                 <Download className="w-4 h-4 mr-1" />
-                 Export
-               </Button>
-               <Button 
-                 size="sm" 
-                 variant="outline" 
-                 className="border-gray-600 text-gray-300 hover:bg-gray-700"
-                 onClick={handleImport}
-               >
-                 <Upload className="w-4 h-4 mr-1" />
-                 Import
-               </Button>
-               <Button 
-                 size="sm" 
-                 className="bg-blue-500 hover:bg-blue-600"
-                 onClick={handleAddSite}
-               >
-                 <Plus className="w-4 h-4 mr-1" />
-                 Add Site
-               </Button>
-             </div>
-          </div>
-
           <div className="space-y-2">
-            {sites.length === 0 ? (
+            {isLoading ? (
+              <Card className="bg-gray-800/50 border-gray-700">
+                <CardContent className="p-4 text-center">
+                  <p className="text-gray-400 text-sm">Loading sites...</p>
+                </CardContent>
+              </Card>
+            ) : sites.length === 0 ? (
               <Card className="bg-gray-800/50 border-gray-700">
                 <CardContent className="p-4 text-center">
                   <p className="text-gray-400 text-sm">No sites configured</p>
@@ -266,65 +546,141 @@ export default function SiteConfigPage() {
                 </CardContent>
               </Card>
             ) : (
-              sites.map((site) => (
-                <Card 
-                  key={site.id}
-                  className={`cursor-pointer transition-colors ${
-                    selectedSite === site.id 
-                      ? 'bg-blue-500/20 border-blue-500/50' 
-                      : 'bg-gray-800/50 border-gray-700 hover:bg-gray-800/70'
-                  }`}
-                  onClick={() => setSelectedSite(site.id)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium text-sm">{site.name}</h3>
-                      <div className="flex gap-1">
-                        <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
-                          <Power className="w-3 h-3" />
-                        </Button>
-                        <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
-                          <Edit className="w-3 h-3" />
-                        </Button>
-                        <Button size="sm" variant="ghost" className="h-6 w-6 p-0 text-red-400">
-                          <Trash2 className="w-3 h-3" />
-                        </Button>
-                      </div>
-                    </div>
-                    <p className="text-xs text-gray-400 mb-2">{site.location}</p>
-                    
-                    <div className="space-y-2">
-                      <div className="text-xs">
-                        <span className="text-gray-400">SNMP Configuration</span>
-                        <div className="text-gray-300">Host: Not configured</div>
-                        <div className="text-gray-300">Port: Not configured</div>
-                        <div className="text-gray-300">Version: Not configured</div>
-                        <div className="text-gray-300">Community: Not configured</div>
-                      </div>
-                      
-                      <div className="text-xs">
-                        <span className="text-gray-400">Transmitters ({site.activeTransmitterCount + site.backupTransmitterCount})</span>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          <Badge variant="secondary" className="text-xs px-1 py-0">
-                            No transmitters configured
-                          </Badge>
+              <>
+                {(stateFilter ? sites.filter(s => (s.location || '').split(',')[0].trim() === stateFilter) : sites).map((site) => (
+                  <Card 
+                    key={site.id}
+                    className={`cursor-pointer transition-colors ${
+                      selectedSite === site.id 
+                        ? 'bg-blue-500/20 border-blue-500/50' 
+                        : 'bg-gray-800/50 border-gray-700 hover:bg-gray-800/70'
+                    }`}
+                    onClick={() => {
+                      if (!isEditing || !hasUnsavedChanges || window.confirm('You have unsaved changes. Are you sure you want to switch sites?')) {
+                        setSelectedSite(site.id);
+                        setIsCreatingNew(false);
+                        // Load site configuration
+                        (async () => {
+                          const txDevices = await loadSiteTransmitters(site.id);
+                          const config: SiteConfig = {
+                            id: site.id,
+                            name: site.name || '',
+                            location: site.location || '',
+                            state: (site.location || '').split(',')[0]?.trim() || '',
+                            district: (site.location || '').split(',')[1]?.trim() || '',
+                            description: site.address || '',
+                            latitude: site.latitude?.toString() || '',
+                            longitude: site.longitude?.toString() || '',
+                            technician: site.contactInfo?.technician || '',
+                            phone: site.contactInfo?.phone || '',
+                            email: site.contactInfo?.email || '',
+                            transmitters: txDevices,
+                          };
+                          setSiteConfig(config);
+                          setOriginalConfig({ ...config });
+                        })();
+                        setIsEditing(false);
+                        setHasUnsavedChanges(false);
+                      }
+                    }}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-medium text-sm">{site.name}</h3>
+                        <div className="flex gap-1">
+                          {/* Removed redundant power button; monitoring is controlled via the toggle switch */}
+                          <Button 
+                            size="sm" 
+                            variant="ghost" 
+                            className="h-6 w-6 p-0"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (selectedSite === site.id) {
+                                setIsEditing(true);
+                              }
+                            }}
+                          >
+                            <Edit className="w-3 h-3" />
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="ghost" 
+                            className="h-6 w-6 p-0 text-red-400"
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              if (!site.id) return;
+                              const confirmDelete = window.confirm('Delete this site and all related data?');
+                              if (!confirmDelete) return;
+
+                              try {
+                                const ok = await snmpService.deleteSite(site.id);
+                                if (!ok) {
+                                  alert('Failed to delete site.');
+                                  return;
+                                }
+                                // Remove from local list
+                                setSites(prev => prev.filter(s => s.id !== site.id));
+
+                                // If deleting the selected site, clear selection and form
+                                if (selectedSite === site.id) {
+                                  setSelectedSite(null);
+                                  setIsCreatingNew(false);
+                                  setSiteConfig(defaultSiteConfig);
+                                  setOriginalConfig(null);
+                                  setIsEditing(false);
+                                  setHasUnsavedChanges(false);
+                                }
+                              } catch (err) {
+                                console.error('Error deleting site:', err);
+                                alert('Error deleting site.');
+                              }
+                            }}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
                         </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
+                      <p className="text-xs text-gray-400 mb-2">{site.location}</p>
+                      
+                      <div className="space-y-2">
+                        <div className="text-xs">
+                          <span className="text-gray-400">Status</span>
+                          <div className="text-gray-300 flex items-center gap-2">
+                            <Badge variant={site.isActive ? "default" : "secondary"} className="text-xs">
+                              {site.isActive ? "Active" : "Inactive"}
+                            </Badge>
+                            <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                              <span className="text-gray-400">Monitor</span>
+                              <Switch
+                                checked={!!site.isActive}
+                                onCheckedChange={(checked) => toggleSiteActive(site.id, checked)}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="text-xs">
+                          <span className="text-gray-400">Coordinates</span>
+                          <div className="text-gray-300">{site.latitude}, {site.longitude}</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </>
             )}
           </div>
         </div>
 
         {/* Right Panel - Configuration Form */}
         <div className="flex-1">
-          {selectedSite ? (
+          {selectedSite || isCreatingNew ? (
             <Card className="bg-gray-800/50 border-gray-700">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">Site Configuration</CardTitle>
+                  <CardTitle className="text-lg">
+                    {isCreatingNew ? 'Create New Site' : 'Site Configuration'}
+                  </CardTitle>
                   <div className="flex gap-2">
                     {!isEditing ? (
                       <Button 
@@ -349,9 +705,9 @@ export default function SiteConfigPage() {
                           size="sm" 
                           onClick={handleSave}
                           className="bg-green-500 hover:bg-green-600"
-                          disabled={!hasUnsavedChanges}
+                          disabled={isCreatingNew ? !siteConfig.name.trim() : !hasUnsavedChanges}
                         >
-                          Save Changes
+                          {isCreatingNew ? 'Create Site' : 'Save Changes'}
                         </Button>
                       </>
                     )}
@@ -362,6 +718,17 @@ export default function SiteConfigPage() {
                 {/* Site Information */}
                 <div className="space-y-4">
                   <h3 className="text-md font-semibold border-b border-gray-700 pb-2">Site Information</h3>
+                  
+                  {!isCreatingNew && selectedSite && (
+                    <div className="flex items-center gap-3">
+                      <Label htmlFor="monitoringToggle">Monitoring</Label>
+                      <Switch
+                        id="monitoringToggle"
+                        checked={!!sites.find(s => s.id === selectedSite)?.isActive}
+                        onCheckedChange={(checked) => toggleSiteActive(selectedSite!, checked)}
+                      />
+                    </div>
+                  )}
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -376,11 +743,21 @@ export default function SiteConfigPage() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="location">Location</Label>
+                      <Label htmlFor="state">State</Label>
                       <Input
-                        id="location"
-                        value={siteConfig.location}
-                        onChange={(e) => handleInputChange('location', e.target.value)}
+                        id="state"
+                        value={siteConfig.state ?? ''}
+                        onChange={(e) => handleInputChange('state', e.target.value)}
+                        disabled={!isEditing}
+                        className="bg-gray-700 border-gray-600"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="district">District</Label>
+                      <Input
+                        id="district"
+                        value={siteConfig.district ?? ''}
+                        onChange={(e) => handleInputChange('district', e.target.value)}
                         disabled={!isEditing}
                         className="bg-gray-700 border-gray-600"
                       />
@@ -588,7 +965,7 @@ export default function SiteConfigPage() {
                                 />
                               </div>
                             </div>
-                            
+
                             <div className="mt-4">
                               <Label>SNMP OID Offset</Label>
                               <Input
@@ -598,6 +975,25 @@ export default function SiteConfigPage() {
                                 className="bg-gray-600 border-gray-500 mt-2"
                                 placeholder="e.g., 1.3.6.1.4.1.12345.1.1"
                               />
+                            </div>
+
+                            <div className="mt-4">
+                              <Label>OID Template</Label>
+                              <Select 
+                                value={transmitter.templateId ?? undefined} 
+                                onValueChange={(value) => handleTransmitterChange(index, 'templateId', value === 'none' ? undefined : value)}
+                                disabled={!isEditing}
+                              >
+                                <SelectTrigger className="bg-gray-600 border-gray-500 mt-2">
+                                  <SelectValue placeholder="Select a template (optional)" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="none">None</SelectItem>
+                                  {OID_TEMPLATES.map(t => (
+                                    <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
                             </div>
                           </CardContent>
                         </Card>
@@ -612,7 +1008,14 @@ export default function SiteConfigPage() {
               <CardContent className="p-8 text-center">
                 <MapPin className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                 <h3 className="text-lg font-medium mb-2">No Site Selected</h3>
-                <p className="text-gray-400">Select a site from the left panel to configure its settings</p>
+                <p className="text-gray-400 mb-4">Select a site from the left panel to configure its settings, or create a new site</p>
+                <Button 
+                  onClick={handleAddSite}
+                  className="bg-blue-500 hover:bg-blue-600"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create New Site
+                </Button>
               </CardContent>
             </Card>
           )}

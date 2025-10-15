@@ -107,9 +107,17 @@ export class SNMPPoller {
     }
 
     console.log(`Scheduling poll for device ${device.id} in ${device.pollInterval}ms`);
-    const timer = setTimeout(() => {
+    const timer = setTimeout(async () => {
+      // Check gating before polling: transmitter.isActive and site.isActive must be true
+      const shouldPoll = await this.shouldPollDevice(device);
+      if (!shouldPoll) {
+        console.log(`Gating active: skipping poll for device ${device.id}`);
+        this.schedulePoll(device); // Re-evaluate after next interval
+        return;
+      }
+
       console.log(`Starting poll for device ${device.id}`);
-      this.pollDevice(device);
+      await this.pollDevice(device);
       this.schedulePoll(device); // Schedule next poll
     }, device.pollInterval);
 
@@ -118,6 +126,12 @@ export class SNMPPoller {
 
   private async pollDevice(device: SNMPDevice): Promise<void> {
     console.log(`Polling device ${device.id} (${device.host})`);
+    // Double-check gating just before polling (in case state changed between scheduling and execution)
+    const gated = await this.shouldPollDevice(device);
+    if (!gated) {
+      console.log(`Gating active at poll time: skipping device ${device.id}`);
+      return;
+    }
     const session = this.sessions.get(device.id);
     if (!session) {
       console.error(`No session found for device ${device.id}`);
@@ -141,6 +155,31 @@ export class SNMPPoller {
       console.error(`SNMP poll failed for device ${device.id}:`, error);
       this.recordResult(device.id, false, undefined, error instanceof Error ? error.message : 'Unknown error');
     }
+  }
+
+  // Determine if a device should be polled based on device/transmitter/site activity
+  private async shouldPollDevice(device: SNMPDevice): Promise<boolean> {
+    // First check device flag
+    if (!device.isActive) return false;
+
+    try {
+      const transmitter = await databaseService.getTransmitterById(device.id);
+      if (transmitter) {
+        // If transmitter is inactive, gate off
+        if (transmitter.isActive === false) return false;
+
+        // If linked to a site, ensure site is active
+        if (transmitter.siteId) {
+          const site = await databaseService.getSiteById(transmitter.siteId);
+          if (site && site.isActive === false) return false;
+        }
+      }
+    } catch (error) {
+      // If database lookup fails, default to allowing poll to avoid blocking system
+      console.warn(`Gating check failed for device ${device.id}:`, error);
+    }
+
+    return true;
   }
 
   private performSNMPGet(session: snmp.Session, oids: string[]): Promise<any[]> {

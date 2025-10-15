@@ -20,21 +20,21 @@ export function log(message: string, source = "express") {
 }
 
 export async function setupVite(app: Express, server: Server) {
+  // Resolve __dirname in ESM context
+  const __dirname = path.dirname(new URL(import.meta.url).pathname);
   const serverOptions = {
     middlewareMode: true,
-    hmr: { server },
+    hmr: { port: 5000, clientPort: 5000 },
     allowedHosts: true as const,
   };
 
   const vite = await createViteServer({
     ...viteConfig,
     configFile: false,
+    // Use Vite's default logger without exiting the process on errors.
+    // This ensures the Express server keeps running even if the client has build/runtime issues.
     customLogger: {
       ...viteLogger,
-      error: (msg, options) => {
-        viteLogger.error(msg, options);
-        process.exit(1);
-      },
     },
     server: serverOptions,
     appType: "custom",
@@ -51,7 +51,7 @@ export async function setupVite(app: Express, server: Server) {
 
     try {
       const clientTemplate = path.resolve(
-        import.meta.dirname,
+        __dirname,
         "..",
         "client",
         "index.html",
@@ -73,7 +73,8 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(import.meta.dirname, "public");
+  const __dirname = path.dirname(new URL(import.meta.url).pathname);
+  const distPath = path.resolve(__dirname, "public");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(

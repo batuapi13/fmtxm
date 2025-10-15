@@ -8,9 +8,10 @@ import type { SiteData, TransmitterData, TransmitterStatus, TransmitterType, Tra
 
 // Convert raw transmitter and site data to SiteData format
 const convertMetricsToSiteData = (transmitters: any[], sites: any[], latestMetrics: any[]): SiteData[] => {
-  // Group transmitters by site
+  // Group transmitters by site (camelCase siteId from DB)
   const transmittersBySite = transmitters.reduce((acc: Record<string, any[]>, transmitter: any) => {
-    const siteId = transmitter.site_id;
+    const siteId = transmitter.siteId;
+    if (!siteId) return acc;
     if (!acc[siteId]) {
       acc[siteId] = [];
     }
@@ -18,7 +19,7 @@ const convertMetricsToSiteData = (transmitters: any[], sites: any[], latestMetri
     return acc;
   }, {} as Record<string, any[]>);
 
-  // Create metrics lookup
+  // Create metrics lookup keyed by transmitterId
   const metricsLookup = latestMetrics.reduce((acc: Record<string, any>, item: any) => {
     acc[item.transmitterId] = item.metrics;
     return acc;
@@ -29,22 +30,25 @@ const convertMetricsToSiteData = (transmitters: any[], sites: any[], latestMetri
     
     const transmitterData: TransmitterData[] = siteTransmitters.map((transmitter: any): TransmitterData => {
       const metrics = metricsLookup[transmitter.id] || {};
+      const isActiveStatus = metrics?.status === 'active';
+      const forwardPower = metrics?.forwardPower ?? 0;
+      const reflectedPower = metrics?.reflectedPower ?? 0;
       
       return {
         id: transmitter.id,
-        label: transmitter.label || transmitter.name,
+        label: transmitter.label || '1',
         type: (transmitter.type || '1') as TransmitterType,
         role: (transmitter.role || 'active') as TransmitterRole,
-        status: (transmitter.status || 'offline') as TransmitterStatus,
-        channelName: transmitter.channel_name || 'Unknown',
-        frequency: transmitter.frequency?.toString() || '0.0',
-        transmitPower: metrics.transmit_power || 0,
-        reflectPower: metrics.reflect_power || 0,
-        mainAudio: metrics.main_audio || false,
-        backupAudio: metrics.backup_audio || false,
-        connectivity: metrics.connectivity || false,
-        lastSeen: metrics.last_seen ? new Date(metrics.last_seen).toISOString() : new Date().toISOString(),
-        isTransmitting: metrics.is_transmitting || false
+        status: (isActiveStatus ? 'operational' : (metrics?.status === 'fault' ? 'error' : 'offline')) as TransmitterStatus,
+        channelName: transmitter.name || 'Unknown',
+        frequency: (metrics?.frequency ?? transmitter.frequency ?? 0).toString(),
+        transmitPower: forwardPower,
+        reflectPower: reflectedPower,
+        mainAudio: false,
+        backupAudio: false,
+        connectivity: isActiveStatus,
+        lastSeen: metrics?.timestamp ? new Date(metrics.timestamp).toISOString() : new Date().toISOString(),
+        isTransmitting: forwardPower > 0
       };
     });
 
@@ -138,15 +142,18 @@ export default function Dashboard() {
               const metricUpdate = data.latestMetrics.find((m: any) => m.transmitterId === transmitter.id);
               if (metricUpdate && metricUpdate.metrics) {
                 const metrics = metricUpdate.metrics;
+                const isActiveStatus = metrics?.status === 'active';
+                const forwardPower = metrics?.forwardPower ?? transmitter.transmitPower;
+                const reflectedPower = metrics?.reflectedPower ?? transmitter.reflectPower;
                 return {
                   ...transmitter,
-                  transmitPower: metrics.transmit_power || transmitter.transmitPower,
-                  reflectPower: metrics.reflect_power || transmitter.reflectPower,
-                  mainAudio: metrics.main_audio || transmitter.mainAudio,
-                  backupAudio: metrics.backup_audio || transmitter.backupAudio,
-                  connectivity: metrics.connectivity || transmitter.connectivity,
-                  lastSeen: metrics.last_seen ? new Date(metrics.last_seen).toISOString() : transmitter.lastSeen,
-                  isTransmitting: metrics.is_transmitting !== undefined ? metrics.is_transmitting : transmitter.isTransmitting
+                  transmitPower: forwardPower,
+                  reflectPower: reflectedPower,
+                  mainAudio: transmitter.mainAudio,
+                  backupAudio: transmitter.backupAudio,
+                  connectivity: isActiveStatus,
+                  lastSeen: metrics?.timestamp ? new Date(metrics.timestamp).toISOString() : transmitter.lastSeen,
+                  isTransmitting: forwardPower > 0
                 };
               }
               return transmitter;
