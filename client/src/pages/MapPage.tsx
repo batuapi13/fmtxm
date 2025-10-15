@@ -41,55 +41,88 @@ export default function MapPage() {
   const [transmitters, setTransmitters] = useState<any[]>([]);
   const [dbSites, setDbSites] = useState<any[]>([]);
 
-  // Convert raw transmitter and site data to SiteData format
+  // Convert raw transmitter and site data to SiteData format (aligns with dashboard types)
   const convertMetricsToSiteData = (transmitters: any[], sites: any[], metrics: any[]): SiteData[] => {
     return sites.map(site => {
       const siteTransmitters = transmitters.filter(t => t.siteId === site.id);
       const siteMetrics = metrics.filter(m => siteTransmitters.some(t => t.id === m.transmitterId));
-      
-      const transmitterData: TransmitterData[] = siteTransmitters.map(transmitter => {
+
+      const transmitterDataRaw: TransmitterData[] = siteTransmitters.map(transmitter => {
         const metric = siteMetrics.find(m => m.transmitterId === transmitter.id);
-        
+
+        const isActiveStatus = metric ? (metric.status === 'active') : false;
+        const forwardPower = metric?.forwardPower ?? 0;
+        const reflectedPower = metric?.reflectedPower ?? 0;
+
+        // Map to dashboard TransmitterData shape
         return {
           id: transmitter.id,
-          name: transmitter.name,
-          type: transmitter.type?.toString() || '1',
+          type: (transmitter.type?.toString() || '1'),
           role: transmitter.role === 'main' ? 'active' : transmitter.role === 'backup' ? 'backup' : 'standby',
-          status: metric ? (metric.isOnline ? 'operational' : 'offline') : 'offline',
-          frequency: metric?.frequency || 0,
-          power: metric?.power || 0,
-          transmitPower: metric?.transmitPower || 0,
-          reflectPower: metric?.reflectPower || 0,
-          mainAudio: metric?.mainAudio || 0,
-          backupAudio: metric?.backupAudio || 0,
-          connectivity: metric?.isOnline ? 'connected' : 'disconnected',
-          lastSeen: metric?.timestamp ? new Date(metric.timestamp) : new Date(),
-          isTransmitting: metric?.isTransmitting || false
+          label: transmitter.label?.toString() || transmitter.type?.toString() || '1',
+          channelName: transmitter.name || 'Unknown Channel',
+          frequency: (metric?.frequency ?? transmitter.frequency ?? 0).toString(),
+          status: isActiveStatus ? 'operational' : 'offline',
+          transmitPower: forwardPower,
+          reflectPower: reflectedPower,
+          mainAudio: isActiveStatus && forwardPower > 0,
+          backupAudio: isActiveStatus,
+          connectivity: isActiveStatus,
+          lastSeen: metric?.timestamp ? new Date(metric.timestamp).toISOString() : '',
+          isTransmitting: forwardPower > 0
         };
       });
 
-      const operationalCount = transmitterData.filter(t => t.status === 'operational').length;
-      const warningCount = transmitterData.filter(t => t.status === 'warning').length;
-      const errorCount = transmitterData.filter(t => t.status === 'error').length;
-      const offlineCount = transmitterData.filter(t => t.status === 'offline').length;
+      // If site monitoring is disabled, force all TX to offline
+      const transmitterData: TransmitterData[] = site.isActive === false
+        ? transmitterDataRaw.map(tx => ({
+            ...tx,
+            status: 'offline',
+            connectivity: false,
+            isTransmitting: false,
+          }))
+        : transmitterDataRaw;
 
+      // Derive overall site status
+      const hasError = transmitterData.some(t => t.status === 'error');
+      const hasWarning = transmitterData.some(t => t.status === 'warning');
+      const allOffline = transmitterData.length > 0 && transmitterData.every(t => t.status === 'offline');
       let overallStatus: 'operational' | 'warning' | 'error' | 'offline' = 'operational';
-      if (errorCount > 0) overallStatus = 'error';
-      else if (warningCount > 0) overallStatus = 'warning';
-      else if (offlineCount === transmitterData.length) overallStatus = 'offline';
+      if (site.isActive === false) {
+        overallStatus = 'offline';
+      } else if (hasError) overallStatus = 'error';
+      else if (hasWarning) overallStatus = 'warning';
+      else if (allOffline) overallStatus = 'offline';
+
+      // Role-based counts
+      const activeTransmitterCount = transmitterData.filter(t => t.role === 'active').length;
+      const backupTransmitterCount = transmitterData.filter(t => t.role === 'backup').length;
+      const standbyTransmitterCount = transmitterData.filter(t => t.role === 'standby').length;
+
+      const runningActiveCount = transmitterData.filter(t => t.role === 'active' && t.isTransmitting).length;
+      const runningBackupCount = transmitterData.filter(t => t.role === 'backup' && t.isTransmitting).length;
+      const activeStandbyCount = transmitterData.filter(t => t.role === 'standby' && t.isTransmitting).length;
+
+      // Do not surface alarms when site monitoring is disabled
+      const alerts = site.isActive === false
+        ? 0
+        : transmitterData.filter(tx => tx.status === 'offline' || tx.status === 'error').length;
 
       return {
         id: site.id,
         name: site.name,
-        state: site.state,
+        location: site.location ?? (site.state ? `${site.state}` : 'Unknown'),
         coordinates: { lat: site.latitude, lng: site.longitude },
-        status: overallStatus,
+        broadcaster: (site.location ?? site.state ?? 'Unknown') + ' Broadcasting Network',
+        overallStatus,
         transmitters: transmitterData,
-        totalTransmitters: transmitterData.length,
-        operationalCount,
-        warningCount,
-        errorCount,
-        offlineCount
+        activeTransmitterCount,
+        backupTransmitterCount,
+        standbyTransmitterCount,
+        runningActiveCount,
+        runningBackupCount,
+        activeStandbyCount,
+        alerts
       };
     });
   };
@@ -128,7 +161,14 @@ export default function MapPage() {
 
   // Create custom icons for different site statuses
   const createCustomIcon = (status: string, isSelected: boolean = false) => {
-    const color = status === 'operational' ? '#22c55e' : status === 'warning' ? '#f59e0b' : '#ef4444';
+    const color =
+      status === 'operational'
+        ? '#22c55e'
+        : status === 'warning'
+        ? '#f59e0b'
+        : status === 'offline'
+        ? '#6b7280'
+        : '#ef4444';
     const size = isSelected ? 24 : 20;
     const border = isSelected ? '4px solid #ffffff' : '3px solid white';
     
@@ -214,10 +254,9 @@ export default function MapPage() {
                 const siteAlarms = alarms.filter(alarm => alarm.siteId === site.id);
                 const hasAlarms = siteAlarms.length > 0;
                 
-                // Determine visual status - if site has alarms, show warning/error regardless of overallStatus
+                // Determine visual status - keep offline (gray) when monitoring is disabled
                 let visualStatus = site.overallStatus;
-                if (hasAlarms) {
-                  // If there are error-level alarms, show error; otherwise show warning
+                if (visualStatus !== 'offline' && hasAlarms) {
                   const hasErrorAlarms = siteAlarms.some(alarm => alarm.severity === 'error');
                   visualStatus = hasErrorAlarms ? 'error' : 'warning';
                 }
@@ -234,7 +273,7 @@ export default function MapPage() {
                       <div className="font-semibold">{site.name}</div>
                       <div className="text-sm text-muted-foreground">{site.location}</div>
                       <div className="flex items-center gap-2">
-                        <Badge variant={site.overallStatus === 'operational' ? 'default' : site.overallStatus === 'warning' ? 'secondary' : 'destructive'}>
+                        <Badge variant={site.overallStatus === 'operational' ? 'default' : site.overallStatus === 'warning' ? 'secondary' : site.overallStatus === 'offline' ? 'secondary' : 'destructive'}>
                           {site.overallStatus}
                         </Badge>
                         {alarms.filter(alarm => alarm.siteId === site.id).length > 0 && (

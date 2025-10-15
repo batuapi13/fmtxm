@@ -131,8 +131,8 @@ router.get('/status', (req, res) => {
   try {
     res.json({ 
       running: snmpPoller.isRunning(),
-      devices: snmpPoller.getAllDevices().length,
-      results: snmpPoller.getResults().length
+      deviceCount: snmpPoller.getAllDevices().length,
+      resultCount: snmpPoller.getResults().length
     });
   } catch (error) {
     res.status(500).json({ error: 'Failed to get status' });
@@ -191,7 +191,7 @@ router.get('/events', (req, res) => {
       const latestMetrics = await Promise.all(
         transmitters.map(async (transmitter) => {
           try {
-            const metrics = await databaseService.getLatestTransmitterMetrics(transmitter.id);
+            const metrics = await databaseService.getLatestMetrics(transmitter.id);
             return { transmitterId: transmitter.id, metrics };
           } catch (error) {
             console.error(`Failed to get metrics for transmitter ${transmitter.id}:`, error);
@@ -268,7 +268,7 @@ router.get('/transmitters/:id/metrics', async (req, res) => {
       return res.status(400).json({ error: 'Invalid date format' });
     }
     
-    const metrics = await databaseService.getTransmitterMetricsRange(transmitterId, startDate, endDate);
+    const metrics = await databaseService.getMetricsRange(transmitterId, startDate, endDate);
     res.json(metrics);
   } catch (error) {
     console.error('Failed to get metrics range:', error);
@@ -287,6 +287,69 @@ router.get('/transmitters', async (req, res) => {
   }
 });
 
+// Create a new transmitter (attach to a site)
+router.post('/transmitters', async (req, res) => {
+  try {
+    const data = req.body || {};
+
+    if (!data.siteId) {
+      return res.status(400).json({ error: 'siteId is required' });
+    }
+
+    // Basic mapping and defaults
+    const transmitterData = {
+      siteId: data.siteId,
+      name: data.name || 'Transmitter',
+      frequency: typeof data.frequency === 'number' ? data.frequency : parseFloat(data.frequency || '0') || 0,
+      power: typeof data.power === 'number' ? data.power : 0,
+      status: data.status || 'unknown',
+      snmpHost: data.snmpHost || '127.0.0.1',
+      snmpPort: typeof data.snmpPort === 'number' ? data.snmpPort : 161,
+      snmpCommunity: data.snmpCommunity || 'public',
+      snmpVersion: typeof data.snmpVersion === 'number' ? data.snmpVersion : 1,
+      oids: Array.isArray(data.oids) ? data.oids : [],
+      pollInterval: typeof data.pollInterval === 'number' ? data.pollInterval : 30000,
+      isActive: data.isActive !== undefined ? !!data.isActive : true,
+    };
+
+    const created = await databaseService.upsertTransmitter(transmitterData);
+    res.status(201).json(created);
+  } catch (error) {
+    console.error('Failed to create transmitter:', error);
+    res.status(500).json({ error: 'Failed to create transmitter' });
+  }
+});
+
+// Update an existing transmitter
+router.put('/transmitters/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = req.body || {};
+
+    const transmitterData = {
+      id,
+      ...(data.siteId ? { siteId: data.siteId } : {}),
+      ...(data.name ? { name: data.name } : {}),
+      ...(data.frequency !== undefined ? { frequency: typeof data.frequency === 'number' ? data.frequency : parseFloat(data.frequency) || 0 } : {}),
+      ...(data.power !== undefined ? { power: typeof data.power === 'number' ? data.power : parseFloat(data.power) || 0 } : {}),
+      ...(data.status ? { status: data.status } : {}),
+      ...(data.snmpHost ? { snmpHost: data.snmpHost } : {}),
+      ...(data.snmpPort !== undefined ? { snmpPort: typeof data.snmpPort === 'number' ? data.snmpPort : parseInt(data.snmpPort, 10) || 161 } : {}),
+      ...(data.snmpCommunity ? { snmpCommunity: data.snmpCommunity } : {}),
+      ...(data.snmpVersion !== undefined ? { snmpVersion: typeof data.snmpVersion === 'number' ? data.snmpVersion : parseInt(data.snmpVersion, 10) || 1 } : {}),
+      ...(data.oids !== undefined ? { oids: Array.isArray(data.oids) ? data.oids : [] } : {}),
+      ...(data.pollInterval !== undefined ? { pollInterval: typeof data.pollInterval === 'number' ? data.pollInterval : parseInt(data.pollInterval, 10) || 30000 } : {}),
+      ...(data.isActive !== undefined ? { isActive: !!data.isActive } : {}),
+    };
+
+    const updated = await databaseService.upsertTransmitter(transmitterData);
+    res.json(updated);
+  } catch (error) {
+    console.error('Failed to update transmitter:', error);
+    res.status(500).json({ error: 'Failed to update transmitter' });
+  }
+});
+
 // Get all sites
 router.get('/sites', async (req, res) => {
   try {
@@ -295,6 +358,52 @@ router.get('/sites', async (req, res) => {
   } catch (error) {
     console.error('Failed to get sites:', error);
     res.status(500).json({ error: 'Failed to get sites' });
+  }
+});
+
+// Create a new site
+router.post('/sites', async (req, res) => {
+  try {
+    const siteData = req.body;
+    const newSite = await databaseService.createSite(siteData);
+    res.status(201).json(newSite);
+  } catch (error) {
+    console.error('Failed to create site:', error);
+    res.status(500).json({ error: 'Failed to create site' });
+  }
+});
+
+// Update an existing site
+router.put('/sites/:id', async (req, res) => {
+  try {
+    const siteId = req.params.id;
+    const updates = req.body;
+    console.log('[snmp routes] update site request', siteId, updates);
+    const updatedSite = await databaseService.updateSite(siteId, updates);
+
+    if (!updatedSite) {
+      return res.status(404).json({ error: 'Site not found' });
+    }
+
+    res.json(updatedSite);
+  } catch (error) {
+    console.error('Failed to update site:', error);
+    res.status(500).json({ error: 'Failed to update site' });
+  }
+});
+
+// Delete a site
+router.delete('/sites/:id', async (req, res) => {
+  try {
+    const siteId = req.params.id;
+    const ok = await databaseService.deleteSite(siteId);
+    if (!ok) {
+      return res.status(404).json({ error: 'Site not found' });
+    }
+    res.status(204).send();
+  } catch (error) {
+    console.error('Failed to delete site:', error);
+    res.status(500).json({ error: 'Failed to delete site' });
   }
 });
 
