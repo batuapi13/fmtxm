@@ -44,30 +44,47 @@ export default function MapPage() {
   // Convert raw transmitter and site data to SiteData format (aligns with dashboard types)
   const convertMetricsToSiteData = (transmitters: any[], sites: any[], metrics: any[]): SiteData[] => {
     return sites.map(site => {
-      const siteTransmitters = transmitters.filter(t => t.siteId === site.id);
+      // Sort by displayOrder for map popup transmitter listing and counts
+      const siteTransmitters = transmitters
+        .filter(t => t.siteId === site.id)
+        .slice()
+        .sort((a: any, b: any) => {
+          const ao = typeof a.displayOrder === 'number' ? a.displayOrder : 0;
+          const bo = typeof b.displayOrder === 'number' ? b.displayOrder : 0;
+          return ao - bo;
+        });
       const siteMetrics = metrics.filter(m => siteTransmitters.some(t => t.id === m.transmitterId));
 
       const transmitterDataRaw: TransmitterData[] = siteTransmitters.map(transmitter => {
         const metric = siteMetrics.find(m => m.transmitterId === transmitter.id);
 
-        const isActiveStatus = metric ? (metric.status === 'active') : false;
+        const rawStatus = metric?.status ?? 'offline';
         const forwardPower = metric?.forwardPower ?? 0;
         const reflectedPower = metric?.reflectedPower ?? 0;
+        const uiStatus: 'operational' | 'warning' | 'error' | 'offline' =
+          rawStatus === 'active' ? 'operational' :
+          rawStatus === 'standby' ? 'warning' :
+          rawStatus === 'fault' ? 'error' :
+          'offline';
 
         // Map to dashboard TransmitterData shape
         return {
           id: transmitter.id,
           type: (transmitter.type?.toString() || '1'),
           role: transmitter.role === 'main' ? 'active' : transmitter.role === 'backup' ? 'backup' : 'standby',
-          label: transmitter.label?.toString() || transmitter.type?.toString() || '1',
+          label: (typeof transmitter.label === 'string' && transmitter.label.trim().length > 0)
+            ? transmitter.label.trim()
+            : (typeof transmitter.displayLabel === 'string' && transmitter.displayLabel.trim().length > 0)
+            ? transmitter.displayLabel.trim()
+            : (transmitter.role === 'main' ? 'Main' : transmitter.role === 'backup' ? 'Backup' : String((siteTransmitters.indexOf(transmitter)) + 1)),
           channelName: transmitter.name || 'Unknown Channel',
           frequency: (metric?.frequency ?? transmitter.frequency ?? 0).toString(),
-          status: isActiveStatus ? 'operational' : 'offline',
+          status: uiStatus,
           transmitPower: forwardPower,
           reflectPower: reflectedPower,
-          mainAudio: isActiveStatus && forwardPower > 0,
-          backupAudio: isActiveStatus,
-          connectivity: isActiveStatus,
+          mainAudio: rawStatus === 'active' && forwardPower > 0,
+          backupAudio: rawStatus === 'active' || rawStatus === 'standby',
+          connectivity: rawStatus !== 'offline',
           lastSeen: metric?.timestamp ? new Date(metric.timestamp).toISOString() : '',
           isTransmitting: forwardPower > 0
         };
@@ -99,9 +116,10 @@ export default function MapPage() {
       const backupTransmitterCount = transmitterData.filter(t => t.role === 'backup').length;
       const standbyTransmitterCount = transmitterData.filter(t => t.role === 'standby').length;
 
-      const runningActiveCount = transmitterData.filter(t => t.role === 'active' && t.isTransmitting).length;
-      const runningBackupCount = transmitterData.filter(t => t.role === 'backup' && t.isTransmitting).length;
-      const activeStandbyCount = transmitterData.filter(t => t.role === 'standby' && t.isTransmitting).length;
+      // Status-based logic: operational = currently active; warning = standby
+      const runningActiveCount = transmitterData.filter(t => t.role === 'active' && t.status === 'operational').length;
+      const runningBackupCount = transmitterData.filter(t => t.role === 'backup' && t.status === 'operational').length;
+      const activeStandbyCount = transmitterData.filter(t => t.role === 'standby' && t.status === 'warning').length;
 
       // Do not surface alarms when site monitoring is disabled
       const alerts = site.isActive === false

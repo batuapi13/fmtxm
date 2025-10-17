@@ -1,7 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+// Disabled runtime error overlay plugin due to crash with React hooks
+// import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
 // Resolve directory in a Node ESM-compatible way
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
@@ -9,7 +10,7 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
 export default defineConfig({
   plugins: [
     react(),
-    runtimeErrorOverlay(),
+    // runtimeErrorOverlay(),
     ...(process.env.NODE_ENV !== "production" &&
     process.env.REPL_ID !== undefined
       ? [
@@ -25,6 +26,8 @@ export default defineConfig({
       "@shared": path.resolve(__dirname, "shared"),
       "@assets": path.resolve(__dirname, "attached_assets"),
     },
+    // Ensure single React instance to avoid invalid hook call during dev
+    dedupe: ["react", "react-dom", "react/jsx-runtime", "react-dom/client"],
   },
   root: path.resolve(__dirname, "client"),
   build: {
@@ -33,6 +36,12 @@ export default defineConfig({
   },
   server: {
     host: "0.0.0.0",
+    port: 5173,
+    strictPort: true,
+    hmr: {
+      clientPort: 5173,
+      overlay: false,
+    },
     proxy: {
       '/api': {
         target: 'http://localhost:5000',

@@ -193,7 +193,8 @@ export function parseCSVData(csvContent: string): SiteData[] {
         frequency: takenOverTx ? takenOverTx.frequency : `${100 + reserveId}.${Math.floor(Math.random() * 9)}`,
         originalChannelName: takenOverTx ? `Emergency Service ${reserveId}` : undefined,
         originalFrequency: takenOverTx ? `${100 + reserveId}.${Math.floor(Math.random() * 9)}` : undefined,
-        status: 'operational',
+        // Use status to distinguish standby vs active backup engagement
+        status: shouldTakeOver ? 'operational' : 'warning',
         transmitPower: shouldTakeOver ? Math.floor(Math.random() * 200) + 800 : 0,
         reflectPower: shouldTakeOver ? Math.floor(Math.random() * 40) + 10 : 0,
         mainAudio: true,
@@ -210,9 +211,10 @@ export function parseCSVData(csvContent: string): SiteData[] {
     const backupCount = transmitters.filter(tx => tx.role === 'backup').length;
     const standbyCount = transmitters.filter(tx => tx.role === 'standby').length;
     
-    const runningActiveCount = transmitters.filter(tx => tx.role === 'active' && tx.isTransmitting).length;
-    const runningBackupCount = transmitters.filter(tx => tx.role === 'backup' && tx.isTransmitting).length;
-    const activeStandbyCount = transmitters.filter(tx => tx.role === 'standby' && tx.isTransmitting).length;
+    // Status-based logic: 'operational' == currently active; 'warning' == standby
+    const runningActiveCount = transmitters.filter(tx => tx.role === 'active' && tx.status === 'operational').length;
+    const runningBackupCount = transmitters.filter(tx => tx.role === 'backup' && tx.status === 'operational').length;
+    const activeStandbyCount = transmitters.filter(tx => tx.role === 'standby' && tx.status === 'operational').length;
     
     sites.push({
       id: `site${siteIndex.toString().padStart(3, '0')}`,

@@ -40,6 +40,9 @@ export const transmitters = pgTable("transmitters", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   siteId: varchar("site_id").references(() => sites.id).notNull(),
   name: text("name").notNull(),
+  displayLabel: text("display_label"),
+  // Order used for display in UI
+  displayOrder: integer("display_order").default(0),
   frequency: real("frequency").notNull(), // MHz
   power: real("power").notNull(), // Watts
   status: text("status").notNull().default("unknown"), // active, standby, offline, fault
@@ -48,7 +51,7 @@ export const transmitters = pgTable("transmitters", {
   snmpCommunity: text("snmp_community").default("public"),
   snmpVersion: integer("snmp_version").default(1), // 0=v1, 1=v2c
   oids: jsonb("oids").notNull(), // SNMP OIDs to poll
-  pollInterval: integer("poll_interval").default(30000), // milliseconds
+  pollInterval: integer("poll_interval").default(10000), // milliseconds
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

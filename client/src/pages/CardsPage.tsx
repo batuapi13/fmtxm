@@ -30,27 +30,52 @@ const convertMetricsToSiteData = (transmitters: any[], sites: any[], latestMetri
   }, {} as Record<string, any>);
 
   return sites.map((site: any): SiteData => {
-    const siteTransmitters = transmittersBySite[site.id] || [];
+    // Sort by displayOrder
+    const siteTransmitters = (transmittersBySite[site.id] || [])
+      .slice()
+      .sort((a: any, b: any) => {
+        const ao = typeof a.displayOrder === 'number' ? a.displayOrder : 0;
+        const bo = typeof b.displayOrder === 'number' ? b.displayOrder : 0;
+        return ao - bo;
+      });
     
-    const transmitterData: TransmitterData[] = siteTransmitters.map((transmitter: any): TransmitterData => {
+    const transmitterData: TransmitterData[] = siteTransmitters.map((transmitter: any, index: number): TransmitterData => {
       const metrics = metricsLookup[transmitter.id] || {};
-      const isActiveStatus = metrics?.status === 'active';
+      const rawStatus = metrics?.status;
       const forwardPower = metrics?.forwardPower ?? 0;
       const reflectedPower = metrics?.reflectedPower ?? 0;
+      const statusUi: TransmitterStatus = rawStatus === 'active'
+        ? 'operational'
+        : rawStatus === 'standby'
+        ? 'warning'
+        : rawStatus === 'fault'
+        ? 'error'
+        : 'offline';
+      const isOnline = rawStatus !== 'offline';
+
+      // Prefer server-managed displayLabel (exposed as label). Trim and ignore empty strings.
+      const apiLabelCandidate = (typeof transmitter.label === 'string' ? transmitter.label : transmitter.displayLabel) as string | undefined;
+      const apiLabel = apiLabelCandidate && apiLabelCandidate.trim().length > 0 ? apiLabelCandidate.trim() : undefined;
+      const roleDefaultLabel = transmitter.role === 'active'
+        ? 'Main'
+        : transmitter.role === 'backup'
+        ? 'Backup'
+        : String(index + 1);
+      const computedLabel = apiLabel ?? roleDefaultLabel;
 
       return {
         id: transmitter.id,
-        label: transmitter.label || '1',
+        label: computedLabel,
         type: (transmitter.type || '1') as TransmitterType,
         role: (transmitter.role || 'active') as TransmitterRole,
-        status: (isActiveStatus ? 'operational' : (metrics?.status === 'fault' ? 'error' : 'offline')) as TransmitterStatus,
+        status: statusUi,
         channelName: transmitter.name || 'Unknown',
         frequency: (metrics?.frequency ?? transmitter.frequency ?? 0).toString(),
         transmitPower: forwardPower,
         reflectPower: reflectedPower,
         mainAudio: false,
         backupAudio: false,
-        connectivity: isActiveStatus,
+        connectivity: isOnline,
         lastSeen: metrics?.timestamp ? new Date(metrics.timestamp).toISOString() : new Date().toISOString(),
         isTransmitting: forwardPower > 0
       };
@@ -60,7 +85,8 @@ const convertMetricsToSiteData = (transmitters: any[], sites: any[], latestMetri
     const activeCount = transmitterData.filter(t => t.role === 'active').length;
     const backupCount = transmitterData.filter(t => t.role === 'backup').length;
     const standbyCount = transmitterData.filter(t => t.role === 'standby').length;
-    const runningCount = transmitterData.filter(t => t.isTransmitting).length;
+    // Use status-based logic: 'operational' == currently active; 'warning' == standby
+    const runningCount = transmitterData.filter(t => t.status === 'operational').length;
     const alertCount = transmitterData.filter(t => t.status === 'error' || t.status === 'warning').length;
 
     // Determine overall status
@@ -88,9 +114,9 @@ const convertMetricsToSiteData = (transmitters: any[], sites: any[], latestMetri
       activeTransmitterCount: activeCount,
       backupTransmitterCount: backupCount,
       standbyTransmitterCount: standbyCount,
-      runningActiveCount: runningCount,
-      runningBackupCount: transmitterData.filter(t => t.role === 'backup' && t.isTransmitting).length,
-      activeStandbyCount: transmitterData.filter(t => t.role === 'standby' && t.isTransmitting).length
+      runningActiveCount: transmitterData.filter(t => t.role === 'active' && t.status === 'operational').length,
+      runningBackupCount: transmitterData.filter(t => t.role === 'backup' && t.status === 'operational').length,
+      activeStandbyCount: transmitterData.filter(t => t.role === 'standby' && t.status === 'operational').length
     };
   });
 };

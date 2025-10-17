@@ -21,6 +21,13 @@ interface TransmitterDevice {
   ipAddress: string;
   templateId?: string;
   pollInterval?: number;
+  // Labeled OIDs for key transmitter parameters
+  statusOid?: string;
+  channelNameOid?: string;
+  frequencyOid?: string;
+  forwardPowerOid?: string;
+  reflectPowerOid?: string;
+  remoteStatusOid?: string;
 }
 
 interface SiteConfig {
@@ -107,18 +114,48 @@ export default function SiteConfigPage() {
     try {
       const txs = await snmpService.getTransmitters();
       const siteTxs = (txs || []).filter((t: any) => t.siteId === siteId);
-      return siteTxs.map((t: any) => ({
-        id: t.id,
-        type: 'FM Transmitter',
-        label: t.name || 'Transmitter',
-        role: t.status === 'active' ? 'Active' : (t.status === 'standby' ? 'Standby' : 'Backup'),
-        channelName: '',
-        frequency: typeof t.frequency === 'number' ? String(t.frequency) : (t.frequency || ''),
-        oidOffset: Array.isArray(t.oids) && t.oids.length > 0 ? t.oids[0] : '',
-        ipAddress: t.snmpHost || '',
-        templateId: undefined,
-        pollInterval: t.pollInterval || 30000,
-      }));
+      const mapOidsToLabels = (oids: string[]): Partial<TransmitterDevice> => {
+        const safe = Array.isArray(oids) ? oids.filter((s) => typeof s === 'string') : [];
+        const findBySuffix = (suffix: string) => safe.find((o) => o.endsWith(suffix) || o.includes(suffix));
+        const statusOid = findBySuffix('.10.12');
+        const channelNameOid = findBySuffix('1.5.0'); // sysName often ends with 1.5.0
+        const frequencyOid = findBySuffix('.10.14') || findBySuffix('.1.1.2');
+        const forwardPowerOid = findBySuffix('.10.1');
+        const reflectPowerOid = findBySuffix('.10.2');
+        const remoteStatusOid = findBySuffix('.10.4');
+        const oidOffset = safe.length > 0 ? safe[0] : '';
+        return {
+          statusOid,
+          channelNameOid,
+          frequencyOid,
+          forwardPowerOid,
+          reflectPowerOid,
+          remoteStatusOid,
+          oidOffset,
+        };
+      };
+
+      return siteTxs.map((t: any) => {
+        const labeled = mapOidsToLabels(t.oids);
+        return {
+          id: t.id,
+          type: 'FM Transmitter',
+          label: t.label || t.name || 'Transmitter',
+          role: t.status === 'active' ? 'Active' : (t.status === 'standby' ? 'Standby' : 'Backup'),
+          channelName: '',
+          frequency: typeof t.frequency === 'number' ? String(t.frequency) : (t.frequency || ''),
+          ipAddress: t.snmpHost || '',
+          templateId: undefined,
+          pollInterval: t.pollInterval || 10000,
+          statusOid: labeled.statusOid || '',
+          channelNameOid: labeled.channelNameOid || '',
+          frequencyOid: labeled.frequencyOid || '',
+          forwardPowerOid: labeled.forwardPowerOid || '',
+          reflectPowerOid: labeled.reflectPowerOid || '',
+          remoteStatusOid: labeled.remoteStatusOid || '',
+          oidOffset: labeled.oidOffset || '',
+        } as TransmitterDevice;
+      });
     } catch (e) {
       console.error('Failed to load transmitters for site', siteId, e);
       return [];
@@ -194,7 +231,7 @@ export default function SiteConfigPage() {
 
   const addTransmitter = () => {
     const newTransmitter: TransmitterDevice = {
-      id: `tx-${Date.now()}`,
+      id: `tmp-${Date.now()}`,
       type: 'FM Transmitter',
       label: `TX ${siteConfig.transmitters.length + 1}`,
       role: 'Active',
@@ -203,7 +240,13 @@ export default function SiteConfigPage() {
       oidOffset: '',
       ipAddress: '',
       templateId: undefined,
-      pollInterval: 30000,
+      pollInterval: 10000,
+      statusOid: '',
+      channelNameOid: '',
+      frequencyOid: '',
+      forwardPowerOid: '',
+      reflectPowerOid: '',
+      remoteStatusOid: '',
     };
     
     setSiteConfig(prev => ({
@@ -251,11 +294,22 @@ export default function SiteConfigPage() {
           for (let i = 0; i < updatedTransmitters.length; i++) {
             const tx = updatedTransmitters[i];
             const template = tx.templateId ? OID_TEMPLATES.find(t => t.id === tx.templateId) : undefined;
-            const oids = template ? template.oids : (tx.oidOffset ? [tx.oidOffset] : []);
+            const customOids = [
+              tx.statusOid,
+              tx.channelNameOid,
+              tx.frequencyOid,
+              tx.forwardPowerOid,
+              tx.reflectPowerOid,
+              tx.remoteStatusOid,
+            ].filter((v): v is string => !!v && v.trim().length > 0);
+            const oids = template
+              ? [...template.oids, ...customOids]
+              : (customOids.length > 0 ? customOids : (tx.oidOffset ? [tx.oidOffset] : []));
 
             const payload = {
               siteId,
               name: tx.label || 'Transmitter',
+              displayLabel: tx.label || undefined,
               frequency: tx.frequency ? parseFloat(tx.frequency) : 0,
               power: 0,
               status: tx.role === 'Active' ? 'active' : tx.role === 'Standby' ? 'standby' : 'offline',
@@ -307,11 +361,22 @@ export default function SiteConfigPage() {
           for (let i = 0; i < updatedTransmitters.length; i++) {
             const tx = updatedTransmitters[i];
             const template = tx.templateId ? OID_TEMPLATES.find(t => t.id === tx.templateId) : undefined;
-            const oids = template ? template.oids : (tx.oidOffset ? [tx.oidOffset] : []);
+            const customOids = [
+              tx.statusOid,
+              tx.channelNameOid,
+              tx.frequencyOid,
+              tx.forwardPowerOid,
+              tx.reflectPowerOid,
+              tx.remoteStatusOid,
+            ].filter((v): v is string => !!v && v.trim().length > 0);
+            const oids = template
+              ? [...template.oids, ...customOids]
+              : (customOids.length > 0 ? customOids : (tx.oidOffset ? [tx.oidOffset] : []));
 
             const payload = {
               siteId,
               name: tx.label || 'Transmitter',
+              displayLabel: tx.label || undefined,
               frequency: tx.frequency ? parseFloat(tx.frequency) : 0,
               power: 0,
               status: tx.role === 'Active' ? 'active' : tx.role === 'Standby' ? 'standby' : 'offline',
@@ -324,12 +389,31 @@ export default function SiteConfigPage() {
               isActive: true,
             };
 
-            if (tx.id && !tx.id.startsWith('tx-')) {
+            if (tx.id && !tx.id.startsWith('tmp-')) {
               await snmpService.updateTransmitter(tx.id, payload);
             } else {
               const created = await snmpService.createTransmitter(payload);
               if (created && created.id) {
                 updatedTransmitters[i] = { ...tx, id: created.id };
+              }
+            }
+          }
+
+          // Delete transmitters that were removed from the configuration
+          if (originalConfig && Array.isArray(originalConfig.transmitters)) {
+            const originalIds = originalConfig.transmitters
+              .map((t) => t.id)
+              .filter((id): id is string => !!id && !id.startsWith('tmp-'));
+            const currentIds = updatedTransmitters
+              .map((t) => t.id)
+              .filter((id): id is string => !!id && !id.startsWith('tmp-'));
+            const removedIds = originalIds.filter((id) => !currentIds.includes(id));
+
+            for (const id of removedIds) {
+              try {
+                await snmpService.deleteTransmitter(id);
+              } catch (err) {
+                console.error('Failed to delete transmitter', id, err);
               }
             }
           }
@@ -590,6 +674,7 @@ export default function SiteConfigPage() {
                         <div className="flex gap-1">
                           {/* Removed redundant power button; monitoring is controlled via the toggle switch */}
                           <Button 
+                            type="button"
                             size="sm" 
                             variant="ghost" 
                             className="h-6 w-6 p-0"
@@ -603,6 +688,7 @@ export default function SiteConfigPage() {
                             <Edit className="w-3 h-3" />
                           </Button>
                           <Button 
+                            type="button"
                             size="sm" 
                             variant="ghost" 
                             className="h-6 w-6 p-0 text-red-400"
@@ -684,6 +770,7 @@ export default function SiteConfigPage() {
                   <div className="flex gap-2">
                     {!isEditing ? (
                       <Button 
+                        type="button"
                         size="sm" 
                         onClick={() => setIsEditing(true)}
                         className="bg-blue-500 hover:bg-blue-600"
@@ -694,6 +781,7 @@ export default function SiteConfigPage() {
                     ) : (
                       <>
                         <Button 
+                          type="button"
                           size="sm" 
                           variant="outline" 
                           onClick={handleCancel}
@@ -702,6 +790,7 @@ export default function SiteConfigPage() {
                           Cancel
                         </Button>
                         <Button 
+                          type="button"
                           size="sm" 
                           onClick={handleSave}
                           className="bg-green-500 hover:bg-green-600"
@@ -852,6 +941,7 @@ export default function SiteConfigPage() {
                     <h3 className="text-md font-semibold border-b border-gray-700 pb-2">Transmitter Configuration</h3>
                     {isEditing && (
                       <Button 
+                        type="button"
                         size="sm" 
                         onClick={addTransmitter}
                         className="bg-green-500 hover:bg-green-600"
@@ -878,6 +968,7 @@ export default function SiteConfigPage() {
                               <h4 className="font-medium">Transmitter {index + 1}</h4>
                               {isEditing && (
                                 <Button 
+                                  type="button"
                                   size="sm" 
                                   variant="ghost" 
                                   onClick={() => removeTransmitter(index)}
@@ -987,13 +1078,80 @@ export default function SiteConfigPage() {
                                 <SelectTrigger className="bg-gray-600 border-gray-500 mt-2">
                                   <SelectValue placeholder="Select a template (optional)" />
                                 </SelectTrigger>
-                                <SelectContent>
+                              <SelectContent>
                                   <SelectItem value="none">None</SelectItem>
                                   {OID_TEMPLATES.map(t => (
                                     <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
                                   ))}
                                 </SelectContent>
                               </Select>
+                            </div>
+
+                            {/* New OID row */}
+                            <div className="mt-4">
+                              <Label>OID</Label>
+                              <div className="grid grid-cols-3 gap-4 mt-2">
+                                <div className="space-y-2">
+                                  <Label>OID - Status</Label>
+                                  <Input
+                                    value={transmitter.statusOid || ''}
+                                    onChange={(e) => handleTransmitterChange(index, 'statusOid', e.target.value)}
+                                    disabled={!isEditing}
+                                    className="bg-gray-600 border-gray-500"
+                                    placeholder="e.g., 1.3.6.1.4.1.31946.4.2.6.10.12"
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label>OID - Channel Name</Label>
+                                  <Input
+                                    value={transmitter.channelNameOid || ''}
+                                    onChange={(e) => handleTransmitterChange(index, 'channelNameOid', e.target.value)}
+                                    disabled={!isEditing}
+                                    className="bg-gray-600 border-gray-500"
+                                    placeholder="e.g., 1.3.6.1.2.1.1.5.0"
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label>OID - Frequency</Label>
+                                  <Input
+                                    value={transmitter.frequencyOid || ''}
+                                    onChange={(e) => handleTransmitterChange(index, 'frequencyOid', e.target.value)}
+                                    disabled={!isEditing}
+                                    className="bg-gray-600 border-gray-500"
+                                    placeholder="e.g., 1.3.6.1.4.1.31946.4.2.6.10.14"
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label>OID - Forward Power</Label>
+                                  <Input
+                                    value={transmitter.forwardPowerOid || ''}
+                                    onChange={(e) => handleTransmitterChange(index, 'forwardPowerOid', e.target.value)}
+                                    disabled={!isEditing}
+                                    className="bg-gray-600 border-gray-500"
+                                    placeholder="e.g., 1.3.6.1.4.1.31946.4.2.6.10.1"
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label>OID - Reflect Power</Label>
+                                  <Input
+                                    value={transmitter.reflectPowerOid || ''}
+                                    onChange={(e) => handleTransmitterChange(index, 'reflectPowerOid', e.target.value)}
+                                    disabled={!isEditing}
+                                    className="bg-gray-600 border-gray-500"
+                                    placeholder="e.g., 1.3.6.1.4.1.31946.4.2.6.10.2"
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label>OID - Remote Status</Label>
+                                  <Input
+                                    value={transmitter.remoteStatusOid || ''}
+                                    onChange={(e) => handleTransmitterChange(index, 'remoteStatusOid', e.target.value)}
+                                    disabled={!isEditing}
+                                    className="bg-gray-600 border-gray-500"
+                                    placeholder="e.g., 1.3.6.1.4.1.31946.4.2.6.10.4"
+                                  />
+                                </div>
+                              </div>
                             </div>
                           </CardContent>
                         </Card>

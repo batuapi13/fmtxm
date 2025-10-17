@@ -140,13 +140,39 @@ export class SNMPPoller {
     }
 
     try {
-      console.log(`Performing SNMP GET for device ${device.id} with OIDs:`, device.oids);
-      const results = await this.performSNMPGet(session, device.oids);
-      
+      // Normalize and expand OIDs to include scalar instance suffix (.0) when missing.
+      const normalizedOids = (Array.isArray(device.oids) ? device.oids : [])
+        .map((oid) => (typeof oid === 'string' ? oid.trim() : String(oid)))
+        .filter((oid) => !!oid);
+      const expandedOids = Array.from(
+        new Set(
+          normalizedOids.flatMap((oid) => [oid, oid.endsWith('.0') ? undefined : `${oid}.0`].filter(Boolean) as string[])
+        )
+      );
+
+      console.log(`Performing SNMP GET for device ${device.id} with OIDs:`, expandedOids);
+      const varbinds = await this.performSNMPGet(session, expandedOids);
+
+      // Map returned varbinds to a simple OID->value object using the OID
+      // reported by the agent (which may include instance indices like .0).
       const data: { [oid: string]: any } = {};
-      device.oids.forEach((oid, index) => {
-        data[oid] = results[index];
-      });
+      for (const vb of varbinds as any[]) {
+        if (!vb) continue;
+        // Skip varbinds that represent SNMP errors to avoid nulls overwriting valid scalar values
+        if (snmp.isVarbindError(vb)) {
+          continue;
+        }
+        const oidStr = typeof vb.oid === 'string' ? vb.oid : String(vb.oid);
+        // Prefer numeric values; ignore NoSuchObject/NoSuchInstance types
+        data[oidStr] = vb.value;
+        // Also store under base OID (without .0) for easier downstream mapping
+        if (oidStr.endsWith('.0')) {
+          const baseOid = oidStr.slice(0, -2);
+          if (data[baseOid] === undefined) {
+            data[baseOid] = vb.value;
+          }
+        }
+      }
 
       console.log(`SNMP poll successful for device ${device.id}:`, data);
       this.recordResult(device.id, true, data);
@@ -305,7 +331,16 @@ export class SNMPPoller {
   // Start polling all devices
   start(): void {
     this.running = true;
-    this.startPolling();
+    // Load devices from database and begin polling
+    this.loadDevicesFromDatabase()
+      .then(() => {
+        this.startPolling();
+      })
+      .catch((err) => {
+        console.error('Failed to load devices from database on start:', err);
+        // Even if loading fails, attempt to poll any existing devices
+        this.startPolling();
+      });
   }
 
   // Stop polling all devices
@@ -342,5 +377,38 @@ export class SNMPPoller {
     // Clear devices and results
     this.devices.clear();
     this.results = [];
+  }
+
+  /**
+   * Load devices from the transmitters table and sync the in-memory poller devices.
+   * This derives SNMP devices from site/transmitter configuration for a single source of truth.
+   */
+  async loadDevicesFromDatabase(): Promise<void> {
+    try {
+      // Clear existing timers and sessions, but keep historical results intact
+      this.pollTimers.forEach((timer) => clearTimeout(timer));
+      this.pollTimers.clear();
+      this.sessions.forEach((session) => session.close());
+      this.sessions.clear();
+      this.devices.clear();
+
+      const txList = await databaseService.getAllTransmitters();
+      for (const tx of txList) {
+        const device: SNMPDevice = {
+          id: tx.id,
+          host: tx.snmpHost,
+          port: typeof tx.snmpPort === 'number' ? tx.snmpPort : 161,
+          community: tx.snmpCommunity || 'public',
+          version: (tx.snmpVersion === 0 ? 0 : 1),
+          oids: Array.isArray(tx.oids) ? tx.oids : [],
+          pollInterval: typeof tx.pollInterval === 'number' ? tx.pollInterval : 10000,
+          isActive: tx.isActive !== false,
+        };
+        this.addDevice(device);
+      }
+      console.log(`Loaded ${this.devices.size} SNMP devices from database`);
+    } catch (error) {
+      console.error('Error loading devices from database:', error);
+    }
   }
 }

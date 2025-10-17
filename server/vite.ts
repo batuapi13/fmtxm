@@ -24,9 +24,14 @@ export async function setupVite(app: Express, server: Server) {
   const __dirname = path.dirname(new URL(import.meta.url).pathname);
   const serverOptions = {
     middlewareMode: true,
-    // Disable HMR on a conflicting port to avoid EADDRINUSE on 5000
-    // You can set this back or customize ports if needed.
-    hmr: false,
+    // Pin HMR to a known client port to avoid default collisions
+    hmr: {
+      // Align HMR with the Express server port so preview works
+      clientPort: parseInt(process.env.PORT || '5000', 10),
+      overlay: false,
+      // Attach HMR to the existing HTTP server to avoid port conflicts
+      server,
+    },
     allowedHosts: true as const,
   };
 
@@ -61,11 +66,7 @@ export async function setupVite(app: Express, server: Server) {
 
       // always reload the index.html file from disk in case it changes
       // use a stable query param to avoid forcing a full reload each request
-      let template = await fs.promises.readFile(clientTemplate, "utf-8");
-      template = template.replace(
-        `src="/src/main.tsx"`,
-        `src="/src/main.tsx?v=dev"`,
-      );
+      const template = await fs.promises.readFile(clientTemplate, "utf-8");
       const page = await vite.transformIndexHtml(url, template);
       res.status(200).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {

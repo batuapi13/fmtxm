@@ -10,6 +10,7 @@ export interface SNMPDevice {
   oids: string[];
   pollInterval: number;
   isActive: boolean;
+  siteId?: string;
 }
 
 export interface SNMPResult {
@@ -116,6 +117,38 @@ class SNMPService {
     } catch (error) {
       console.error('Error testing SNMP device:', error);
       return false;
+    }
+  }
+
+  async walk(options?: {
+    host?: string;
+    community?: string;
+    port?: number;
+    version?: 'v1' | 'v2c';
+    root?: string;
+    templateName?: string;
+  }): Promise<{ success: boolean; count?: number; template?: any; templatePath?: string; error?: string }> {
+    const payload = {
+      host: options?.host ?? '192.168.117.22',
+      community: options?.community ?? 'public',
+      port: options?.port ?? 161,
+      version: options?.version ?? 'v2c',
+      root: options?.root ?? '1.3.6.1',
+      templateName: options?.templateName,
+    };
+    try {
+      const response = await fetch(`${this.baseUrl}/walk`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error performing SNMP walk:', error);
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
     }
   }
 
@@ -239,6 +272,18 @@ class SNMPService {
     } catch (error) {
       console.error('Error updating transmitter:', error);
       return null;
+    }
+  }
+
+  async deleteTransmitter(id: string): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.baseUrl}/transmitters/${id}`, {
+        method: 'DELETE',
+      });
+      return response.ok;
+    } catch (error) {
+      console.error('Error deleting transmitter:', error);
+      return false;
     }
   }
 

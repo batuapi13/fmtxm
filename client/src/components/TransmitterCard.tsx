@@ -1,15 +1,20 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import PowerMeter from './PowerMeter';
-import { Radio, Volume2, VolumeX, Wifi, WifiOff } from 'lucide-react';
+import { Radio, Volume2, VolumeX, Wifi, WifiOff, GripVertical } from 'lucide-react';
 import type { TransmitterData } from '@/types/dashboard';
+import { useMemo } from 'react';
 
 interface TransmitterCardProps {
   transmitter: TransmitterData;
   isActive?: boolean;
+  // Drag handle props for dnd-kit activator
+  dragHandleRef?: (node: HTMLElement | null) => void;
+  dragHandleListeners?: any;
 }
 
-export default function TransmitterCard({ transmitter, isActive = false }: TransmitterCardProps) {
+export default function TransmitterCard({ transmitter, isActive = false, dragHandleRef, dragHandleListeners }: TransmitterCardProps) {
+  const displayLabel = useMemo(() => transmitter.label, [transmitter.label]);
   
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -18,31 +23,52 @@ export default function TransmitterCard({ transmitter, isActive = false }: Trans
       case 'warning':
         return 'text-status-warning';
       case 'error':
-      case 'offline':
         return 'text-status-error';
+      case 'offline':
+        return 'text-status-offline';
       default:
         return 'text-muted-foreground';
     }
   };
 
+  // Label editing disabled on card; use Site Config page
+
   return (
-    <Card className={`border-card-border hover-elevate ${isActive ? 'ring-2 ring-primary' : ''}`}>
+    <Card className={`border-card-border hover-elevate h-full ${isActive ? 'ring-2 ring-primary' : ''}`}>
       <CardHeader className="pb-2">
-        <div className="flex items-center gap-1">
+        <div className="flex items-start gap-2 min-h-[40px]">
+          {/* Drag handle for explicit sorting */}
+          <button
+            className="cursor-grab p-1 rounded hover:bg-muted/40"
+            aria-label="Drag transmitter"
+            ref={dragHandleRef as any}
+            {...(dragHandleListeners || {})}
+            onClick={(e) => e.preventDefault()}
+          >
+            <GripVertical className="w-3 h-3 text-muted-foreground" />
+          </button>
           <Radio className={`w-3 h-3 ${getStatusColor(transmitter.status)}`} />
-          <span className="font-medium text-sm" data-testid={`transmitter-label-${transmitter.type}`}>
-            {transmitter.label}
-          </span>
+          <div 
+            className="font-medium text-sm leading-tight break-words flex-1"
+            data-testid={`transmitter-label-${transmitter.type}`}
+            style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+          >
+            {displayLabel}
+          </div>
         </div>
-        <div className="space-y-1">
+        <div className="space-y-1 min-h-[44px]">
           <Badge 
             variant={isActive ? 'default' : 'secondary'}
-            className="text-xs px-1 py-0 w-fit"
+            className={`text-xs px-1 py-0 w-fit 
+              ${transmitter.status === 'operational' ? 'bg-status-operational/20 text-status-operational border-status-operational/30' : ''}
+              ${transmitter.status === 'warning' ? 'bg-status-warning/20 text-status-warning border-status-warning/30' : ''}
+              ${transmitter.status === 'offline' || transmitter.status === 'error' ? 'bg-status-offline/20 text-status-offline border-status-offline/30' : ''}
+            `}
             data-testid={`status-badge-${transmitter.type}`}
           >
             {transmitter.status === 'operational' ? 'Active' : transmitter.status === 'warning' ? 'Standby' : 'Offline'}
           </Badge>
-          <div className="text-xs text-muted-foreground font-mono" data-testid={`channel-name-${transmitter.type}`}>
+          <div className="text-xs text-muted-foreground font-mono truncate" data-testid={`channel-name-${transmitter.type}`}>
             {transmitter.channelName}
           </div>
           {transmitter.takenOverFrom && (
@@ -76,7 +102,7 @@ export default function TransmitterCard({ transmitter, isActive = false }: Trans
           />
         </div>
         
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex items-center justify-center gap-3 min-h-[48px]">
           <div className="flex flex-col items-center gap-1">
             {transmitter.mainAudio ? 
               <Volume2 className="w-3 h-3 text-status-operational" data-testid="main-audio-icon" /> : 
@@ -96,7 +122,7 @@ export default function TransmitterCard({ transmitter, isActive = false }: Trans
           <div className="flex flex-col items-center gap-1">
             {transmitter.connectivity ? 
               <Wifi className="w-3 h-3 text-status-operational" data-testid="connectivity-icon" /> : 
-              <WifiOff className="w-3 h-3 text-status-error" data-testid="connectivity-icon" />
+              <WifiOff className="w-3 h-3 text-status-offline" data-testid="connectivity-icon" />
             }
             <span className="text-xs">Conn</span>
           </div>

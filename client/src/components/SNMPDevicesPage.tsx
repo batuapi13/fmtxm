@@ -19,6 +19,7 @@ interface DeviceFormData {
   version: 0 | 1;
   oids: string[];
   pollInterval: number;
+  siteId: string;
 }
 
 export default function SNMPDevicesPage() {
@@ -27,6 +28,8 @@ export default function SNMPDevicesPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingDevice, setEditingDevice] = useState<SNMPDevice | null>(null);
   const [testingDevice, setTestingDevice] = useState<string | null>(null);
+  const [sites, setSites] = useState<any[]>([]);
+  const [transmitters, setTransmitters] = useState<any[]>([]);
   const [formData, setFormData] = useState<DeviceFormData>({
     name: '',
     host: '',
@@ -34,12 +37,15 @@ export default function SNMPDevicesPage() {
     community: 'public',
     version: 1,
     oids: ['1.3.6.1.2.1.1.1.0'], // System description OID
-    pollInterval: 30000
+    pollInterval: 10000,
+    siteId: ''
   });
 
   useEffect(() => {
     loadDevices();
     loadPollerStatus();
+    loadSites();
+    loadTransmitters();
   }, []);
 
   const loadDevices = async () => {
@@ -52,7 +58,25 @@ export default function SNMPDevicesPage() {
     setPollerStatus(status);
   };
 
+  const loadSites = async () => {
+    const siteList = await snmpService.getSites();
+    setSites(siteList);
+    // Default the form to the first site if available
+    if (siteList && siteList.length > 0) {
+      setFormData(prev => ({ ...prev, siteId: prev.siteId || siteList[0].id }));
+    }
+  };
+
+  const loadTransmitters = async () => {
+    const txList = await snmpService.getTransmitters();
+    setTransmitters(txList);
+  };
+
   const handleAddDevice = async () => {
+    if (!formData.siteId) {
+      alert('Please select a site for this device');
+      return;
+    }
     const newDevice = await snmpService.addDevice({
       ...formData,
       isActive: true
@@ -136,7 +160,8 @@ export default function SNMPDevicesPage() {
       community: 'public',
       version: 1,
       oids: ['1.3.6.1.2.1.1.1.0'],
-      pollInterval: 30000
+      pollInterval: 10000,
+      siteId: sites.length > 0 ? sites[0].id : ''
     });
   };
 
@@ -149,7 +174,8 @@ export default function SNMPDevicesPage() {
       community: device.community,
       version: device.version,
       oids: device.oids,
-      pollInterval: device.pollInterval
+      pollInterval: device.pollInterval,
+      siteId: (device as any).siteId || (sites.length > 0 ? sites[0].id : '')
     });
   };
 
@@ -189,6 +215,8 @@ export default function SNMPDevicesPage() {
                     resetForm();
                   }}
                   onOidsChange={handleOidsChange}
+                  sites={sites}
+                  transmitters={transmitters}
                 />
               </DialogContent>
             </Dialog>
@@ -279,10 +307,14 @@ export default function SNMPDevicesPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                   <div>
                     <Label className="text-muted-foreground">Host</Label>
                     <p>{device.host}:{device.port}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground">Site</Label>
+                    <p>{sites.find((s) => s.id === (device as any).siteId)?.name || (device as any).siteId || '-'}</p>
                   </div>
                   <div>
                     <Label className="text-muted-foreground">Community</Label>
@@ -344,6 +376,8 @@ export default function SNMPDevicesPage() {
                   resetForm();
                 }}
                 onOidsChange={handleOidsChange}
+                sites={sites}
+                transmitters={transmitters}
               />
             </DialogContent>
           </Dialog>
@@ -361,9 +395,60 @@ interface DeviceFormProps {
   onOidsChange: (value: string) => void;
 }
 
-function DeviceForm({ formData, setFormData, onSubmit, onCancel, onOidsChange }: DeviceFormProps) {
+function DeviceForm({ formData, setFormData, onSubmit, onCancel, onOidsChange, sites, transmitters }: DeviceFormProps & { sites: any[]; transmitters: any[] }) {
   return (
     <div className="space-y-4">
+      <div>
+        <Label htmlFor="site">Site</Label>
+        <Select
+          value={formData.siteId}
+          onValueChange={(value) => setFormData({ ...formData, siteId: value })}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {sites.map((site: any) => (
+              <SelectItem key={site.id} value={site.id}>{site.name || site.id}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      {/* Transmitter selector filtered by site to auto-fill SNMP fields and OIDs */}
+      <div>
+        <Label htmlFor="transmitter">Transmitter</Label>
+        <Select
+          value={undefined}
+          onValueChange={(txId) => {
+            const tx = transmitters.find((t: any) => t.id === txId);
+            if (!tx) return;
+            // Prefer fields from transmitter if available
+            const next = {
+              ...formData,
+              name: tx.name || formData.name || 'Transmitter',
+              host: tx.snmpHost || formData.host || '',
+              port: typeof tx.snmpPort === 'number' ? tx.snmpPort : formData.port,
+              community: tx.snmpCommunity || formData.community,
+              version: typeof tx.snmpVersion === 'number' ? (tx.snmpVersion === 0 ? 0 : 1) : formData.version,
+              oids: Array.isArray(tx.oids) && tx.oids.length > 0 ? tx.oids : formData.oids,
+              pollInterval: typeof tx.pollInterval === 'number' ? tx.pollInterval : formData.pollInterval,
+              siteId: tx.siteId || formData.siteId,
+            } as DeviceFormData;
+            setFormData(next);
+          }}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select a transmitter to auto-fill" />
+          </SelectTrigger>
+          <SelectContent>
+            {transmitters
+              .filter((t: any) => !formData.siteId || t.siteId === formData.siteId)
+              .map((t: any) => (
+                <SelectItem key={t.id} value={t.id}>{t.name || t.id}</SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
+      </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label htmlFor="name">Device Name</Label>
@@ -426,7 +511,7 @@ function DeviceForm({ formData, setFormData, onSubmit, onCancel, onOidsChange }:
           id="pollInterval"
           type="number"
           value={formData.pollInterval / 1000}
-          onChange={(e) => setFormData({ ...formData, pollInterval: (parseInt(e.target.value) || 30) * 1000 })}
+          onChange={(e) => setFormData({ ...formData, pollInterval: (parseInt(e.target.value) || 10) * 1000 })}
           min="5"
           max="3600"
         />
