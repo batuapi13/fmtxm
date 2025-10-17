@@ -15,8 +15,10 @@ import {
   Copy,
   Edit3,
   FileText,
-  AlertCircle
+  AlertCircle,
+  TestTube
 } from 'lucide-react';
+import { snmpService } from '@/services/snmpService';
 
 interface OIDDefinition {
   id: string;
@@ -826,7 +828,23 @@ const SNMPConfigPage: React.FC = () => {
                 Create and manage SNMP templates for different transmitter models
               </p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 items-center">
+              <div className="flex items-center gap-2">
+                <Label htmlFor="walk-host" className="text-gray-300">Host</Label>
+                <Input
+                  id="walk-host"
+                  defaultValue="192.168.117.22"
+                  className="w-44 bg-gray-800 border-gray-700 text-white"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="walk-name" className="text-gray-300">Name</Label>
+                <Input
+                  id="walk-name"
+                  defaultValue="Elenos ETG5000 - Complete OID"
+                  className="w-64 bg-gray-800 border-gray-700 text-white"
+                />
+              </div>
               <Button 
                 size="sm" 
                 variant="outline" 
@@ -853,6 +871,37 @@ const SNMPConfigPage: React.FC = () => {
                 onChange={handleImportTemplate}
                 className="hidden"
               />
+              <Button
+                id="snmp-walk-button"
+                size="sm"
+                variant="outline"
+                className="border-blue-600 text-blue-400 hover:bg-blue-600/20"
+                onClick={async () => {
+                  const hostInput = document.getElementById('walk-host') as HTMLInputElement | null;
+                  const nameInput = document.getElementById('walk-name') as HTMLInputElement | null;
+                  const host = hostInput?.value?.trim() || '192.168.117.22';
+                  const templateName = nameInput?.value?.trim() || 'Elenos ETG5000 - Complete OID';
+                  const res = await snmpService.walk({
+                    host,
+                    community: 'public',
+                    version: 'v2c',
+                    port: 161,
+                    root: '1.3.6.1',
+                    templateName,
+                  });
+                  if (res.success && res.template) {
+                    const newTemplate = res.template as any;
+                    setTemplates(prev => [newTemplate, ...prev]);
+                    setSelectedTemplate(newTemplate);
+                    console.log(`Template saved at ${res.templatePath}`);
+                  } else {
+                    alert(`SNMP walk failed: ${res.error || 'Unknown error'}`);
+                  }
+                }}
+              >
+                <TestTube className="w-4 h-4 mr-1" />
+                Walk
+              </Button>
               <Button 
                 size="sm" 
                 className="bg-blue-500 hover:bg-blue-600"

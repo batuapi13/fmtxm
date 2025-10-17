@@ -1,12 +1,15 @@
+import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import { transmitters, transmitterMetrics, sites, alarms } from '../../shared/schema';
 import { eq, desc, and, gte, lte } from 'drizzle-orm';
 import type { DeviceResult } from './snmp-poller';
 
-// Database connection
-const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:password@127.0.0.1:5432/fmtxm';
-const pool = new Pool({ connectionString });
+// Database connection - enforce single configured DATABASE_URL
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL must be set to run the server');
+}
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const db = drizzle(pool);
 
 export interface TransmitterMetricData {
@@ -24,6 +27,39 @@ export interface TransmitterMetricData {
 }
 
 export class DatabaseService {
+  /**
+   * Initialize schema changes safely on startup.
+   * Ensures optional columns exist without touching Timescale aggregates.
+   */
+  async initializeSchema(): Promise<void> {
+    try {
+      // Add display_label to transmitters if missing
+      await pool.query(
+        `ALTER TABLE transmitters ADD COLUMN IF NOT EXISTS display_label TEXT;`
+      );
+      console.log('Schema initialized: ensured transmitters.display_label exists');
+
+      // Add display_order to transmitters if missing and initialize to 0
+      await pool.query(
+        `ALTER TABLE transmitters ADD COLUMN IF NOT EXISTS display_order INTEGER DEFAULT 0;`
+      );
+      await pool.query(
+        `UPDATE transmitters SET display_order = COALESCE(display_order, 0);`
+      );
+      console.log('Schema initialized: ensured transmitters.display_order exists');
+
+      // Ensure poll_interval default is 10000ms and migrate existing rows from 30000ms
+      await pool.query(
+        `ALTER TABLE transmitters ALTER COLUMN poll_interval SET DEFAULT 10000;`
+      );
+      const updateRes = await pool.query(
+        `UPDATE transmitters SET poll_interval = 10000 WHERE poll_interval IS NULL OR poll_interval = 30000;`
+      );
+      console.log(`Schema migration: poll_interval default set to 10000; rows updated=${updateRes.rowCount}`);
+    } catch (error) {
+      console.error('Schema initialization failed:', error);
+    }
+  }
   // Normalize a site row to ensure contactInfo is an object
   private normalizeSite(row: any): any {
     if (!row) return row;
@@ -104,6 +140,30 @@ export class DatabaseService {
       // Parse SNMP data to extract metrics
       const metrics = this.parseSnmpData(result);
 
+      // If radio station/channel name OID is present, update transmitter name
+      const radioNameOid = '1.3.6.1.4.1.31946.3.1.7';
+      const radioNameOidScalar = '1.3.6.1.4.1.31946.3.1.7.0';
+      const rawRadioName = result.data ? (result.data[radioNameOid] ?? result.data[radioNameOidScalar]) : undefined;
+      let radioName: string | undefined;
+      if (rawRadioName) {
+        if (typeof rawRadioName === 'string') {
+          radioName = rawRadioName.trim();
+        } else if (typeof Buffer !== 'undefined' && Buffer.isBuffer(rawRadioName)) {
+          radioName = rawRadioName.toString('utf8').trim();
+        } else if (typeof rawRadioName === 'object' && (rawRadioName as any)?.type === 'Buffer' && Array.isArray((rawRadioName as any)?.data)) {
+          // Handle case where Buffer was serialized in JSON
+          try {
+            radioName = Buffer.from((rawRadioName as any).data).toString('utf8').trim();
+          } catch {}
+        }
+      }
+      if (radioName && radioName.length > 0) {
+        const currentName = transmitter[0]?.name;
+        if (currentName !== radioName) {
+          await this.upsertTransmitter({ id: deviceId, name: radioName });
+        }
+      }
+
       // Insert metrics into TimescaleDB hypertable
       await db.insert(transmitterMetrics).values({
         transmitterId: deviceId,
@@ -114,7 +174,8 @@ export class DatabaseService {
         temperature: metrics.temperature,
         forwardPower: metrics.forwardPower,
         reflectedPower: metrics.reflectedPower,
-        status: result.success ? 'active' : 'fault',
+        // Use parsed status; offline unless OIDs indicate availability
+        status: metrics.status ?? 'offline',
         snmpData: result.data,
         errorMessage: result.error
       });
@@ -137,22 +198,100 @@ export class DatabaseService {
       return metrics;
     }
 
-    // Example OID mappings - customize these based on your transmitter's SNMP MIB
-    const oidMappings = {
-      // Common transmitter OIDs (these are examples - adjust for your equipment)
-      '1.3.6.1.4.1.12345.1.1.1': 'forwardPower',    // Forward power
-      '1.3.6.1.4.1.12345.1.1.2': 'reflectedPower',  // Reflected power
-      '1.3.6.1.4.1.12345.1.1.3': 'frequency',       // Frequency
-      '1.3.6.1.4.1.12345.1.1.4': 'temperature',     // Temperature
-      '1.3.6.1.4.1.12345.1.1.5': 'powerOutput',     // Power output
-      '1.3.6.1.4.1.12345.1.1.6': 'vswr',           // VSWR
+    // Map Elenos ETG base OIDs to metric names; support optional instance indices (e.g., .4) and scalar (.0)
+    const oidBaseMappings: Record<string, keyof TransmitterMetricData> = {
+      '1.3.6.1.4.1.31946.4.2.6.10.1': 'forwardPower',
+      '1.3.6.1.4.1.31946.4.2.6.10.2': 'reflectedPower',
+      '1.3.6.1.4.1.31946.4.2.6.10.14': 'frequency',
     };
+    // Optional common metrics if present (kept as-is with scalar index)
+    const directOidMappings: Record<string, keyof TransmitterMetricData> = {
+      '1.3.6.1.2.1.1.3.0': 'powerOutput',
+    };
+
+    // Helper: resolve a metric name for an OID, handling trailing ".0" or instance indices like ".4"
+    const resolveMetricName = (oid: string): keyof TransmitterMetricData | undefined => {
+      if (directOidMappings[oid as keyof typeof directOidMappings]) {
+        return directOidMappings[oid as keyof typeof directOidMappings];
+      }
+      // Check direct base
+      if (oidBaseMappings[oid as keyof typeof oidBaseMappings]) {
+        return oidBaseMappings[oid as keyof typeof oidBaseMappings];
+      }
+      // Strip scalar .0
+      const withoutZero = oid.endsWith('.0') ? oid.slice(0, -2) : oid;
+      if (oidBaseMappings[withoutZero as keyof typeof oidBaseMappings]) {
+        return oidBaseMappings[withoutZero as keyof typeof oidBaseMappings];
+      }
+      // Strip one trailing instance index (e.g., .4)
+      const lastDot = withoutZero.lastIndexOf('.');
+      if (lastDot > -1) {
+        const parent = withoutZero.substring(0, lastDot);
+        if (oidBaseMappings[parent as keyof typeof oidBaseMappings]) {
+          return oidBaseMappings[parent as keyof typeof oidBaseMappings];
+        }
+      }
+      // Also handle cases like ".4.0" (strip .0 then index)
+      if (oid.endsWith('.0')) {
+        const base = oid.slice(0, -2);
+        const lastDot2 = base.lastIndexOf('.');
+        if (lastDot2 > -1) {
+          const parent2 = base.substring(0, lastDot2);
+          if (oidBaseMappings[parent2 as keyof typeof oidBaseMappings]) {
+            return oidBaseMappings[parent2 as keyof typeof oidBaseMappings];
+          }
+        }
+      }
+      return undefined;
+    };
+
+    // Derive status with priority: 10.13 (active=1, standby=2) then 10.12 (on-air=2, otherwise standby)
+    const statusBase13 = '1.3.6.1.4.1.31946.4.2.6.10.13';
+    const statusBase12 = '1.3.6.1.4.1.31946.4.2.6.10.12';
+
+    const getNumericValueForBase = (base: string): number | undefined => {
+      const d = result.data as Record<string, any>;
+      const direct = d[base];
+      if (typeof direct === 'number') return direct;
+      const scalar = d[`${base}.0`];
+      if (typeof scalar === 'number') return scalar;
+      // Find any offset like base.<n> or base.<n>.0
+      for (const [k, v] of Object.entries(d)) {
+        if (typeof v !== 'number') continue;
+        if (k.startsWith(base + '.')) {
+          const rest = k.substring(base.length + 1);
+          if (/^\d+(\.0)?$/.test(rest)) return v as number;
+        }
+      }
+      return undefined;
+    };
+
+    const v13 = getNumericValueForBase(statusBase13);
+    const v12 = getNumericValueForBase(statusBase12);
+
+    if (typeof v13 === 'number') {
+      // StandbyStatus: active(1), stand-by(2)
+      metrics.status = v13 === 1 ? 'active' : 'standby';
+    } else if (typeof v12 === 'number') {
+      // OnAirStatus: on-air(2) => active, otherwise standby
+      metrics.status = v12 === 2 ? 'active' : 'standby';
+    }
+    // Availability rule: online if either OID has a value; offline if both missing
+    const hasAvailability = typeof v13 === 'number' || typeof v12 === 'number';
+    if (!hasAvailability) {
+      metrics.status = 'offline';
+    }
 
     // Parse SNMP data based on OID mappings
     for (const [oid, value] of Object.entries(result.data)) {
-      const metricName = oidMappings[oid as keyof typeof oidMappings];
-      if (metricName && typeof value === 'number') {
-        (metrics as any)[metricName] = value;
+      const metricName = resolveMetricName(oid);
+      if (metricName) {
+        if (metricName === 'frequency' && typeof value === 'number') {
+          // The OID returns tens of kHz; convert to MHz
+          metrics.frequency = value / 100;
+        } else if (typeof value === 'number') {
+          (metrics as any)[metricName] = value;
+        }
       }
     }
 
@@ -170,16 +309,16 @@ export class DatabaseService {
    */
   async getLatestMetrics(transmitterId: string): Promise<any> {
     try {
-      const result = await db
+      const rows = await db
         .select()
         .from(transmitterMetrics)
         .where(eq(transmitterMetrics.transmitterId, transmitterId))
         .orderBy(desc(transmitterMetrics.timestamp))
         .limit(1);
 
-      return result[0] || null;
+      return rows[0] || null;
     } catch (error) {
-      console.error(`Failed to get latest metrics for transmitter ${transmitterId}:`, error);
+      console.error('Failed to get latest metrics:', error);
       throw error;
     }
   }
@@ -194,7 +333,7 @@ export class DatabaseService {
     limit = 1000
   ): Promise<any[]> {
     try {
-      const result = await db
+      const rows = await db
         .select()
         .from(transmitterMetrics)
         .where(
@@ -207,9 +346,9 @@ export class DatabaseService {
         .orderBy(desc(transmitterMetrics.timestamp))
         .limit(limit);
 
-      return result;
+      return rows;
     } catch (error) {
-      console.error(`Failed to get metrics range for transmitter ${transmitterId}:`, error);
+      console.error('Failed to get metrics range:', error);
       throw error;
     }
   }
@@ -219,7 +358,8 @@ export class DatabaseService {
    */
   async getAllTransmitters(): Promise<any[]> {
     try {
-      return await db.select().from(transmitters);
+      const rows = await db.select().from(transmitters).orderBy(transmitters.displayOrder);
+      return rows;
     } catch (error) {
       console.error('Failed to get transmitters:', error);
       throw error;
@@ -231,41 +371,24 @@ export class DatabaseService {
    */
   async upsertTransmitter(transmitterData: any): Promise<any> {
     try {
-      // If no ID provided, insert as new transmitter
-      if (!transmitterData.id) {
-        const [inserted] = await db
-          .insert(transmitters)
-          .values(transmitterData)
-          .returning();
-        return inserted;
+      const { id } = transmitterData;
+      if (id) {
+        const existing = await db
+          .select()
+          .from(transmitters)
+          .where(eq(transmitters.id, id))
+          .limit(1);
+        if (existing.length > 0) {
+          await db
+            .update(transmitters)
+            .set(transmitterData)
+            .where(eq(transmitters.id, id));
+          return { ...existing[0], ...transmitterData };
+        }
       }
 
-      // Check if transmitter exists
-      const existing = await db
-        .select()
-        .from(transmitters)
-        .where(eq(transmitters.id, transmitterData.id))
-        .limit(1);
-
-      if (existing.length > 0) {
-        // Update existing transmitter
-        const [updated] = await db
-          .update(transmitters)
-          .set({
-            ...transmitterData,
-            updatedAt: new Date()
-          })
-          .where(eq(transmitters.id, transmitterData.id))
-          .returning();
-        return updated;
-      } else {
-        // Insert new transmitter
-        const [inserted] = await db
-          .insert(transmitters)
-          .values(transmitterData)
-          .returning();
-        return inserted;
-      }
+      const inserted = await db.insert(transmitters).values(transmitterData).returning();
+      return inserted[0];
     } catch (error) {
       console.error('Failed to upsert transmitter:', error);
       throw error;
@@ -277,7 +400,7 @@ export class DatabaseService {
    */
   async getAllSites(): Promise<any[]> {
     try {
-      const rows = await db.select().from(sites);
+      const rows = await db.select().from(sites).orderBy(sites.name);
       return rows.map((row) => this.normalizeSite(row));
     } catch (error) {
       console.error('Failed to get sites:', error);
@@ -290,20 +413,8 @@ export class DatabaseService {
    */
   async createSite(siteData: any): Promise<any> {
     try {
-      const [newSite] = await db.insert(sites).values({
-        name: siteData.name,
-        location: siteData.location,
-        latitude: siteData.latitude ? parseFloat(siteData.latitude) : null,
-        longitude: siteData.longitude ? parseFloat(siteData.longitude) : null,
-        address: siteData.address || null,
-        contactInfo: siteData.contactInfo
-          ? (typeof siteData.contactInfo === 'string'
-              ? siteData.contactInfo
-              : JSON.stringify(siteData.contactInfo))
-          : null,
-        isActive: siteData.isActive !== undefined ? siteData.isActive : true,
-      }).returning();
-      return this.normalizeSite(newSite);
+      const inserted = await db.insert(sites).values(siteData).returning();
+      return this.normalizeSite(inserted[0]);
     } catch (error) {
       console.error('Failed to create site:', error);
       throw error;
@@ -315,47 +426,24 @@ export class DatabaseService {
    */
   async updateSite(siteId: string, updates: any): Promise<any> {
     try {
-      const data: any = { updatedAt: new Date() };
-
-      if (Object.prototype.hasOwnProperty.call(updates, 'name')) {
-        data.name = updates.name;
-      }
-      if (Object.prototype.hasOwnProperty.call(updates, 'location')) {
-        data.location = updates.location;
-      }
-      if (Object.prototype.hasOwnProperty.call(updates, 'latitude')) {
-        data.latitude = updates.latitude !== null && updates.latitude !== undefined
-          ? parseFloat(updates.latitude)
-          : null;
-      }
-      if (Object.prototype.hasOwnProperty.call(updates, 'longitude')) {
-        data.longitude = updates.longitude !== null && updates.longitude !== undefined
-          ? parseFloat(updates.longitude)
-          : null;
-      }
-      if (Object.prototype.hasOwnProperty.call(updates, 'address')) {
-        data.address = updates.address ?? null;
-      }
-      if (Object.prototype.hasOwnProperty.call(updates, 'contactInfo')) {
-        data.contactInfo = updates.contactInfo
-          ? (typeof updates.contactInfo === 'string'
-              ? updates.contactInfo
-              : JSON.stringify(updates.contactInfo))
-          : null;
-      }
-      if (Object.prototype.hasOwnProperty.call(updates, 'isActive')) {
-        data.isActive = updates.isActive;
-      }
-
-      const [updated] = await db
-        .update(sites)
-        .set(data)
-        .where(eq(sites.id, siteId))
-        .returning();
-
-      return this.normalizeSite(updated);
+      await db.update(sites).set(updates).where(eq(sites.id, siteId));
+      const rows = await db.select().from(sites).where(eq(sites.id, siteId)).limit(1);
+      return this.normalizeSite(rows[0]);
     } catch (error) {
       console.error('Failed to update site:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete a single transmitter and cascade delete related metrics and alarms
+   */
+  async deleteTransmitter(transmitterId: string): Promise<boolean> {
+    try {
+      const res = await db.delete(transmitters).where(eq(transmitters.id, transmitterId));
+      return (res as any)?.rowCount > 0;
+    } catch (error) {
+      console.error('Failed to delete transmitter:', error);
       throw error;
     }
   }
@@ -365,28 +453,8 @@ export class DatabaseService {
    */
   async deleteSite(siteId: string): Promise<boolean> {
     try {
-      // Fetch transmitters for the site
-      const siteTransmitters = await db
-        .select()
-        .from(transmitters)
-        .where(eq(transmitters.siteId, siteId));
-
-      // Delete metrics and alarms for each transmitter
-      for (const tx of siteTransmitters) {
-        await db.delete(transmitterMetrics).where(eq(transmitterMetrics.transmitterId, tx.id));
-        await db.delete(alarms).where(eq(alarms.transmitterId, tx.id));
-      }
-
-      // Delete transmitters for the site
-      await db.delete(transmitters).where(eq(transmitters.siteId, siteId));
-
-      // Delete site-level alarms
-      await db.delete(alarms).where(eq(alarms.siteId, siteId));
-
-      // Finally delete the site
-      await db.delete(sites).where(eq(sites.id, siteId));
-
-      return true;
+      const res = await db.delete(sites).where(eq(sites.id, siteId));
+      return (res as any)?.rowCount > 0;
     } catch (error) {
       console.error('Failed to delete site:', error);
       throw error;

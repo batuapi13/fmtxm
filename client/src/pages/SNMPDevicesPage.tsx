@@ -98,7 +98,7 @@ const SNMPDevicesPage: React.FC = () => {
           '1.3.6.1.4.1.elenos.4.2.3', // pilotPowerGood
           '1.3.6.1.4.1.elenos.4.1.1'  // softwareVersion
         ],
-        pollInterval: 30000,
+        pollInterval: 10000,
         enabled: true,
         status: 'connected',
         lastPoll: new Date()
@@ -136,7 +136,7 @@ const SNMPDevicesPage: React.FC = () => {
       timeout: 5000,
       retries: 3,
       oids: ['1.3.6.1.2.1.1.1.0'],
-      pollInterval: 30000,
+      pollInterval: 10000,
       enabled: false
     };
     setDevices([...devices, newDevice]);

@@ -1,0 +1,3909 @@
+{
+  "id": "elenos-etg5000-complete-1760606369001",
+  "name": "Elenos ETG5000 - Complete OID",
+  "description": "Complete OID walk from 192.168.117.22",
+  "manufacturer": "Elenos",
+  "model": "ETG5000",
+  "version": "auto",
+  "baseOID": "1.3.6.1.4.1.31946",
+  "oids": [
+    {
+      "id": "1",
+      "name": "telemetry_version",
+      "oid": "1.3.6.1.4.1.31946.3.1.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "2",
+      "name": "softwareVersion",
+      "oid": "1.3.6.1.4.1.31946.3.1.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "3",
+      "name": "dataMapVersion",
+      "oid": "1.3.6.1.4.1.31946.3.1.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "4",
+      "name": "ntp_ipaddress",
+      "oid": "1.3.6.1.4.1.31946.3.1.4",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "5",
+      "name": "transmitter_location",
+      "oid": "1.3.6.1.4.1.31946.3.1.5",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "6",
+      "name": "transmitter_identity",
+      "oid": "1.3.6.1.4.1.31946.3.1.6",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "7",
+      "name": "radio_name",
+      "oid": "1.3.6.1.4.1.31946.3.1.7",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "8",
+      "name": "ntp_timezone",
+      "oid": "1.3.6.1.4.1.31946.3.1.8",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "9",
+      "name": "systemInfo",
+      "oid": "1.3.6.1.4.1.31946.3.1.9",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "10",
+      "name": "community_public",
+      "oid": "1.3.6.1.4.1.31946.3.2.1",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "11",
+      "name": "community_private",
+      "oid": "1.3.6.1.4.1.31946.3.2.2",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "12",
+      "name": "sys_location",
+      "oid": "1.3.6.1.4.1.31946.3.2.3",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "13",
+      "name": "sys_contact",
+      "oid": "1.3.6.1.4.1.31946.3.2.4",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "14",
+      "name": "enable_disable_traps",
+      "oid": "1.3.6.1.4.1.31946.3.2.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "15",
+      "name": "alarmResetCommand",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "16",
+      "name": "maxTargetPower",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "17",
+      "name": "targetPowerSetting",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "18",
+      "name": "onOffCommand",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.6",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "19",
+      "name": "pwr_adjust",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.7",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "20",
+      "name": "fwd_adjusted",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.8",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "21",
+      "name": "forwardPower",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "22",
+      "name": "reflectedPower",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "23",
+      "name": "rfTemperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "24",
+      "name": "local",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "25",
+      "name": "plus5v",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "26",
+      "name": "plus12v",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.6",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "27",
+      "name": "minus12",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.7",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "28",
+      "name": "rfEfficiency",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.8",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "29",
+      "name": "psuVoltage",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.9",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "30",
+      "name": "psuCurrent",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.10",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "31",
+      "name": "psuTemperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.11",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "32",
+      "name": "onAirStatus",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.12",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "33",
+      "name": "standbyStatus",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.13",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "34",
+      "name": "txFrequency",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.14",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "35",
+      "name": "txMpxPeak",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.15",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "36",
+      "name": "txAuxPeak",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.16",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "37",
+      "name": "txLeftPeak",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.17",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "38",
+      "name": "txRightPeak",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.18",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "39",
+      "name": "txPllLock",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.19",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "40",
+      "name": "mpxRightLevel",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.20",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "41",
+      "name": "leftLevel",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.21",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "42",
+      "name": "aux1Level",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.22",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "43",
+      "name": "aux2Level",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.23",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "44",
+      "name": "exciterSubcarrierLevel",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.24",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "45",
+      "name": "exciterSubcarrierPhase",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.25",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "46",
+      "name": "exciterMpxLevelLimiter",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.26",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "47",
+      "name": "exciterWorkingMode",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.27",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "48",
+      "name": "exciterLRLockedLevels",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.28",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "49",
+      "name": "exciterWorkingPreenphasys",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.29",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "50",
+      "name": "txCoderMpxPeak",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.30",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "51",
+      "name": "noAudioLevel",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.31",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "52",
+      "name": "noAudioTime",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.32",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "53",
+      "name": "overModulationLevel",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.33",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "54",
+      "name": "overModulationTime",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.34",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "55",
+      "name": "psuMaxCurrent",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.35",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "56",
+      "name": "psuMaxVoltage",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.36",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "57",
+      "name": "rfTotalIds",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.37",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "58",
+      "name": "rfMaxIds",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.38",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "59",
+      "name": "rfVds",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.39",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "60",
+      "name": "rfModulesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "61",
+      "name": "rfModulesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.1.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "62",
+      "name": "rfModulesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.1.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "63",
+      "name": "rfModulesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.1.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "64",
+      "name": "rfModulesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.1.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "65",
+      "name": "rfModulesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.1.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "66",
+      "name": "rfModulesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.1.6",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "67",
+      "name": "rfModulesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.1.7",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "68",
+      "name": "rfModulesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.1.8",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "69",
+      "name": "rfModulesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.1.9",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "70",
+      "name": "rfModulesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.1.10",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "71",
+      "name": "rfModulesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.1.11",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "72",
+      "name": "rfModulesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.1.12",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "73",
+      "name": "rfModulesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.1.13",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "74",
+      "name": "rf-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "75",
+      "name": "rf-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.2.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "76",
+      "name": "rf-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.2.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "77",
+      "name": "rf-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.2.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "78",
+      "name": "rf-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.2.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "79",
+      "name": "rf-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.2.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "80",
+      "name": "rf-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.2.6",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "81",
+      "name": "rf-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.2.7",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "82",
+      "name": "rf-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.2.8",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "83",
+      "name": "rf-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.2.9",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "84",
+      "name": "rf-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.2.10",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "85",
+      "name": "rf-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.2.11",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "86",
+      "name": "rf-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.2.12",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "87",
+      "name": "rf-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.2.13",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "88",
+      "name": "rf-ids",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "89",
+      "name": "rf-ids",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.3.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "90",
+      "name": "rf-ids",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.3.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "91",
+      "name": "rf-ids",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.3.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "92",
+      "name": "rf-ids",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.3.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "93",
+      "name": "rf-ids",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.3.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "94",
+      "name": "rf-ids",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.3.6",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "95",
+      "name": "rf-ids",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.3.7",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "96",
+      "name": "rf-ids",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.3.8",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "97",
+      "name": "rf-ids",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.3.9",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "98",
+      "name": "rf-ids",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.3.10",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "99",
+      "name": "rf-ids",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.3.11",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "100",
+      "name": "rf-ids",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.3.12",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "101",
+      "name": "rf-ids",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.3.13",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "102",
+      "name": "dc-power",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "103",
+      "name": "dc-power",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.4.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "104",
+      "name": "dc-power",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.4.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "105",
+      "name": "dc-power",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.4.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "106",
+      "name": "dc-power",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.4.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "107",
+      "name": "dc-power",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.4.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "108",
+      "name": "dc-power",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.4.6",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "109",
+      "name": "dc-power",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.4.7",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "110",
+      "name": "dc-power",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.4.8",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "111",
+      "name": "dc-power",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.4.9",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "112",
+      "name": "dc-power",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.4.10",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "113",
+      "name": "dc-power",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.4.11",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "114",
+      "name": "dc-power",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.4.12",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "115",
+      "name": "dc-power",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.41.1.4.13",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "116",
+      "name": "environmentalTemp",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.45",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "117",
+      "name": "rfDcPower",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.46",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "118",
+      "name": "psu-index",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.48.1.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "119",
+      "name": "psu-index",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.48.1.1.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "120",
+      "name": "psu-index",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.48.1.1.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "121",
+      "name": "psu-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.48.1.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "122",
+      "name": "psu-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.48.1.2.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "123",
+      "name": "psu-temperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.48.1.2.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "124",
+      "name": "v-out",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.48.1.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "125",
+      "name": "v-out",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.48.1.3.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "126",
+      "name": "v-out",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.48.1.3.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "127",
+      "name": "i-out",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.48.1.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "128",
+      "name": "i-out",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.48.1.4.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "129",
+      "name": "i-out",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.48.1.4.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "130",
+      "name": "maxTemperature",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.49",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "131",
+      "name": "forwardPowerDriver",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.50",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "132",
+      "name": "faultLedStatus",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.55",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "133",
+      "name": "minFwrPwrLevelError",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.56",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "134",
+      "name": "exciterLevelAes_r",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.57",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "135",
+      "name": "exciterLevelAes_l",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.58",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "136",
+      "name": "exciterWorkingLimiter",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.59",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "137",
+      "name": "generalStatus",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.60",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "138",
+      "name": "muting",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.61",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "139",
+      "name": "onlyCarrier",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.62",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "140",
+      "name": "hardSoftClipper",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.63",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "141",
+      "name": "TcTsNoaudioSettings",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.64",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "142",
+      "name": "packedInfoData",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.10.105.1.2",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "143",
+      "name": "constPwrEnable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.20.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "144",
+      "name": "psuPwrCons",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.20.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "145",
+      "name": "psuDayCons",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.20.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "146",
+      "name": "psuWeekCons",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.20.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "147",
+      "name": "psuMonthCons",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.20.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "148",
+      "name": "psuYearCons",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.20.6",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "149",
+      "name": "psuMondayCons",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.20.7",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "150",
+      "name": "psuTuesdayCons",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.20.8",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "151",
+      "name": "psuWednesdayCons",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.20.9",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "152",
+      "name": "psuThursdayCons",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.20.10",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "153",
+      "name": "psuFridayCons",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.20.11",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "154",
+      "name": "psuSaturdayCons",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.20.12",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "155",
+      "name": "psuSundayCons",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.20.13",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "156",
+      "name": "exciterBalancedMpx",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.30.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "157",
+      "name": "exciterBalacedLR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.30.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "158",
+      "name": "exciter10KohmMpx",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.30.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "159",
+      "name": "exciter10KohmLR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.30.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "160",
+      "name": "exciterAdjustLRlevel",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.30.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "161",
+      "name": "exciterSfnEnable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.30.6",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "162",
+      "name": "exciterSfnDelay",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.30.7",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "163",
+      "name": "exciterRdsEnable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.30.8",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "164",
+      "name": "exciterLevel57Khz",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.30.9",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "165",
+      "name": "exciterAdjust10Mhz",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.30.10",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "166",
+      "name": "exciterFreqReference",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.30.11",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "167",
+      "name": "exciterRds57kHzPhase",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.30.12",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "168",
+      "name": "exciterSfnLocked",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.30.13",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "169",
+      "name": "exciterGpsLocked",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.30.14",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "170",
+      "name": "correctWorking",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "171",
+      "name": "systemReset",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "172",
+      "name": "eepromCksumError",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "173",
+      "name": "psuWarning",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "174",
+      "name": "hardwareFault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "175",
+      "name": "reserveProfileError",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.6",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "176",
+      "name": "audioMatrixProfileError",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.7",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "177",
+      "name": "tooManyTxToLoad",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.8",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "178",
+      "name": "undefinedCoaxPosition",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.9",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "179",
+      "name": "coax1Fault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.10",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "180",
+      "name": "coax2Fault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.11",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "181",
+      "name": "coax3Fault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.12",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "182",
+      "name": "coax4Fault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.13",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "183",
+      "name": "coax5Fault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.14",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "184",
+      "name": "coax6Fault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.15",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "185",
+      "name": "reserveTcTsFault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.16",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "186",
+      "name": "tx1TcTsFault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.17",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "187",
+      "name": "tx2TcTsFault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.18",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "188",
+      "name": "tx3TcTsFault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.19",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "189",
+      "name": "tx4TcTsFault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.20",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "190",
+      "name": "tx5TcTsFault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.21",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "191",
+      "name": "tx6TcTsFault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.22",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "192",
+      "name": "tx1IsToLoad",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.23",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "193",
+      "name": "tx2IsToLoad",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.24",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "194",
+      "name": "tx3IsToLoad",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.25",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "195",
+      "name": "tx4IsToLoad",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.26",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "196",
+      "name": "tx5ToLoad",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.27",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "197",
+      "name": "tx6IsToLoad",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.28",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "198",
+      "name": "reserveFault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.29",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "199",
+      "name": "tx1Fault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.30",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "200",
+      "name": "tx2Fault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.31",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "201",
+      "name": "tx3Fault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.32",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "202",
+      "name": "tx4Fault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.33",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "203",
+      "name": "tx5Fault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.34",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "204",
+      "name": "tx6Fault",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.35",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "205",
+      "name": "reserveInLocal",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.36",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "206",
+      "name": "tx1InLocal",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.37",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "207",
+      "name": "tx2InLocal",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.38",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "208",
+      "name": "tx3InLocal",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.39",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "209",
+      "name": "tx4InLocal",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.40",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "210",
+      "name": "tx5InLocal",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.41",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "211",
+      "name": "tx6InLocal",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.42",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "212",
+      "name": "tx1NotHandled",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.43",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "213",
+      "name": "tx2NotHandled",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.44",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "214",
+      "name": "tx3NotHandled",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.45",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "215",
+      "name": "tx4NotHandled",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.46",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "216",
+      "name": "tx5NotHandled",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.47",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "217",
+      "name": "tx6NotHandled",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.48",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "218",
+      "name": "reserveBadBaseband",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.49",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "219",
+      "name": "tx1BadBaseband",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.50",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "220",
+      "name": "tx2BadBaseband",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.51",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "221",
+      "name": "tx3BadBaseband",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.52",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "222",
+      "name": "tx4BadBaseband",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.53",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "223",
+      "name": "tx5BadBaseband",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.54",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "224",
+      "name": "tx6BadBaseband",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.55",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "225",
+      "name": "echosInLocal",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.56",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "226",
+      "name": "echosInManual",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.57",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "227",
+      "name": "reserveWarning",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.58",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "228",
+      "name": "tx1Warning",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.59",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "229",
+      "name": "tx2Warning",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.60",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "230",
+      "name": "tx3Warning",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.61",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "231",
+      "name": "tx4Warning",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.62",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "232",
+      "name": "tx5Warning",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.63",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "233",
+      "name": "tx6Warning",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.64",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "234",
+      "name": "drainVoltageControlError",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.65",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "235",
+      "name": "pilotPowerGood",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.66",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "236",
+      "name": "incresePilotPower",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.67",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "237",
+      "name": "decreasePilotPower",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.68",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "238",
+      "name": "badInputRfProtection",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.69",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "239",
+      "name": "states",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.60.70",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "240",
+      "name": "enviromenttemp_alrenable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "241",
+      "name": "enviromenttemp_alrmaxlimit",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "242",
+      "name": "enviromenttemp_alrminlimit",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "243",
+      "name": "enviromenttemp_alrlimittype",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "244",
+      "name": "enviromenttemp_alrdelaytime",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "245",
+      "name": "rftemp_alrenable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.6",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "246",
+      "name": "rftemp_alrmaxlimit",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.7",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "247",
+      "name": "rftemp_alrminlimit",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.8",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "248",
+      "name": "rftemp_alrlimittype",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.9",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "249",
+      "name": "rftemp_alrdelaytime",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.10",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "250",
+      "name": "psutemp_alrenable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.11",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "251",
+      "name": "psutemp_alrmaxlimit",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.12",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "252",
+      "name": "psutemp_alrminlimit",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.13",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "253",
+      "name": "psutemp_alrlimittype",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.14",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "254",
+      "name": "psutemp_alrdelaytime",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.15",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "255",
+      "name": "psucurrent_alrenable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.16",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "256",
+      "name": "psucurrent_alrmaxlimit",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.17",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "257",
+      "name": "psucurrent_alrminlimit",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.18",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "258",
+      "name": "psucurrent_alrlimittype",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.19",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "259",
+      "name": "psucurrent_alrdelaytime",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.20",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "260",
+      "name": "reflpwr_alrenable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.21",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "261",
+      "name": "reflpwr_alrmaxlimit",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.22",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "262",
+      "name": "reflpwr_alrminlimit",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.23",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "263",
+      "name": "reflpwr_alrlimittype",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.24",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "264",
+      "name": "reflpwr_alrdelaytime",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.25",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "265",
+      "name": "rfids_alrenable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.26",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "266",
+      "name": "rfids_alrmaxlimit",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.27",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "267",
+      "name": "rfids_alrminlimit",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.28",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "268",
+      "name": "rfids_alrlimittype",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.29",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "269",
+      "name": "rfids_alrdelaytime",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.30",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "270",
+      "name": "fwdpower_alrenable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.31",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "271",
+      "name": "fwdpower_alrmaxlimit",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.32",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "272",
+      "name": "fwdpower_alrminlimit",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.33",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "273",
+      "name": "fwdpower_alrlimittype",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.34",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "274",
+      "name": "fwdpower_alrdelaytime",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.65.35",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "275",
+      "name": "profilesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "276",
+      "name": "profilesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.1.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "277",
+      "name": "profilesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.1.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "278",
+      "name": "profilesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.1.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "279",
+      "name": "profilesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.1.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "280",
+      "name": "profilesIndex",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.1.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "281",
+      "name": "pTargetPower",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "282",
+      "name": "pTargetPower",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.2.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "283",
+      "name": "pTargetPower",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.2.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "284",
+      "name": "pTargetPower",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.2.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "285",
+      "name": "pTargetPower",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.2.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "286",
+      "name": "pTargetPower",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.2.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "287",
+      "name": "pExciterTxFrequency",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "288",
+      "name": "pExciterTxFrequency",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.3.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "289",
+      "name": "pExciterTxFrequency",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.3.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "290",
+      "name": "pExciterTxFrequency",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.3.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "291",
+      "name": "pExciterTxFrequency",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.3.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "292",
+      "name": "pExciterTxFrequency",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.3.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "293",
+      "name": "pExciterWrkMode",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "294",
+      "name": "pExciterWrkMode",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.4.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "295",
+      "name": "pExciterWrkMode",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.4.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "296",
+      "name": "pExciterWrkMode",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.4.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "297",
+      "name": "pExciterWrkMode",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.4.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "298",
+      "name": "pExciterWrkMode",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.4.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "299",
+      "name": "--pExciterWrkAudioInputMode",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "300",
+      "name": "--pExciterWrkAudioInputMode",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.5.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "301",
+      "name": "--pExciterWrkAudioInputMode",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.5.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "302",
+      "name": "--pExciterWrkAudioInputMode",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.5.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "303",
+      "name": "--pExciterWrkAudioInputMode",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.5.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "304",
+      "name": "--pExciterWrkAudioInputMode",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.5.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "305",
+      "name": "pExciterLevelSameLR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.6",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "306",
+      "name": "pExciterLevelSameLR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.6.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "307",
+      "name": "pExciterLevelSameLR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.6.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "308",
+      "name": "pExciterLevelSameLR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.6.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "309",
+      "name": "pExciterLevelSameLR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.6.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "310",
+      "name": "pExciterLevelSameLR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.6.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "311",
+      "name": "pExciterLevelMpxR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.7",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "312",
+      "name": "pExciterLevelMpxR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.7.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "313",
+      "name": "pExciterLevelMpxR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.7.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "314",
+      "name": "pExciterLevelMpxR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.7.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "315",
+      "name": "pExciterLevelMpxR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.7.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "316",
+      "name": "pExciterLevelMpxR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.7.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "317",
+      "name": "pExciterLevelL",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.8",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "318",
+      "name": "pExciterLevelL",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.8.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "319",
+      "name": "pExciterLevelL",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.8.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "320",
+      "name": "pExciterLevelL",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.8.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "321",
+      "name": "pExciterLevelL",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.8.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "322",
+      "name": "pExciterLevelL",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.8.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "323",
+      "name": "pExciterLevelAux1",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.9",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "324",
+      "name": "pExciterLevelAux1",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.9.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "325",
+      "name": "pExciterLevelAux1",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.9.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "326",
+      "name": "pExciterLevelAux1",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.9.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "327",
+      "name": "pExciterLevelAux1",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.9.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "328",
+      "name": "pExciterLevelAux1",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.9.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "329",
+      "name": "pExciterLevelAux2",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.10",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "330",
+      "name": "pExciterLevelAux2",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.10.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "331",
+      "name": "pExciterLevelAux2",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.10.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "332",
+      "name": "pExciterLevelAux2",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.10.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "333",
+      "name": "pExciterLevelAux2",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.10.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "334",
+      "name": "pExciterLevelAux2",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.10.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "335",
+      "name": "pExciterWrkLimiter",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.11",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "336",
+      "name": "pExciterWrkLimiter",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.11.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "337",
+      "name": "pExciterWrkLimiter",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.11.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "338",
+      "name": "pExciterWrkLimiter",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.11.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "339",
+      "name": "pExciterWrkLimiter",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.11.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "340",
+      "name": "pExciterWrkLimiter",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.11.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "341",
+      "name": "pExciterMpxLevelLimiter",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.12",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "342",
+      "name": "pExciterMpxLevelLimiter",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.12.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "343",
+      "name": "pExciterMpxLevelLimiter",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.12.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "344",
+      "name": "pExciterMpxLevelLimiter",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.12.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "345",
+      "name": "pExciterMpxLevelLimiter",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.12.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "346",
+      "name": "pExciterMpxLevelLimiter",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.12.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "347",
+      "name": "pExciterLevelAESEBUr",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.13",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "348",
+      "name": "pExciterLevelAESEBUr",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.13.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "349",
+      "name": "pExciterLevelAESEBUr",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.13.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "350",
+      "name": "pExciterLevelAESEBUr",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.13.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "351",
+      "name": "pExciterLevelAESEBUr",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.13.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "352",
+      "name": "pExciterLevelAESEBUr",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.13.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "353",
+      "name": "--pExciterZin600",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.14",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "354",
+      "name": "--pExciterZin600",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.14.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "355",
+      "name": "--pExciterZin600",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.14.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "356",
+      "name": "--pExciterZin600",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.14.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "357",
+      "name": "--pExciterZin600",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.14.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "358",
+      "name": "--pExciterZin600",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.14.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "359",
+      "name": "pFreqReference",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.15",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "360",
+      "name": "pFreqReference",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.15.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "361",
+      "name": "pFreqReference",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.15.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "362",
+      "name": "pFreqReference",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.15.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "363",
+      "name": "pFreqReference",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.15.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "364",
+      "name": "pFreqReference",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.15.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "365",
+      "name": "pExciterBalancedMPX",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.16",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "366",
+      "name": "pExciterBalancedMPX",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.16.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "367",
+      "name": "pExciterBalancedMPX",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.16.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "368",
+      "name": "pExciterBalancedMPX",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.16.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "369",
+      "name": "pExciterBalancedMPX",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.16.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "370",
+      "name": "pExciterBalancedMPX",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.16.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "371",
+      "name": "pExciterBalancedLR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.17",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "372",
+      "name": "pExciterBalancedLR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.17.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "373",
+      "name": "pExciterBalancedLR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.17.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "374",
+      "name": "pExciterBalancedLR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.17.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "375",
+      "name": "pExciterBalancedLR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.17.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "376",
+      "name": "pExciterBalancedLR",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.17.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "377",
+      "name": "pSfnEnable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.18",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "378",
+      "name": "pSfnEnable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.18.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "379",
+      "name": "pSfnEnable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.18.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "380",
+      "name": "pSfnEnable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.18.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "381",
+      "name": "pSfnEnable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.18.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "382",
+      "name": "pSfnEnable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.18.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "383",
+      "name": "pSfnDelay",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.19",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "384",
+      "name": "pSfnDelay",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.19.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "385",
+      "name": "pSfnDelay",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.19.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "386",
+      "name": "pSfnDelay",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.19.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "387",
+      "name": "pSfnDelay",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.19.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "388",
+      "name": "pSfnDelay",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.19.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "389",
+      "name": "pRdsEnable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.20",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "390",
+      "name": "pRdsEnable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.20.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "391",
+      "name": "pRdsEnable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.20.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "392",
+      "name": "pRdsEnable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.20.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "393",
+      "name": "pRdsEnable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.20.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "394",
+      "name": "pRdsEnable",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.20.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "395",
+      "name": "pExciter_level_mpx",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.21",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "396",
+      "name": "pExciter_level_mpx",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.21.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "397",
+      "name": "pExciter_level_mpx",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.21.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "398",
+      "name": "pExciter_level_mpx",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.21.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "399",
+      "name": "pExciter_level_mpx",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.21.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "400",
+      "name": "pExciter_level_mpx",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.21.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "401",
+      "name": "pExciter_level_streaming_R",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.22",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "402",
+      "name": "pExciter_level_streaming_R",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.22.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "403",
+      "name": "pExciter_level_streaming_R",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.22.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "404",
+      "name": "pExciter_level_streaming_R",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.22.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "405",
+      "name": "pExciter_level_streaming_R",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.22.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "406",
+      "name": "pExciter_level_streaming_R",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.22.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "407",
+      "name": "pExciter_level_streaming_L",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.23",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "408",
+      "name": "pExciter_level_streaming_L",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.23.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "409",
+      "name": "pExciter_level_streaming_L",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.23.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "410",
+      "name": "pExciter_level_streaming_L",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.23.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "411",
+      "name": "pExciter_level_streaming_L",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.23.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "412",
+      "name": "pExciter_level_streaming_L",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.23.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "413",
+      "name": "pExciter_level_dig_mpx",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.24",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "414",
+      "name": "pExciter_level_dig_mpx",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.24.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "415",
+      "name": "pExciter_level_dig_mpx",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.24.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "416",
+      "name": "pExciter_level_dig_mpx",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.24.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "417",
+      "name": "pExciter_level_dig_mpx",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.24.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "418",
+      "name": "pExciter_level_dig_mpx",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.2.1.24.5",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "419",
+      "name": "profiles",
+      "oid": "1.3.6.1.4.1.31946.4.2.6.90.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "420",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.1.1.6.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "421",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.10.2.1.1",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "422",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.10.2.1.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "423",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.10.2.1.3",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "424",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.10.2.1.4",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "425",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.11.2.1.1",
+      "description": "Type=Counter",
+      "dataType": "Counter32",
+      "access": "read-only"
+    },
+    {
+      "id": "426",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.11.2.1.2",
+      "description": "Type=Counter",
+      "dataType": "Counter32",
+      "access": "read-only"
+    },
+    {
+      "id": "427",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.11.2.1.3",
+      "description": "Type=Counter",
+      "dataType": "Counter32",
+      "access": "read-only"
+    },
+    {
+      "id": "428",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.12.1.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "429",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.12.1.4",
+      "description": "Type=Counter",
+      "dataType": "Counter32",
+      "access": "read-only"
+    },
+    {
+      "id": "430",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.12.1.5",
+      "description": "Type=Counter",
+      "dataType": "Counter32",
+      "access": "read-only"
+    },
+    {
+      "id": "431",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.15.1.1.1",
+      "description": "Type=Counter",
+      "dataType": "Counter32",
+      "access": "read-only"
+    },
+    {
+      "id": "432",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.15.1.1.2",
+      "description": "Type=Counter",
+      "dataType": "Counter32",
+      "access": "read-only"
+    },
+    {
+      "id": "433",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.15.1.1.3",
+      "description": "Type=Counter",
+      "dataType": "Counter32",
+      "access": "read-only"
+    },
+    {
+      "id": "434",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.15.1.1.4",
+      "description": "Type=Counter",
+      "dataType": "Counter32",
+      "access": "read-only"
+    },
+    {
+      "id": "435",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.15.1.1.5",
+      "description": "Type=Counter",
+      "dataType": "Counter32",
+      "access": "read-only"
+    },
+    {
+      "id": "436",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.15.1.1.6",
+      "description": "Type=Counter",
+      "dataType": "Counter32",
+      "access": "read-only"
+    },
+    {
+      "id": "437",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.15.1.2.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "438",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.1.1.1",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "439",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.2.1.3.1.5.99.111.109.109.49",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "440",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.2.1.3.1.5.99.111.109.109.50",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "441",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.2.1.3.2.5.99.111.109.109.49",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "442",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.2.1.3.2.5.99.111.109.109.50",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "443",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.2.1.4.1.5.99.111.109.109.49",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "444",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.2.1.4.1.5.99.111.109.109.50",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "445",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.2.1.4.2.5.99.111.109.109.49",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "446",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.2.1.4.2.5.99.111.109.109.50",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "447",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.2.1.5.1.5.99.111.109.109.49",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "448",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.2.1.5.1.5.99.111.109.109.50",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "449",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.2.1.5.2.5.99.111.109.109.49",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "450",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.2.1.5.2.5.99.111.109.109.50",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "451",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.4.1.4.8.103.114.112.99.111.109.109.49.0.0.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "452",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.4.1.4.8.103.114.112.99.111.109.109.50.0.0.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "453",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.4.1.5.8.103.114.112.99.111.109.109.49.0.0.1",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "454",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.4.1.5.8.103.114.112.99.111.109.109.50.0.0.1",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "455",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.4.1.6.8.103.114.112.99.111.109.109.49.0.0.1",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "456",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.4.1.6.8.103.114.112.99.111.109.109.50.0.0.1",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "457",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.4.1.7.8.103.114.112.99.111.109.109.49.0.0.1",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "458",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.4.1.7.8.103.114.112.99.111.109.109.50.0.0.1",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "459",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.4.1.8.8.103.114.112.99.111.109.109.49.0.0.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "460",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.4.1.8.8.103.114.112.99.111.109.109.50.0.0.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "461",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.4.1.9.8.103.114.112.99.111.109.109.49.0.0.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "462",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.4.1.9.8.103.114.112.99.111.109.109.50.0.0.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "463",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "464",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.3.5.95.97.108.108.95.1",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "465",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.3.5.95.97.108.108.95.1.1",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "466",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.3.5.95.97.108.108.95.1.2",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "467",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.3.6.95.110.111.110.101.95.1",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "468",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.3.6.95.110.111.110.101.95.1.1",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "469",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.3.6.95.110.111.110.101.95.1.2",
+      "description": "Type=OctetString",
+      "dataType": "OCTET STRING",
+      "access": "read-only"
+    },
+    {
+      "id": "470",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.4.5.95.97.108.108.95.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "471",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.4.5.95.97.108.108.95.1.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "472",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.4.5.95.97.108.108.95.1.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "473",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.4.6.95.110.111.110.101.95.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "474",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.4.6.95.110.111.110.101.95.1.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "475",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.4.6.95.110.111.110.101.95.1.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "476",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.5.5.95.97.108.108.95.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "477",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.5.5.95.97.108.108.95.1.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "478",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.5.5.95.97.108.108.95.1.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "479",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.5.6.95.110.111.110.101.95.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "480",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.5.6.95.110.111.110.101.95.1.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "481",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.5.6.95.110.111.110.101.95.1.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "482",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.6.5.95.97.108.108.95.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "483",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.6.5.95.97.108.108.95.1.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "484",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.6.5.95.97.108.108.95.1.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "485",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.6.6.95.110.111.110.101.95.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "486",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.6.6.95.110.111.110.101.95.1.1",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    },
+    {
+      "id": "487",
+      "name": "internet",
+      "oid": "1.3.6.1.6.3.16.1.5.2.1.6.6.95.110.111.110.101.95.1.2",
+      "description": "Type=Integer",
+      "dataType": "INTEGER",
+      "access": "read-only"
+    }
+  ],
+  "createdAt": "2025-10-16T09:19:29.001Z",
+  "updatedAt": "2025-10-16T09:19:29.001Z"
+}
