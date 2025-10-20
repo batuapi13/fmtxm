@@ -17,11 +17,11 @@ Release summary:
 Changes:
 - Version bump to `13.1.1.3`.
 - Updated `package-lock.json` to reflect version change.
-- No UI code changes; functionality verified through API and sorting logic.
+- UI: moved TX card drag handle to top-right; ensured 2-line label visibility.
 
 Links:
 - Tag: `v13.1.1.3`
-- Commit: `4042973` on `main`
+- Commit: `6aa72bb` on `main`
 - Repo: https://github.com/batuapi13/fmtxm
 
 Notes:
