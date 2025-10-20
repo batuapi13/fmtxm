@@ -41,9 +41,9 @@ export default function TransmitterCard({ transmitter, isActive = false, dragHan
           <Radio className={`w-3 h-3 ${getStatusColor(transmitter.status)}`} />
           {/* Label - allow 2 lines */}
           <div 
-            className="font-medium text-sm leading-tight break-words flex-1 pr-6"
+            className="font-medium text-sm leading-snug whitespace-normal break-words flex-1 pr-8"
             data-testid={`transmitter-label-${transmitter.type}`}
-            style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+            style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', maxHeight: '2.6em' }}
           >
             {displayLabel}
           </div>
