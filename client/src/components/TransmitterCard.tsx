@@ -36,14 +36,15 @@ export default function TransmitterCard({ transmitter, isActive = false, dragHan
   return (
     <Card className={`border-card-border hover-elevate h-full ${isActive ? 'ring-2 ring-primary' : ''}`}>
       <CardHeader className="pb-2">
-        <div className="flex items-start gap-2 min-h-[56px] relative">
+        <div className="flex items-start gap-2 min-h-[64px] relative">
           {/* Status icon */}
           <Radio className={`w-3 h-3 ${getStatusColor(transmitter.status)}`} />
           {/* Label - allow 2 lines */}
           <div 
-            className="font-medium text-sm leading-snug whitespace-normal break-words flex-1 pr-8"
+            className="font-medium text-sm leading-snug whitespace-normal break-words flex-1 pr-10"
             data-testid={`transmitter-label-${transmitter.type}`}
-            style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', maxHeight: '2.6em' }}
+            style={{ overflow: 'hidden', maxHeight: '2.8em', wordBreak: 'break-word' }}
+            title={displayLabel}
           >
             {displayLabel}
           </div>
