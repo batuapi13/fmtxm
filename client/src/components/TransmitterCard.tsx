@@ -36,10 +36,20 @@ export default function TransmitterCard({ transmitter, isActive = false, dragHan
   return (
     <Card className={`border-card-border hover-elevate h-full ${isActive ? 'ring-2 ring-primary' : ''}`}>
       <CardHeader className="pb-2">
-        <div className="flex items-start gap-2 min-h-[40px]">
-          {/* Drag handle for explicit sorting */}
+        <div className="flex items-start gap-2 min-h-[56px] relative">
+          {/* Status icon */}
+          <Radio className={`w-3 h-3 ${getStatusColor(transmitter.status)}`} />
+          {/* Label - allow 2 lines */}
+          <div 
+            className="font-medium text-sm leading-tight break-words flex-1 pr-6"
+            data-testid={`transmitter-label-${transmitter.type}`}
+            style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+          >
+            {displayLabel}
+          </div>
+          {/* Drag handle repositioned to top-right to avoid covering label */}
           <button
-            className="cursor-grab p-1 rounded hover:bg-muted/40"
+            className="absolute right-1 top-1 cursor-grab p-1 rounded hover:bg-muted/40"
             aria-label="Drag transmitter"
             ref={dragHandleRef as any}
             {...(dragHandleListeners || {})}
@@ -47,14 +57,6 @@ export default function TransmitterCard({ transmitter, isActive = false, dragHan
           >
             <GripVertical className="w-3 h-3 text-muted-foreground" />
           </button>
-          <Radio className={`w-3 h-3 ${getStatusColor(transmitter.status)}`} />
-          <div 
-            className="font-medium text-sm leading-tight break-words flex-1"
-            data-testid={`transmitter-label-${transmitter.type}`}
-            style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
-          >
-            {displayLabel}
-          </div>
         </div>
         <div className="space-y-1 min-h-[44px]">
           <Badge 
