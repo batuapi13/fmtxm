@@ -1,5 +1,16 @@
 # Changelog
 
+## v13.3.13
+
+- Snapshot release created and pushed to `release/v13.3.13`.
+- Includes:
+  - SNMP poller improvements: better OID expansion, error handling, and core Elenos OID handling.
+  - SNMP trap manager: new trap receiver with privileged-bind fallback and varbind normalization.
+  - Database schema tweaks: created `snmp_traps` table and added defaults for `display_label`, `display_order`, and `poll_interval` where applicable.
+  - Fallback assets: automated SNMP walk template generation from `snmp_full_walk.txt` when live walks fail.
+  - Misc: small client/server fixes for routing and asset handling.
+- Tag: `v13.3.13`
+
 ## v13.2.0.0
 
 - Cleanup: removed obsolete `server/snmp-poller.ts` to avoid confusion; consolidated on `server/services/snmp-poller.ts` which is used by `server/routes/snmp.ts`.
@@ -19,4 +30,4 @@ Tag: `v13.2.0.0`
 - Verified pages `/map` and `/cards` load without errors; navigation uses `useLocation` correctly.
 - Improved HMR stability and consistent asset routing during development.
 
-Tags: `v13.1.1.7`, `v13.2.0.0`
+Tags: `v13.3.13`, `v13.1.1.7`, `v13.2.0.0`
